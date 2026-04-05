@@ -1,0 +1,121 @@
+{
+  "Metadata": {
+    "title": "Lunatech Agency — Veb və mobil inkişaf",
+    "description": "Premium rəqəmsal agentlik: futuristik veb, mobil və AI təcrübələri."
+  },
+  "nav": {
+    "services": "Xidmətlər",
+    "about": "Haqqımızda",
+    "portfolio": "Portfolio",
+    "contact": "Əlaqə",
+    "tagline": "Rəqəmsal cazibə"
+  },
+  "hero": {
+    "badge": "Lunatech Agency",
+    "headline": "Rəqəmsal cazibəni mühəndislik",
+    "sub": "Gələcəyə yönəlmiş rəqəmsal təcrübələr qururuq — cəlb edir, saxlayır və çevirir.",
+    "cta": "Başlayaq",
+    "ctaSecondary": "İşlərimiz",
+    "scrollHint": "Aşağı"
+  },
+  "services": {
+    "title": "İmkanlar",
+    "subtitle": "Məhsul, brend və motion üzrə şəffaf icra.",
+    "web": {
+      "title": "Veb inkişaf",
+      "desc": "Yüksək performanslı saytlar və tətbiqlər — müasir stack, təmiz arxitektura, detallara qayğı."
+    },
+    "mobile": {
+      "title": "Mobil tətbiqlər",
+      "desc": "iOS və Android üçün təbii təcrübə — stabil, sürətli, mağaza hazır."
+    },
+    "design": {
+      "title": "UI / UX dizayn",
+      "desc": "Tədqiqat əsaslı interfeyslər — istifadəçini yönləndirir və brend hekayənizi gücləndirir."
+    },
+    "ai": {
+      "title": "AI inteqrasiyası",
+      "desc": "Praktiki AI — köməkçilər, avtomatlaşdırma və ağıllı UX, boş vədlər olmadan."
+    },
+    "branding": {
+      "title": "Brend sistemləri",
+      "desc": "Vahid vizual dil, dizayn tokenləri və məhsulla birlikdə böyüyən təlimatlar."
+    },
+    "motion": {
+      "title": "Motion dizayn",
+      "desc": "Premium mikro-animasiyalar və buraxılış hekayəsi — səs-küy yox, təsir var."
+    }
+  },
+  "about": {
+    "title": "Niyə Lunatech",
+    "missionTitle": "Missiya",
+    "mission": "Rəqəmsal cazibə mühəndisliyi — düzgün istifadəçiləri cəlb edən və orbitdə saxlayan məhsul və brendlər.",
+    "philosophyTitle": "Fəlsəfə",
+    "philosophy": "Kosmos texnologiyasının sakitliyi və lüks sənətkarlıq. Biz qarışıqlıq əvəzinə aydınlığı, dekor əvəzinə dərinliyi seçirik.",
+    "whyTitle": "Necə işləyirik",
+    "why": "Kiçik təcrübəli komanda, sıx əks-əlaqə və alət kimi qurulmuş interfeyslər — dəqiq, işıqlı, canlı.",
+    "tagline": "Sirli. Ağıllı. Növbəti nəsil.",
+    "moonBlurb": "Ayın parçası — orbit, işıq və güclü dizaynın cazibəsi simvolu."
+  },
+  "portfolio": {
+    "title": "Seçilmiş işlər",
+    "subtitle": "İmmersiv keislər — layihəni toxunaraq açın.",
+    "viewCase": "Keisi aç",
+    "modalClose": "Bağla",
+    "project1": {
+      "title": "Nebula Commerce",
+      "tag": "Veb",
+      "summary": "Sinematik məhsul hekayəsi ilə headless vitrin.",
+      "body": "Keis (placeholder): konversiyaya yönəlmiş UX, edge performansı və mövsümi kampaniyalar üçün modul dizayn sistemi."
+    },
+    "project2": {
+      "title": "Pulse Fintech",
+      "tag": "Mobil",
+      "summary": "Yeni nəsil bankçılıq üçün real vaxt portfel paneli.",
+      "body": "Keis (placeholder): biometrik axınlar, əlçatan data viz və etibar üçün motion ilə onboarding."
+    },
+    "project3": {
+      "title": "Aura Lifestyle",
+      "tag": "UI/UX",
+      "summary": "Vərdiş döngələri və premium saxlama ilə wellness tətbiqi.",
+      "body": "Keis (placeholder): vərdiş dizaynı, şüşə UI və 12 bazar üçün lokalizasiya."
+    },
+    "project4": {
+      "title": "Vertex AI Console",
+      "tag": "AI",
+      "summary": "ML boru xətlərini idarə və monitorinq alətləri.",
+      "body": "Keis (placeholder): terminal üslubu, rollara əsaslanan iş sahələri və gecikməyə həssas canlı qrafiklər."
+    },
+    "project5": {
+      "title": "Lunar Rebrendinq",
+      "tag": "Brend",
+      "summary": "Kosmos texnoloji startap üçün tam identifikator sistemi.",
+      "body": "Keis (placeholder): söz işarəsi, motion loqo və istehsal tərəfdaşları ilə uyğun komponent kitabxanası."
+    },
+    "project6": {
+      "title": "Signal Launch Film",
+      "tag": "Motion",
+      "summary": "Flaqman cihaz üçün məhsul açılışı və sosial kəsiklər.",
+      "body": "Keis (placeholder): shader əsaslı hero, səs-reaktiv teaserlər və ödənişli media üçün modul hekayə."
+    }
+  },
+  "contact": {
+    "title": "Layihəni işə sal",
+    "subtitle": "Nə qurduğunuzu yazın. İki iş günü ərzində cavab verəcəyik.",
+    "terminalStatus": "> Əlaqə qurulur…",
+    "emailLabel": "Birbaşa xətt",
+    "emailValue": "hello@lunatech.agency",
+    "ctaMail": "Yazın",
+    "formName": "Ad",
+    "formEmail": "E-poçt",
+    "formMessage": "Mesaj",
+    "formSubmit": "Layihəni işə sal",
+    "formNote": "Poçt proqramınızı açır — məlumat serverdə saxlanmır."
+  },
+  "footer": {
+    "rights": "Bütün hüquqlar qorunur.",
+    "privacy": "Məxfilik",
+    "terms": "Şərtlər",
+    "follow": "İzlə"
+  }
+}

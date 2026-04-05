@@ -1,0 +1,121 @@
+{
+  "Metadata": {
+    "title": "Lunatech Agency — Web & Mobile Development",
+    "description": "Premium digital agency crafting futuristic web, mobile, and AI-powered experiences."
+  },
+  "nav": {
+    "services": "Services",
+    "about": "About",
+    "portfolio": "Portfolio",
+    "contact": "Contact",
+    "tagline": "Digital gravity"
+  },
+  "hero": {
+    "badge": "Lunatech Agency",
+    "headline": "Engineering Digital Gravity",
+    "sub": "We build futuristic digital experiences that attract, engage, and convert.",
+    "cta": "Get started",
+    "ctaSecondary": "Our work",
+    "scrollHint": "Scroll"
+  },
+  "services": {
+    "title": "Capabilities",
+    "subtitle": "Glass-clear execution across product, brand, and motion.",
+    "web": {
+      "title": "Web development",
+      "desc": "High-performance sites and apps — modern stacks, clean architecture, obsessive polish."
+    },
+    "mobile": {
+      "title": "Mobile apps",
+      "desc": "Native-feel iOS and Android experiences — stable, fast, and store-ready."
+    },
+    "design": {
+      "title": "UI / UX design",
+      "desc": "Research-backed interfaces that guide users and amplify your brand story."
+    },
+    "ai": {
+      "title": "AI integration",
+      "desc": "Practical AI features — copilots, automation, and intelligent UX without the gimmicks."
+    },
+    "branding": {
+      "title": "Branding systems",
+      "desc": "Cohesive visual language, design tokens, and guidelines that scale with your product."
+    },
+    "motion": {
+      "title": "Motion design",
+      "desc": "Cinematic micro-interactions and launch storytelling that feel premium, not noisy."
+    }
+  },
+  "about": {
+    "title": "Why Lunatech",
+    "missionTitle": "Mission",
+    "mission": "We engineer digital gravity — products and brands that pull the right users in and keep them orbiting.",
+    "philosophyTitle": "Philosophy",
+    "philosophy": "Space-tech calm meets luxury craft. We favor clarity over clutter, depth over decoration, and outcomes over noise.",
+    "whyTitle": "How we work",
+    "why": "Small senior team, tight feedback loops, and interfaces built like instruments — precise, luminous, and alive.",
+    "tagline": "Mysterious. Intelligent. Next-gen.",
+    "moonBlurb": "A fragment of the moon — our symbol for orbit, light, and the pull of great design."
+  },
+  "portfolio": {
+    "title": "Selected work",
+    "subtitle": "Immersive case studies — tap a project to explore.",
+    "viewCase": "View case",
+    "modalClose": "Close",
+    "project1": {
+      "title": "Nebula Commerce",
+      "tag": "Web",
+      "summary": "Headless storefront with cinematic product storytelling.",
+      "body": "Placeholder case study: conversion-focused UX, edge performance, and a modular design system for seasonal campaigns."
+    },
+    "project2": {
+      "title": "Pulse Fintech",
+      "tag": "Mobile",
+      "summary": "Real-time portfolio dashboard for a new banking cohort.",
+      "body": "Placeholder case study: biometric flows, accessible data viz, and motion-led onboarding for trust."
+    },
+    "project3": {
+      "title": "Aura Lifestyle",
+      "tag": "UI/UX",
+      "summary": "Wellness app with habit loops and premium retention.",
+      "body": "Placeholder case study: habit design, glass UI, and localized content strategy across 12 markets."
+    },
+    "project4": {
+      "title": "Vertex AI Console",
+      "tag": "AI",
+      "summary": "Operator tools for deploying and monitoring ML pipelines.",
+      "body": "Placeholder case study: terminal-native patterns, role-based workspaces, and latency-aware live charts."
+    },
+    "project5": {
+      "title": "Lunar Rebrand",
+      "tag": "Branding",
+      "summary": "Full identity system for a space-tech hardware startup.",
+      "body": "Placeholder case study: wordmark, motion logo, and component library aligned with manufacturing partners."
+    },
+    "project6": {
+      "title": "Signal Launch Film",
+      "tag": "Motion",
+      "summary": "Product reveal and social cutdowns for a flagship device.",
+      "body": "Placeholder case study: shader-driven hero, audio-reactive teasers, and modular story beats for paid media."
+    }
+  },
+  "contact": {
+    "title": "Launch your project",
+    "subtitle": "Tell us what you’re building. We reply within two business days.",
+    "terminalStatus": "> Initializing connection…",
+    "emailLabel": "Direct line",
+    "emailValue": "hello@lunatech.agency",
+    "ctaMail": "Write us",
+    "formName": "Name",
+    "formEmail": "Email",
+    "formMessage": "Message",
+    "formSubmit": "Launch project",
+    "formNote": "Opens your mail client — nothing is stored on our servers."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "follow": "Follow"
+  }
+}
