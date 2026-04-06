@@ -31,12 +31,12 @@ function FloatInput({
       <input
         id={id}
         placeholder=" "
-        className="peer w-full border-0 border-b border-white/[0.12] bg-transparent py-3 text-base text-white outline-none transition-[border-color,box-shadow] duration-200 focus:border-b-purple-500/70 focus:shadow-[0_8px_32px_rgba(34,211,238,0.12)] md:text-sm"
+        className="peer w-full border-0 border-b border-white/[0.12] bg-transparent py-3 text-base text-white outline-none transition-[border-color,box-shadow] duration-300 ease-out focus:border-b-purple-500/70 focus:shadow-[0_8px_32px_rgba(34,211,238,0.12)] md:text-sm"
         {...props}
       />
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-500 transition-all duration-200 peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-400"
+        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-500 transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-400"
       >
         {label}
       </label>
@@ -58,12 +58,12 @@ function FloatTextarea({
         id={id}
         placeholder=" "
         rows={4}
-        className="peer w-full resize-y border-0 border-b border-white/[0.12] bg-transparent py-3 text-base text-white outline-none transition-[border-color,box-shadow] duration-200 focus:border-b-purple-500/70 focus:shadow-[0_8px_32px_rgba(34,211,238,0.12)] md:text-sm"
+        className="peer w-full resize-y border-0 border-b border-white/[0.12] bg-transparent py-3 text-base text-white outline-none transition-[border-color,box-shadow] duration-300 ease-out focus:border-b-purple-500/70 focus:shadow-[0_8px_32px_rgba(34,211,238,0.12)] md:text-sm"
         {...props}
       />
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-500 transition-all duration-200 peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-400"
+        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-500 transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-400"
       >
         {label}
       </label>
@@ -91,13 +91,13 @@ export function Contact() {
   );
 
   return (
-    <Section id="contact" className="z-10 pb-28">
+    <Section id="contact" className="z-10 pb-20 sm:pb-28">
       <div className="mx-auto max-w-lg">
         <motion.div
           initial={reduce ? false : { opacity: 1, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
-          transition={motionTransition.normal}
+          transition={motionTransition.smooth}
           className="text-center"
         >
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
@@ -111,7 +111,7 @@ export function Contact() {
           initial={reduce ? false : { opacity: 1, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ ...motionTransition.normal, delay: 0.06 }}
+          transition={{ ...motionTransition.smooth, delay: 0.06 }}
           className="relative mt-10"
         >
           <div

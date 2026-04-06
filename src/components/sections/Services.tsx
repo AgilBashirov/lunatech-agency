@@ -30,12 +30,12 @@ export async function Services() {
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
             {t("title")}
           </h2>
-          <p className="mt-3 max-w-2xl text-zinc-400 md:mx-0 md:mt-4">
+          <p className="mx-auto mt-3 max-w-2xl text-zinc-400 md:mx-0 md:mt-4">
             {t("subtitle")}
           </p>
         </div>
       </Reveal>
-      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
         {items.map(({ key, Icon }, i) => (
           <Reveal key={key} delay={i * 0.06}>
             <GlassCard className="h-full">

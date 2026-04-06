@@ -27,7 +27,7 @@ export function Hero() {
         <motion.div
           initial={reduce ? false : { opacity: 1, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={motionTransition.normal}
+          transition={motionTransition.smooth}
           className="mx-auto max-w-xl text-center md:mx-0 md:max-w-2xl md:text-left"
         >
           <p className="font-mono mb-4 inline-flex rounded-full border border-white/[0.12] bg-[#0b0f1a]/80 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-cyan-200/90 shadow-[0_0_20px_rgba(34,211,238,0.12)] backdrop-blur-md sm:text-xs">
@@ -57,13 +57,26 @@ export function Hero() {
         />
       </div>
 
-      <a
-        href="#services"
-        className="absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-500 transition-colors hover:text-cyan-300/90"
-      >
-        <span>{t("scrollHint")}</span>
-        <span className="h-8 w-px bg-gradient-to-b from-cyan-400/80 to-transparent animate-scroll-hint" />
-      </a>
+      {reduce ? (
+        <a
+          href="#services"
+          className="absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-500 transition-colors duration-300 ease-out hover:text-cyan-300/90"
+        >
+          <span>{t("scrollHint")}</span>
+          <span className="h-8 w-px bg-gradient-to-b from-cyan-400/80 to-transparent animate-scroll-hint" />
+        </a>
+      ) : (
+        <motion.a
+          href="#services"
+          className="absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-500 transition-colors duration-300 ease-out hover:text-cyan-300/90"
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.97 }}
+          transition={motionTransition.smooth}
+        >
+          <span>{t("scrollHint")}</span>
+          <span className="h-8 w-px bg-gradient-to-b from-cyan-400/80 to-transparent animate-scroll-hint" />
+        </motion.a>
+      )}
     </section>
   );
 }

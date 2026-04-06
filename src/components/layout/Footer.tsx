@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 
 function SocialIcon({ children }: { children: ReactNode }) {
   return (
-    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] text-zinc-400 transition-all duration-200 hover:border-cyan-400/35 hover:text-white hover:shadow-[0_0_22px_rgba(34,211,238,0.35)]">
+    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] text-zinc-400 transition-all duration-300 ease-out hover:border-cyan-400/35 hover:text-white hover:shadow-[0_0_22px_rgba(34,211,238,0.35)]">
       {children}
     </span>
   );
@@ -100,17 +100,29 @@ export async function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-6 border-t border-white/[0.06] pt-8 text-sm text-zinc-500">
-            <a href="#services" className="transition-colors hover:text-white">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 border-t border-white/[0.06] pt-8 text-sm text-zinc-500 sm:gap-6">
+            <a
+              href="#services"
+              className="inline-flex min-h-11 items-center py-1 transition-colors duration-300 ease-out hover:text-white touch-manipulation"
+            >
               {nav("services")}
             </a>
-            <a href="#about" className="transition-colors hover:text-white">
+            <a
+              href="#about"
+              className="inline-flex min-h-11 items-center py-1 transition-colors duration-300 ease-out hover:text-white touch-manipulation"
+            >
               {nav("about")}
             </a>
-            <a href="#portfolio" className="transition-colors hover:text-white">
+            <a
+              href="#portfolio"
+              className="inline-flex min-h-11 items-center py-1 transition-colors duration-300 ease-out hover:text-white touch-manipulation"
+            >
               {nav("portfolio")}
             </a>
-            <a href="#contact" className="transition-colors hover:text-white">
+            <a
+              href="#contact"
+              className="inline-flex min-h-11 items-center py-1 transition-colors duration-300 ease-out hover:text-white touch-manipulation"
+            >
               {nav("contact")}
             </a>
             <span className="cursor-default">{t("privacy")}</span>

@@ -23,6 +23,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+/* Pinch-zoom still misbehaves after overflow fixes? Last resort: maximumScale: 1, userScalable: false — hurts accessibility (text zoom). */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,

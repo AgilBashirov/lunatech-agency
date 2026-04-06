@@ -49,13 +49,13 @@ export function PortfolioSection() {
             <p className="mt-3 text-zinc-400">{t("subtitle")}</p>
           </div>
         </Reveal>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {PROJECT_KEYS.map((key, i) => (
             <Reveal key={key} delay={i * 0.06}>
               <button
                 type="button"
                 onClick={() => openProject(key)}
-                className="group block w-full text-left"
+                className="group block w-full min-w-0 text-left touch-manipulation"
               >
                 <div
                   className={cn(
@@ -71,11 +71,11 @@ export function PortfolioSection() {
                   <div className="absolute inset-0 flex items-center justify-center font-mono text-[10px] uppercase tracking-[0.3em] text-white/25">
                     {t(`${key}.tag`)}
                   </div>
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#05060a]/95 to-transparent p-4 pt-12">
-                    <p className="translate-y-1 text-sm font-semibold text-white opacity-90 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#05060a]/95 to-transparent p-3 pt-10 sm:p-4 sm:pt-12">
+                    <p className="text-sm font-semibold text-white opacity-100 transition duration-300 sm:translate-y-1 sm:opacity-90 sm:group-hover:translate-y-0 sm:group-hover:opacity-100">
                       {t(`${key}.title`)}
                     </p>
-                    <p className="mt-1 line-clamp-2 text-xs text-zinc-500 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    <p className="mt-1 line-clamp-2 text-xs text-zinc-400 opacity-100 transition duration-300 sm:mt-1 sm:translate-y-1 sm:text-zinc-500 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100">
                       {t(`${key}.summary`)}
                     </p>
                   </div>

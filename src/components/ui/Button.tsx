@@ -21,16 +21,24 @@ export function Button({
   const reduce = useReducedMotion();
 
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition-shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]";
+    "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]";
+
+  const motionHoverTap = reduce
+    ? {}
+    : {
+        whileHover: {
+          scale: 1.02,
+          transition: motionTransition.smooth,
+        },
+        whileTap: {
+          scale: 0.98,
+          transition: motionTransition.fast,
+        },
+      };
 
   if (variant === "primary") {
     return (
-      <motion.span
-        className="gradient-border-wrap inline-flex"
-        transition={motionTransition.fast}
-        whileHover={reduce ? undefined : { scale: 1.02 }}
-        whileTap={reduce ? undefined : { scale: 0.98 }}
-      >
+      <motion.span className="gradient-border-wrap inline-flex" {...motionHoverTap}>
         <button
           type={type}
           className={cn(
@@ -50,12 +58,7 @@ export function Button({
   }
 
   return (
-    <motion.span
-      className="inline-flex"
-      transition={motionTransition.fast}
-      whileHover={reduce ? undefined : { scale: 1.02 }}
-      whileTap={reduce ? undefined : { scale: 0.98 }}
-    >
+    <motion.span className="inline-flex" {...motionHoverTap}>
       <button
         type={type}
         className={cn(

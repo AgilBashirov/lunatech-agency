@@ -39,7 +39,7 @@ export function CaseStudyModal({ project, open, onOpenChange }: Props) {
               <span className="mt-3 inline-flex rounded-full border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-cyan-200">
                 {t(`${project}.tag`)}
               </span>
-              <Dialog.Description className="mt-6 text-sm leading-relaxed text-zinc-400">
+              <Dialog.Description className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-sm">
                 {t(`${project}.body`)}
               </Dialog.Description>
             </>
@@ -48,7 +48,7 @@ export function CaseStudyModal({ project, open, onOpenChange }: Props) {
             <Dialog.Close asChild>
               <button
                 type="button"
-                className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-sm font-medium text-white transition-colors duration-200 hover:border-purple-400/35 hover:bg-white/10"
+                className="min-h-11 min-w-[44px] rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium text-white transition-colors duration-300 ease-out hover:border-purple-400/35 hover:bg-white/10 touch-manipulation"
               >
                 {t("modalClose")}
               </button>

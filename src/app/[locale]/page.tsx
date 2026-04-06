@@ -19,9 +19,9 @@ export default async function HomePage({ params }: Props) {
   return (
     <>
       <MoonBackdrop />
-      <div className="relative z-[2] flex min-h-full flex-col">
+      <div className="relative z-[2] flex min-h-full min-w-0 max-w-full flex-col overflow-x-hidden">
         <Navbar />
-        <main className="flex-1">
+        <main className="min-w-0 flex-1">
           <Hero />
           <Services />
           <About />
