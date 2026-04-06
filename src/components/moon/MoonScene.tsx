@@ -71,9 +71,11 @@ function GLTFMoon() {
 function ScrollAndIdleGroup({
   children,
   offsetX,
+  idleTimeScale = 1,
 }: {
   children: React.ReactNode;
   offsetX: number;
+  idleTimeScale?: number;
 }) {
   const group = useRef<THREE.Group>(null);
   const targetY = useRef(0);
@@ -82,16 +84,28 @@ function ScrollAndIdleGroup({
   const idleY = useRef(0);
 
   useEffect(() => {
-    const update = () => {
+    let rafId: number | null = null;
+
+    const commitScrollTargets = () => {
+      rafId = null;
       const el = document.documentElement;
       const max = el.scrollHeight - window.innerHeight;
       const p = max > 0 ? window.scrollY / max : 0;
       targetY.current = p * Math.PI * 2.2;
       targetX.current = p * 0.38;
     };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
+
+    const schedule = () => {
+      if (rafId != null) return;
+      rafId = window.requestAnimationFrame(commitScrollTargets);
+    };
+
+    commitScrollTargets();
+    window.addEventListener("scroll", schedule, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useLayoutEffect(() => {
@@ -99,7 +113,7 @@ function ScrollAndIdleGroup({
   }, [offsetX]);
 
   useFrame((_, delta) => {
-    idleY.current += delta * ((2 * Math.PI) / 24);
+    idleY.current += delta * ((2 * Math.PI) / 24) * idleTimeScale;
     scrollY.current = THREE.MathUtils.lerp(
       scrollY.current,
       targetY.current,
@@ -126,10 +140,12 @@ function MoonWorld({
   useFile,
   offsetX,
   sphereSegments,
+  idleTimeScale,
 }: {
   useFile: boolean;
   offsetX: number;
   sphereSegments: number;
+  idleTimeScale: number;
 }) {
   return (
     <>
@@ -151,7 +167,7 @@ function MoonWorld({
       />
       <pointLight position={[0, 1.5, 5]} intensity={0.55} color="#22d3ee" />
       <pointLight position={[-3, -2, 2]} intensity={0.35} color="#7c3aed" />
-      <ScrollAndIdleGroup offsetX={offsetX}>
+      <ScrollAndIdleGroup offsetX={offsetX} idleTimeScale={idleTimeScale}>
         <Suspense fallback={<FallbackMoon segments={sphereSegments} />}>
           {useFile ? <GLTFMoon /> : <FallbackMoon segments={sphereSegments} />}
         </Suspense>
@@ -164,10 +180,14 @@ export function MoonScene({
   offsetX = 0.9,
   dprMax = 2,
   sphereSegments = 64,
+  antialias = true,
+  idleTimeScale = 1,
 }: {
   offsetX?: number;
   dprMax?: number;
   sphereSegments?: number;
+  antialias?: boolean;
+  idleTimeScale?: number;
 }) {
   const [useFile, setUseFile] = useState(false);
   const [checked, setChecked] = useState(false);
@@ -198,7 +218,7 @@ export function MoonScene({
         dpr={[1, dprMax]}
         gl={{
           alpha: true,
-          antialias: true,
+          antialias,
           powerPreference: "high-performance",
         }}
         style={{ background: "transparent" }}
@@ -207,6 +227,7 @@ export function MoonScene({
           useFile={useFile}
           offsetX={offsetX}
           sphereSegments={sphereSegments}
+          idleTimeScale={idleTimeScale}
         />
       </Canvas>
     </div>
