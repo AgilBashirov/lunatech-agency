@@ -37,7 +37,7 @@ export function CaseStudyModal({ project, open, onOpenChange }: Props) {
               <span className="mt-3 inline-flex rounded-full border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-cyan-200">
                 {t(`${project}.tag`)}
               </span>
-              <Dialog.Description className="mt-6 text-base leading-relaxed text-zinc-300 sm:text-sm">
+              <Dialog.Description className="mt-6 text-sm leading-relaxed text-zinc-300 sm:text-base">
                 {t(`${project}.body`)}
               </Dialog.Description>
               <p className="mt-5 font-mono text-[10px] uppercase tracking-wider text-zinc-400">

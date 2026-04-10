@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "Lunatech — Creative Technology Studio",
-    "description": "Premium creative technology: highly interactive websites and mobile apps with motion design and 3D — built to feel alive, not like a template."
+    "title": "Lunatech — Creative technology studio",
+    "description": "Design, technology, and strategy as one digital experience: web, UI/UX, strategy, and performance for brands that stand out."
   },
   "nav": {
     "services": "Services",
@@ -11,58 +11,59 @@
     "tagline": "Creative technology"
   },
   "hero": {
-    "badge": "Creative technology",
-    "headline": "Digital craft that moves and pulls you in",
-    "sub": "We design and build immersive web and mobile experiences — rich motion, real-time 3D, and interaction-led storytelling for brands that want to stand apart from static agency sites.",
+    "headline": "We build brands that stand out in the digital world",
+    "sub": "We combine design, technology, and strategy to turn your business into a strong digital experience.",
     "cta": "Start a project",
-    "ctaSecondary": "See the work",
+    "ctaSecondary": "View selected work",
     "scrollHint": "Scroll"
   },
+  "valueStrip": {
+    "line": "Fast. Effective. Outcome-driven."
+  },
   "services": {
-    "title": "What we build",
-    "subtitle": "Capabilities focused on feel, depth, and performance — not generic layouts.",
-    "web": {
-      "title": "Immersive web",
-      "desc": "Highly interactive sites and web apps — animation systems, scroll narratives, WebGL where it earns its place, and engineering you can ship."
+    "title": "Our services",
+    "subtitle": "We don’t just ship products — we design digital experiences.",
+    "webExperience": {
+      "title": "Web experiences",
+      "desc": "Modern, fast, user-centred web platforms crafted for your brand."
     },
-    "mobile": {
-      "title": "Mobile applications",
-      "desc": "Native-feel iOS and Android — fluid gestures, motion-native UI, and polish that matches your brand’s ambition."
-    },
-    "design": {
+    "uiux": {
       "title": "UI / UX design",
-      "desc": "Interfaces designed for motion and depth from day one — hierarchy, rhythm, and states that feel intentional."
+      "desc": "Interfaces that guide, feel intuitive, and look refined."
     },
-    "ai": {
-      "title": "AI integration",
-      "desc": "Smart features that fit the product — copilots, automation, and UX that stays clear under real use."
+    "strategy": {
+      "title": "Digital strategy",
+      "desc": "Structure and direction aligned with your business goals."
     },
-    "branding": {
-      "title": "Brand & design systems",
-      "desc": "Visual language, tokens, and components that scale — including motion and 3D rules, not just static guidelines."
-    },
-    "motion": {
-      "title": "Motion & realtime 3D",
-      "desc": "Cinematic transitions, micro-interaction design, and Three.js / R3F scenes that support the story instead of distracting from it."
+    "performance": {
+      "title": "Performance and optimization",
+      "desc": "Speed, stability, and maximum real-world efficiency."
     }
   },
   "about": {
-    "title": "Vision",
-    "missionTitle": "Who we are",
-    "mission": "Lunatech is a creative technology studio. We specialize in visually engaging, highly interactive digital products — the kind of work that demonstrates advanced frontend craft, not a minimalist slide deck.",
-    "philosophyTitle": "Our approach",
-    "philosophy": "Dark, cinematic, futuristic when it fits the brand — but always in service of clarity and emotion. We layer motion and 3D with purpose: to tell a story, guide attention, and make the interface memorable.",
-    "whyTitle": "How we deliver",
-    "why": "Senior-led team, short feedback loops, and code organized for iteration. We treat the site itself as a living sample of what we can do for you.",
-    "tagline": "Interactive by default. Premium by craft.",
-    "moonBlurb": "The moon in our identity stands for orbit and light — the pull of strong design and the calm focus we bring to complex builds."
+    "title": "About Lunatech",
+    "p1": "Lunatech is a creative team focused on building and evolving digital products.",
+    "p2": "We work at the intersection of design and technology to deliver functional, aesthetic, and lasting solutions for brands.",
+    "p3": "Our goal isn’t just to exist online — it’s to make a difference."
+  },
+  "approach": {
+    "title": "Our approach",
+    "p1": "We look at every project through a strategic lens.",
+    "p2": "We balance aesthetics and performance to ship products that create real user value.",
+    "p3": "For us, design isn’t only how it looks — it’s how it works."
+  },
+  "process": {
+    "title": "Process",
+    "discover": "Discover",
+    "design": "Design",
+    "build": "Build",
+    "launch": "Launch",
+    "subtitle": "Each phase is planned and transparent."
   },
   "portfolio": {
-    "title": "Work & inspiration",
-    "subtitle": "Wide tiles with animated dark 3D-style web previews and Aura reference links. Open site for the live browser; case notes in the modal.",
+    "title": "Selected work",
+    "subtitle": "Every project — one problem, one approach, and a measurable outcome.",
     "coverAlt": "{title} — animated dark 3D-style interface preview",
-    "previewHint": "The header is a CSS motion scene (not a screenshot). Open site for Aura’s real UI.",
-    "openSite": "Open site",
     "viewCase": "View case",
     "modalClose": "Close",
     "demoNote": "Sample reference (opens Aura in a new tab)",
@@ -110,13 +111,14 @@
     }
   },
   "contact": {
-    "title": "Let’s build something unmistakable",
+    "title": "Let’s build something powerful together",
     "subtitle": "Tell us about your product or campaign. We typically reply within two business days.",
     "formName": "Name",
     "formEmail": "Email",
     "formMessage": "Message",
-    "formSubmit": "Send brief",
-    "formNote": "Opens your email app — we don’t store this on our servers."
+    "formSubmit": "Contact us",
+    "formNote": "Opens your email app — we don’t store this on our servers.",
+    "mailtoHint": "Nothing is sent until you press Send in your email client."
   },
   "footer": {
     "rights": "All rights reserved.",

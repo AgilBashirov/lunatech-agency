@@ -4,10 +4,13 @@ import { MoonReadyProvider } from "@/context/moon-ready";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { About } from "@/components/sections/About";
+import { Approach } from "@/components/sections/Approach";
 import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
 import { Portfolio } from "@/components/sections/Portfolio";
+import { Process } from "@/components/sections/Process";
 import { Services } from "@/components/sections/Services";
+import { ValueStrip } from "@/components/sections/ValueStrip";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -24,9 +27,12 @@ export default async function HomePage({ params }: Props) {
         <Navbar />
         <main className="min-w-0 flex-1">
           <Hero />
+          <ValueStrip />
           <Services />
-          <About />
           <Portfolio />
+          <About />
+          <Approach />
+          <Process />
           <Contact />
         </main>
         <Footer />

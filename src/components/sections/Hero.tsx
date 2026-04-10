@@ -69,7 +69,7 @@ export function Hero() {
       {reduce ? (
         <a
           href="#services"
-          className="absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-400 transition-colors duration-300 ease-out hover:text-cyan-300/90"
+          className="absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex min-h-[44px] min-w-[44px] -translate-x-1/2 flex-col items-center justify-center gap-2 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-400 transition-colors duration-300 ease-out hover:text-cyan-300/90"
         >
           <span>{t("scrollHint")}</span>
           <span className="h-8 w-px bg-gradient-to-b from-cyan-400/80 to-transparent animate-scroll-hint" />
@@ -77,7 +77,7 @@ export function Hero() {
       ) : (
         <motion.a
           href="#services"
-          className="absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-400 transition-colors duration-300 ease-out hover:text-cyan-300/90"
+          className="absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex min-h-[44px] min-w-[44px] -translate-x-1/2 flex-col items-center justify-center gap-2 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-400 transition-colors duration-300 ease-out hover:text-cyan-300/90"
           whileHover={{ y: -2 }}
           whileTap={{ scale: 0.97 }}
           transition={motionTransition.smooth}

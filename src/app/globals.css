@@ -119,8 +119,9 @@ h3 {
   font-family: var(--font-space-grotesk), system-ui, sans-serif;
 }
 
-/* Hero headline gradient */
-.text-gradient-hero {
+/* Hero + section titles: accent gradient (same as hero headline) */
+.text-gradient-hero,
+.text-gradient-heading {
   background: var(--gradient-accent);
   -webkit-background-clip: text;
   background-clip: text;

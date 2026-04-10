@@ -12,6 +12,7 @@ import {
 } from "react";
 import * as THREE from "three";
 import { useMoonReady } from "@/context/moon-ready";
+import { useStableLayoutViewportSize } from "@/hooks/useStableLayoutViewportSize";
 
 function MoonLoadGate({ onReady }: { onReady: () => void }) {
   const { active, progress } = useProgress();
@@ -59,6 +60,7 @@ function MoonLoadGate({ onReady }: { onReady: () => void }) {
   return null;
 }
 
+/** Opaque PBR — avoids transparency sorting artifacts on layered GLTF meshes. */
 function softenMaterials(root: THREE.Object3D) {
   root.traverse((child) => {
     const mesh = child as THREE.Mesh;
@@ -71,9 +73,11 @@ function softenMaterials(root: THREE.Object3D) {
         m instanceof THREE.MeshStandardMaterial ||
         m instanceof THREE.MeshPhysicalMaterial
       ) {
-        m.transparent = true;
-        m.opacity = Math.min(m.opacity, 0.92);
+        m.transparent = false;
+        m.opacity = 1;
         m.depthWrite = true;
+        m.roughness = Math.min(1, m.roughness + 0.08);
+        m.metalness = Math.max(0, m.metalness - 0.06);
       }
     }
   });
@@ -89,12 +93,10 @@ function FallbackMoon({ segments = 64 }: { segments?: number }) {
       <sphereGeometry args={[1, segments, segments]} />
       <meshStandardMaterial
         color="#c4c4cc"
-        roughness={0.82}
-        metalness={0.18}
+        roughness={0.9}
+        metalness={0.12}
         emissive="#2a1f38"
-        emissiveIntensity={0.45}
-        transparent
-        opacity={0.9}
+        emissiveIntensity={0.38}
       />
     </mesh>
   );
@@ -279,24 +281,18 @@ function MoonWorld({
   return (
     <>
       <MoonLoadGate onReady={onReady} />
-      <ambientLight intensity={0.32} />
+      <ambientLight intensity={0.14} />
+      <hemisphereLight args={["#c4d2ea", "#1a1028", 0.52]} />
       <directionalLight
         position={[6, 2, 9]}
-        intensity={1.35}
-        color="#ffffff"
+        intensity={0.92}
+        color="#f4f4f5"
       />
       <directionalLight
-        position={[-5, -1, -5]}
-        intensity={0.65}
-        color="#7c3aed"
+        position={[-4, 2, 5]}
+        intensity={0.2}
+        color="#6a9bd4"
       />
-      <directionalLight
-        position={[2, 4, 3]}
-        intensity={0.4}
-        color="#22d3ee"
-      />
-      <pointLight position={[0, 1.5, 5]} intensity={0.55} color="#22d3ee" />
-      <pointLight position={[-3, -2, 2]} intensity={0.35} color="#7c3aed" />
       <ScrollAndIdleGroup
         offsetX={offsetX}
         idleTimeScale={idleTimeScale}
@@ -328,6 +324,7 @@ export function MoonScene({
   const { markMoonReady } = useMoonReady();
   const [useFile, setUseFile] = useState(false);
   const [checked, setChecked] = useState(false);
+  const layoutSize = useStableLayoutViewportSize();
 
   useEffect(() => {
     let cancelled = false;
@@ -355,17 +352,28 @@ export function MoonScene({
     return null;
   }
 
+  const w = layoutSize.width > 0 ? layoutSize.width : undefined;
+  const h = layoutSize.height > 0 ? layoutSize.height : undefined;
+
   return (
-    <div className="pointer-events-none fixed inset-0 z-[1]" aria-hidden>
+    <div
+      className="pointer-events-none fixed left-0 top-0 z-[1] overflow-hidden"
+      style={{
+        width: w ?? "100vw",
+        height: h ?? "100svh",
+      }}
+      aria-hidden
+    >
       <Canvas
         camera={{ position: [0, 0, BASE_CAMERA_Z], fov: 40 }}
         dpr={[1, dprMax]}
+        resize={{ scroll: false }}
         gl={{
           alpha: true,
           antialias,
           powerPreference: "high-performance",
         }}
-        style={{ background: "transparent" }}
+        style={{ background: "transparent", width: "100%", height: "100%" }}
       >
         <MoonWorld
           useFile={useFile}

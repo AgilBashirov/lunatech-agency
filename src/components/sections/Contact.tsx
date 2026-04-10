@@ -100,10 +100,12 @@ export function Contact() {
           transition={motionTransition.smooth}
           className="text-center"
         >
-          <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+          <h2 className="text-gradient-heading text-3xl font-bold tracking-tight md:text-4xl drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)]">
             {t("title")}
           </h2>
-          <p className="mt-3 text-zinc-300">{t("subtitle")}</p>
+          <p className="mt-3 text-balance break-words text-zinc-300">
+            {t("subtitle")}
+          </p>
         </motion.div>
 
         <motion.div
@@ -150,6 +152,7 @@ export function Contact() {
                   </Button>
                 </div>
                 <p className="text-center text-xs text-zinc-400">{t("formNote")}</p>
+                <p className="text-center text-xs text-zinc-500">{t("mailtoHint")}</p>
               </div>
             </form>
           </GlassCard>

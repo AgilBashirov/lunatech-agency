@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "Lunatech — Kreativ texnologiya studiyası",
-    "description": "Premium kreativ texnologiya: güclü qarşılıqlı təsirli veb və mobil tətbiqlər, motion dizayn və 3D — şablon yox, canlı təcrübə."
+    "description": "Dizayn, texnologiya və strategiya ilə rəqəmsal təcrübə: veb, UI/UX, strategiya və performans — brendlər üçün fərq yaradan iş."
   },
   "nav": {
     "services": "Xidmətlər",
@@ -11,58 +11,59 @@
     "tagline": "Kreativ texnologiya"
   },
   "hero": {
-    "badge": "Kreativ texnologiya",
-    "headline": "Hərəkət edən və içinə çəkən rəqəmsal sənət",
-    "sub": "İmmersiv veb və mobil təcrübələr dizayn və kod edirik — zəngin motion, real vaxt 3D və qarşılıqlı təsirdə hekayəçilik; statik agentlik saytlarından seçilmək istəyən brendlər üçün.",
+    "headline": "Rəqəmsal dünyada fərq yaradan brendlər qururuq",
+    "sub": "Dizayn, texnologiya və strategiyanı birləşdirərək biznesinizi güclü rəqəmsal təcrübəyə çeviririk.",
     "cta": "Layihəyə başla",
     "ctaSecondary": "İşlərə bax",
     "scrollHint": "Aşağı"
   },
+  "valueStrip": {
+    "line": "Sürətli. Effektiv. Nəticə yönümlü."
+  },
   "services": {
-    "title": "Nə qururuq",
-    "subtitle": "Hiss, dərinlik və performansa fokus — adi şablon deyil.",
-    "web": {
-      "title": "İmmersiv veb",
-      "desc": "Güclü qarşılıqlı təsirli saytlar və veb tətbiqlər — animasiya sistemləri, scroll hekayəsi, yerində olduqda WebGL və çatdırıla bilən mühəndislik."
+    "title": "Xidmətlərimiz",
+    "subtitle": "Biz sadəcə məhsul yaratmırıq — biz rəqəmsal təcrübə dizayn edirik.",
+    "webExperience": {
+      "title": "Veb təcrübələrinin qurulması",
+      "desc": "Brendiniz üçün müasir, performanslı və istifadəçi yönümlü veb platformalar hazırlayırıq."
     },
-    "mobile": {
-      "title": "Mobil tətbiqlər",
-      "desc": "iOS və Android üçün təbii hiss — axıcı jestlər, motion əsaslı UI və brendin iddiasına uyğun cilalama."
+    "uiux": {
+      "title": "UI/UX dizayn",
+      "desc": "İstifadəçini yönləndirən, intuitiv və estetik interfeyslər."
     },
-    "design": {
-      "title": "UI / UX dizayn",
-      "desc": "İlk gündən motion və dərinlik üçün düşünülmüş interfeyslər — iyerarxiya, ritm və məqsədli hallar."
+    "strategy": {
+      "title": "Rəqəmsal strategiya",
+      "desc": "Biznes məqsədlərinizə uyğun struktur və yanaşma."
     },
-    "ai": {
-      "title": "AI inteqrasiyası",
-      "desc": "Məhsula uyğun ağıllı funksiyalar — köməkçilər, avtomatlaşdırma və real istifadədə də aydın UX."
-    },
-    "branding": {
-      "title": "Brend və dizayn sistemləri",
-      "desc": "Vizual dil, tokenlər və miqyaslanan komponentlər — yalnız statik təlimatlar yox, motion və 3D qaydaları da."
-    },
-    "motion": {
-      "title": "Motion və real vaxt 3D",
-      "desc": "Sinematik keçidlər, mikro qarşılıqlı təsirlər və hekayəni dəstəkləyən Three.js / R3F səhnələri — diqqəti yayındırmadan."
+    "performance": {
+      "title": "Performans və optimizasiya",
+      "desc": "Sürət, stabilik və maksimum effektivlik."
     }
   },
   "about": {
-    "title": "Vizyon",
-    "missionTitle": "Biz kimik",
-    "mission": "Lunatech kreativ texnologiya studiyasıdır. Vizual olaraq cəlbedici, güclü qarşılıqlı təsirli rəqəmsal məhsullar üzrə ixtisaslaşmışıq — irəli səviyyəli frontend sənətini göstərən iş, minimal slayd dekl kinosu yox.",
-    "philosophyTitle": "Yanaşmamız",
-    "philosophy": "Brendə uyğun olduqda qaranlıq, kinematik, futuristik üslub — həmişə aydınlıq və emosiya xidmətində. Motion və 3D-ni məqsədsiz deyil: diqqəti yönləndirmək, hekayəni gücləndirmək və yaddaqalan interfeys üçün istifadə edirik.",
-    "whyTitle": "Necə çatdırırıq",
-    "why": "Təcrübəli komanda, qısa əks-əlaqə döngələri və iterasiyaya uyğun təşkil olunmuş kod. Öz saytımızı da sizə nə edə biləcəyimizin canlı nümunəsi kimi görürük.",
-    "tagline": "Varsayılan olaraq interaktiv. Sənətkarlıqla premium.",
-    "moonBlurb": "Ay identikamızda orbit və işığı simvolizə edir — güclü dizaynın cazibəsi və mürəkkəb quruluşlara gətirdiyimiz sakit fokus."
+    "title": "Lunatech haqqında",
+    "p1": "Lunatech — rəqəmsal məhsulların yaradılması və inkişafı üzərində fokuslanan kreativ komandadır.",
+    "p2": "Biz dizayn və texnologiyanın kəsişməsində işləyərək brendlər üçün funksional, estetik və davamlı həllər yaradırıq.",
+    "p3": "Məqsədimiz sadəcə mövcud olmaq deyil — fərq yaratmaqdır."
+  },
+  "approach": {
+    "title": "Yanaşmamız",
+    "p1": "Hər layihəyə strateji baxışla yanaşırıq.",
+    "p2": "Estetika və performansı balanslayaraq istifadəçi üçün dəyər yaradan məhsullar hazırlayırıq.",
+    "p3": "Bizim üçün dizayn yalnız görünüş deyil — bu, funksiyadır."
+  },
+  "process": {
+    "title": "Proses",
+    "discover": "Araşdırma",
+    "design": "Dizayn",
+    "build": "Hazırlıq",
+    "launch": "Buraxılış",
+    "subtitle": "Hər mərhələ planlı və şəffaf şəkildə idarə olunur"
   },
   "portfolio": {
-    "title": "İşlər və ilham",
-    "subtitle": "Geniş plitələr: tünd 3D tipli animasiyalı veb önizləmə və Aura linkləri. Canlı brauzer üçün Saytı aç; keis modaldadır.",
+    "title": "Seçilmiş işlər",
+    "subtitle": "Hər layihə — bir problem, bir yanaşma və ölçülə bilən nəticədir.",
     "coverAlt": "{title} — animasiyalı tünd 3D interfeys önizləməsi",
-    "previewHint": "Yuxarı hissə CSS animasiya səhnəsidir (skrinşot deyil). Aura üçün real UI — “Saytı aç”.",
-    "openSite": "Saytı aç",
     "viewCase": "Keisi aç",
     "modalClose": "Bağla",
     "demoNote": "Nümunə istinad (Aura yeni vərəqdə açılır)",
@@ -110,13 +111,14 @@
     }
   },
   "contact": {
-    "title": "Unudulmaz bir şey quraq",
+    "title": "Gəlin birlikdə güclü bir şey yaradaq",
     "subtitle": "Məhsulunuz və ya kampaniyanız haqqında yazın. Adətən iki iş günü ərzində cavab veririk.",
     "formName": "Ad",
     "formEmail": "E-poçt",
     "formMessage": "Mesaj",
-    "formSubmit": "Brif göndər",
-    "formNote": "Poçt proqramınızı açır — məlumat serverdə saxlanmır."
+    "formSubmit": "Bizimlə əlaqə",
+    "formNote": "Poçt proqramınızı açır — məlumat serverdə saxlanmır.",
+    "mailtoHint": "Mesaj yalnız poçt proqramında «Göndər»ə basdıqdan sonra göndərilir."
   },
   "footer": {
     "rights": "Bütün hüquqlar qorunur.",

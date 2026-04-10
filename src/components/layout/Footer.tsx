@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 
 function SocialIcon({ children }: { children: ReactNode }) {
   return (
-    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] text-zinc-400 transition-all duration-300 ease-out hover:border-cyan-400/35 hover:text-white hover:shadow-[0_0_22px_rgba(34,211,238,0.35)]">
+    <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] text-zinc-400 transition-all duration-300 ease-out hover:border-cyan-400/35 hover:text-white hover:shadow-[0_0_22px_rgba(34,211,238,0.35)]">
       {children}
     </span>
   );

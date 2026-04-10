@@ -73,7 +73,7 @@ export function Button({
         type={type}
         className={cn(
           base,
-          "border border-white/20 bg-white/5 text-white hover:border-white/35 hover:bg-white/10",
+          "min-h-[44px] border border-white/20 bg-white/5 text-white hover:border-white/35 hover:bg-white/10",
           className,
         )}
         {...props}

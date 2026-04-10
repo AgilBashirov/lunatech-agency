@@ -47,7 +47,7 @@ export function PortfolioSection() {
       >
         <Reveal>
           <div className="text-center md:text-left">
-            <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+            <h2 className="text-gradient-heading text-3xl font-bold tracking-tight md:text-4xl drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)]">
               {t("title")}
             </h2>
             <p className="mt-3 max-w-3xl text-zinc-300 md:max-w-none">
@@ -55,7 +55,7 @@ export function PortfolioSection() {
             </p>
           </div>
         </Reveal>
-        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
+        <div className="mt-8 grid grid-cols-1 gap-6 md:mt-10 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-7">
           {PROJECT_KEYS.map((key, i) => (
             <PortfolioDemoCard
               key={key}

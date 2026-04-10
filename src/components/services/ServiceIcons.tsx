@@ -3,21 +3,27 @@ import { cn } from "@/lib/cn";
 
 const iconClass = "h-6 w-6 text-cyan-300/90";
 
+const stroke = 1.45;
+
 export function IconWeb({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.35}
+      strokeWidth={stroke}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn(iconClass, className)}
       aria-hidden
       {...props}
     >
-      <path d="M4 6h16v12H4z" />
-      <path d="M4 10h16M10 6v12" />
+      <rect x="2.5" y="4" width="19" height="16" rx="2" />
+      <path d="M2.5 8.5h19" />
+      <circle cx="5.5" cy="6.75" r="0.85" fill="currentColor" stroke="none" />
+      <circle cx="8" cy="6.75" r="0.85" fill="currentColor" stroke="none" />
+      <circle cx="10.5" cy="6.75" r="0.85" fill="currentColor" stroke="none" />
+      <path d="M6 12.5h11M6 15.5h8M6 18.5h10" />
     </svg>
   );
 }
@@ -28,7 +34,7 @@ export function IconMobile({ className, ...props }: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.35}
+      strokeWidth={stroke}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn(iconClass, className)}
@@ -47,15 +53,17 @@ export function IconDesign({ className, ...props }: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.35}
+      strokeWidth={stroke}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn(iconClass, className)}
       aria-hidden
       {...props}
     >
-      <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" />
-      <path d="M12 12l8-4.5M12 12v9M12 12L4 7.5" />
+      <rect x="3" y="3.5" width="11.5" height="9.5" rx="1.5" />
+      <rect x="9.5" y="11" width="11.5" height="9.5" rx="1.5" />
+      <path d="M6 7h5.5M6 9.5h4" />
+      <path d="M13 14.5h6M13 17h5" />
     </svg>
   );
 }
@@ -66,7 +74,7 @@ export function IconAI({ className, ...props }: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.35}
+      strokeWidth={stroke}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn(iconClass, className)}
@@ -88,15 +96,16 @@ export function IconBranding({ className, ...props }: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.35}
+      strokeWidth={stroke}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn(iconClass, className)}
       aria-hidden
       {...props}
     >
-      <circle cx="12" cy="12" r="3" />
-      <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M19.8 4.2l-2.1 2.1M6.3 17.7l-2.1 2.1" />
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
     </svg>
   );
 }
@@ -107,16 +116,18 @@ export function IconMotion({ className, ...props }: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.35}
+      strokeWidth={stroke}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn(iconClass, className)}
       aria-hidden
       {...props}
     >
-      <path d="M4 16c2-6 6-10 16-10" />
-      <path d="M16 6l4 0 0 4" />
-      <path d="M8 18h12" />
+      <path
+        d="M12.5 2L4.5 13.5H10l-1.5 8.5L19.5 9h-6.2L12.5 2z"
+        fill="currentColor"
+        stroke="none"
+      />
     </svg>
   );
 }
