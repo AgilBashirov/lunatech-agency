@@ -3,6 +3,13 @@
 :root {
   --background: #05060a;
   --surface: #0b0f1a;
+  /*
+   * Card panels — Aura.build-style dark surfaces (solid gray-900 family, subtle border).
+   * Ref: https://www.aura.build/component/FFD63 — public page does not expose hex; matches common Aura dark cards.
+   */
+  --card-bg: #111827;
+  --card-bg-inner: #0f172a;
+  --card-border: rgba(255, 255, 255, 0.09);
   --foreground: #f4f4f5;
   --muted: #a1a1aa;
   --neon-cyan: #22d3ee;
@@ -76,8 +83,24 @@ html {
   .hero-particles,
   .animate-sweep,
   .animate-scroll-hint,
-  .animate-cta-pulse {
+  .animate-cta-pulse,
+  .pc-orb--a,
+  .pc-orb--b,
+  .pc-grid-floor,
+  .pc-orbit-ring,
+  .pc-device,
+  .pc-screen,
+  .pc-scanline,
+  .pc-bar {
     animation: none !important;
+  }
+
+  .pc-device {
+    transform: perspective(780px) rotateX(11deg) rotateY(-10deg) !important;
+  }
+
+  .pc-screen {
+    background-position: 40% 50% !important;
   }
 }
 
@@ -105,10 +128,10 @@ h3 {
 }
 
 .surface-glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
   border-radius: 1rem;
 }
 
@@ -153,13 +176,34 @@ h3 {
   animation: light-sweep 8s ease-in-out infinite;
 }
 
-/* Hero vignette: darker edges, clearer center */
+/* Hero vignette: softer edges so the scene doesn’t read as flat black */
 .hero-vignette {
   background: radial-gradient(
-    ellipse 85% 75% at 50% 45%,
+    ellipse 88% 78% at 50% 42%,
     transparent 0%,
-    rgba(5, 6, 10, 0.5) 55%,
-    rgba(5, 6, 10, 0.92) 100%
+    rgba(5, 6, 10, 0.32) 52%,
+    rgba(5, 6, 10, 0.68) 100%
+  );
+}
+
+/* Hero: brand purple ambient from bottom-right (matches --neon-purple) */
+.hero-purple-glow {
+  background: radial-gradient(
+    ellipse 95% 80% at 94% 96%,
+    rgba(124, 58, 237, 0.45) 0%,
+    rgba(124, 58, 237, 0.16) 42%,
+    transparent 68%
+  );
+}
+
+/* Stronger purple until WebGL moon is ready; fades out in Hero via motion */
+.hero-moon-placeholder-glow {
+  background: radial-gradient(
+    ellipse 88% 72% at 92% 94%,
+    rgba(124, 58, 237, 0.72) 0%,
+    rgba(124, 58, 237, 0.38) 38%,
+    rgba(124, 58, 237, 0.12) 58%,
+    transparent 72%
   );
 }
 
@@ -243,6 +287,13 @@ h3 {
   box-shadow: var(--glow-purple-strong), var(--glow-cyan-strong);
 }
 
+/* Smaller outer glow — e.g. contact form CTA (avoids huge “aura” behind card) */
+.gradient-border-wrap--subtle {
+  box-shadow:
+    0 0 12px rgba(124, 58, 237, 0.28),
+    0 0 22px rgba(34, 211, 238, 0.12);
+}
+
 .gradient-border-inner {
   border-radius: 9999px;
   background: var(--background);
@@ -253,4 +304,293 @@ h3 {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
+}
+
+/* --- Portfolio covers: dark faux-3D “browser” scenes (CSS animation) --- */
+@keyframes pc-orb-a {
+  0%,
+  100% {
+    transform: translate(-4%, 6%) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(10%, -14%) scale(1.12);
+    opacity: 0.75;
+  }
+}
+
+@keyframes pc-orb-b {
+  0%,
+  100% {
+    transform: translate(8%, -6%) scale(1.05);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(-14%, 12%) scale(0.92);
+    opacity: 0.55;
+  }
+}
+
+@keyframes pc-device-tilt {
+  0%,
+  100% {
+    transform: perspective(780px) rotateX(9deg) rotateY(-14deg) translateZ(0);
+  }
+  50% {
+    transform: perspective(780px) rotateX(15deg) rotateY(12deg) translateZ(0);
+  }
+}
+
+@keyframes pc-screen-flow {
+  0% {
+    background-position: 0% 40%;
+  }
+  100% {
+    background-position: 100% 60%;
+  }
+}
+
+@keyframes pc-scan {
+  0% {
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.12;
+  }
+  100% {
+    transform: translateY(120%);
+    opacity: 0;
+  }
+}
+
+@keyframes pc-grid-pan {
+  0% {
+    transform: perspective(520px) rotateX(62deg) translateY(0);
+  }
+  100% {
+    transform: perspective(520px) rotateX(62deg) translateY(40px);
+  }
+}
+
+@keyframes pc-ring {
+  from {
+    transform: translate(-50%, -50%) rotateX(72deg) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotateX(72deg) rotate(360deg);
+  }
+}
+
+@keyframes pc-bar-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scaleX(1.02);
+  }
+}
+
+.portfolio-cover {
+  --pc-a: 124, 58, 237;
+  --pc-b: 34, 211, 238;
+  --pc-delay: 0s;
+  position: relative;
+  min-height: 240px;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse 130% 90% at 50% 100%, #0a0c14 0%, #040508 50%, #020203 100%);
+}
+
+@media (min-width: 640px) {
+  .portfolio-cover {
+    min-height: 0;
+  }
+}
+
+.pc-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(48px);
+  animation-delay: var(--pc-delay);
+}
+
+.pc-orb--a {
+  width: 95%;
+  height: 70%;
+  left: -20%;
+  bottom: -8%;
+  background: radial-gradient(ellipse, rgba(var(--pc-a), 0.5), transparent 70%);
+  animation: pc-orb-a 13s ease-in-out infinite;
+}
+
+.pc-orb--b {
+  width: 75%;
+  height: 60%;
+  right: -18%;
+  top: -5%;
+  background: radial-gradient(ellipse, rgba(var(--pc-b), 0.4), transparent 72%);
+  animation: pc-orb-b 16s ease-in-out infinite;
+}
+
+.pc-grid-floor {
+  position: absolute;
+  bottom: -5%;
+  left: -60%;
+  width: 220%;
+  height: 55%;
+  opacity: 0.28;
+  transform-origin: 50% 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, transparent, black 25%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 25%);
+  animation: pc-grid-pan 22s linear infinite;
+  animation-delay: var(--pc-delay);
+}
+
+.pc-orbit-ring {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(70%, 320px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(var(--pc-b), 0.18);
+  border-radius: 50%;
+  box-shadow:
+    0 0 60px rgba(var(--pc-a), 0.12),
+    inset 0 0 40px rgba(var(--pc-b), 0.06);
+  animation: pc-ring 32s linear infinite;
+  animation-delay: var(--pc-delay);
+  pointer-events: none;
+}
+
+.pc-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  transform-style: preserve-3d;
+}
+
+.pc-device {
+  width: min(82%, 400px);
+  aspect-ratio: 16 / 10;
+  border-radius: 12px;
+  padding: 10px 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.55));
+  box-shadow:
+    0 0 0 1px rgba(var(--pc-b), 0.12),
+    0 28px 56px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transform-style: preserve-3d;
+  animation: pc-device-tilt 11s ease-in-out infinite;
+  animation-delay: var(--pc-delay);
+}
+
+.pc-chrome {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding-left: 2px;
+}
+
+.pc-dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.pc-screen {
+  position: relative;
+  height: calc(100% - 22px);
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(
+    118deg,
+    rgba(var(--pc-a), 0.35) 0%,
+    #07080e 38%,
+    rgba(var(--pc-b), 0.22) 58%,
+    #050508 100%
+  );
+  background-size: 240% 240%;
+  animation: pc-screen-flow 20s ease-in-out infinite alternate;
+  animation-delay: var(--pc-delay);
+}
+
+.pc-screen-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 30% 20%,
+    rgba(var(--pc-b), 0.25),
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.pc-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.07),
+    transparent
+  );
+  animation: pc-scan 5.5s ease-in-out infinite;
+  animation-delay: var(--pc-delay);
+  pointer-events: none;
+}
+
+.pc-ui-bars {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 14%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pc-bar {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(var(--pc-b), 0.5), rgba(var(--pc-a), 0.35));
+  transform-origin: left center;
+  animation: pc-bar-pulse 3.2s ease-in-out infinite;
+}
+
+.pc-bar--1 {
+  width: 88%;
+  animation-delay: calc(var(--pc-delay) + 0s);
+}
+
+.pc-bar--2 {
+  width: 62%;
+  animation-delay: calc(var(--pc-delay) + 0.4s);
+}
+
+.pc-bar--3 {
+  width: 74%;
+  animation-delay: calc(var(--pc-delay) + 0.8s);
+}
+
+.pc-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 75% 70% at 50% 45%, transparent 30%, rgba(2, 2, 5, 0.75) 100%);
+  pointer-events: none;
 }

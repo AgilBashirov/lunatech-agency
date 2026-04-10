@@ -1,5 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { MoonBackdrop } from "@/components/moon/MoonBackdrop";
+import { MoonReadyProvider } from "@/context/moon-ready";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { About } from "@/components/sections/About";
@@ -17,7 +18,7 @@ export default async function HomePage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <>
+    <MoonReadyProvider>
       <MoonBackdrop />
       <div className="relative z-[2] flex min-h-full min-w-0 max-w-full flex-col overflow-x-hidden">
         <Navbar />
@@ -30,6 +31,6 @@ export default async function HomePage({ params }: Props) {
         </main>
         <Footer />
       </div>
-    </>
+    </MoonReadyProvider>
   );
 }

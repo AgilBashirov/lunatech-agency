@@ -16,7 +16,7 @@ const links = [
 ];
 
 const navLinkClass =
-  "flex min-h-11 shrink-0 snap-start items-center rounded-full px-3 py-2 text-xs font-medium text-zinc-400 transition-colors duration-300 ease-out hover:bg-white/[0.04] hover:text-white md:min-h-0 md:rounded-none md:bg-transparent md:px-0 md:py-0 md:text-sm";
+  "flex min-h-11 shrink-0 snap-start items-center rounded-full px-3 py-2 text-xs font-medium text-zinc-300 transition-colors duration-300 ease-out hover:bg-white/[0.04] hover:text-white md:min-h-0 md:rounded-none md:bg-transparent md:px-0 md:py-0 md:text-sm";
 
 const contactLinkClass =
   "rounded-full border border-cyan-400/35 bg-cyan-400/10 text-sm font-semibold text-cyan-100 shadow-[0_0_20px_rgba(34,211,238,0.18)] transition-all duration-300 ease-out hover:border-cyan-300/50 hover:shadow-[0_0_28px_rgba(124,58,237,0.2)]";
@@ -42,16 +42,13 @@ export function Navbar() {
           >
             <Image
               src="/brand/logo.svg"
-              alt="Lunatech Agency"
-              width={200}
-              height={200}
+              alt="Lunatech agency"
+              width={256}
+              height={52}
               className="h-9 w-auto sm:h-10"
               priority
               unoptimized
             />
-            <span className="font-mono hidden text-[9px] uppercase tracking-[0.35em] text-zinc-600 lg:inline">
-              {t("tagline")}
-            </span>
           </Link>
           <div className="flex items-center gap-2 md:hidden">
             <LanguageSwitcher />

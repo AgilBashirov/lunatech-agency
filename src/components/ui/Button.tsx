@@ -9,12 +9,15 @@ import { motionTransition } from "@/lib/motion";
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
   variant?: "primary" | "ghost";
+  /** Tighter glow on primary (gradient ring + shadows) */
+  subtleGlow?: boolean;
 };
 
 export function Button({
   className,
   children,
   variant = "primary",
+  subtleGlow = false,
   type = "button",
   ...props
 }: Props) {
@@ -38,15 +41,22 @@ export function Button({
 
   if (variant === "primary") {
     return (
-      <motion.span className="gradient-border-wrap inline-flex" {...motionHoverTap}>
+      <motion.span
+        className={cn(
+          "gradient-border-wrap inline-flex",
+          subtleGlow && "gradient-border-wrap--subtle",
+        )}
+        {...motionHoverTap}
+      >
         <button
           type={type}
           className={cn(
             "gradient-border-inner",
             base,
             "relative z-[1] min-h-[44px] px-7 text-white",
-            "shadow-[0_0_24px_rgba(124,58,237,0.4),0_0_40px_rgba(34,211,238,0.12)]",
-            "hover:shadow-[0_0_32px_rgba(124,58,237,0.5),0_0_52px_rgba(34,211,238,0.2)]",
+            subtleGlow
+              ? "shadow-[0_0_10px_rgba(124,58,237,0.28),0_0_18px_rgba(34,211,238,0.1)] hover:shadow-[0_0_14px_rgba(124,58,237,0.38),0_0_24px_rgba(34,211,238,0.14)]"
+              : "shadow-[0_0_24px_rgba(124,58,237,0.4),0_0_40px_rgba(34,211,238,0.12)] hover:shadow-[0_0_32px_rgba(124,58,237,0.5),0_0_52px_rgba(34,211,238,0.2)]",
             className,
           )}
           {...props}

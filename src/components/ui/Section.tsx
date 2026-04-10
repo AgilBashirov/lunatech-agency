@@ -5,10 +5,13 @@ import { Container } from "./Container";
 export function Section({
   id,
   className,
+  containerClassName,
   children,
 }: {
   id?: string;
   className?: string;
+  /** Widen inner `Container` (e.g. portfolio embeds) */
+  containerClassName?: string;
   children: ReactNode;
 }) {
   return (
@@ -19,7 +22,7 @@ export function Section({
         className,
       )}
     >
-      <Container>{children}</Container>
+      <Container className={containerClassName}>{children}</Container>
     </section>
   );
 }

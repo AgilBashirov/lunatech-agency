@@ -31,7 +31,7 @@ export function LanguageSwitcher() {
             "inline-flex min-h-11 min-w-[44px] items-center justify-center rounded-full px-2.5 text-xs font-semibold tracking-wide transition-colors duration-300 ease-out",
             loc === locale
               ? "bg-white/15 text-white shadow-[0_0_12px_rgba(34,211,238,0.25)]"
-              : "text-zinc-400 hover:text-white",
+              : "text-zinc-300 hover:text-white",
           )}
         >
           {labels[loc] ?? loc.toUpperCase()}

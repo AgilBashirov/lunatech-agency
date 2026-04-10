@@ -30,7 +30,7 @@ export async function Services() {
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
             {t("title")}
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-zinc-400 md:mx-0 md:mt-4">
+          <p className="mx-auto mt-3 max-w-2xl text-zinc-300 md:mx-0 md:mt-4">
             {t("subtitle")}
           </p>
         </div>
@@ -48,7 +48,7 @@ export async function Services() {
               <h3 className="text-lg font-semibold text-white">
                 {t(`${key}.title`)}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+              <p className="mt-2 text-sm leading-relaxed text-zinc-300">
                 {t(`${key}.desc`)}
               </p>
             </GlassCard>

@@ -1,115 +1,121 @@
 {
   "Metadata": {
-    "title": "Lunatech Agency — Veb və mobil inkişaf",
-    "description": "Premium rəqəmsal agentlik: futuristik veb, mobil və AI təcrübələri."
+    "title": "Lunatech — Kreativ texnologiya studiyası",
+    "description": "Premium kreativ texnologiya: güclü qarşılıqlı təsirli veb və mobil tətbiqlər, motion dizayn və 3D — şablon yox, canlı təcrübə."
   },
   "nav": {
     "services": "Xidmətlər",
     "about": "Haqqımızda",
     "portfolio": "Portfolio",
     "contact": "Əlaqə",
-    "tagline": "Rəqəmsal cazibə"
+    "tagline": "Kreativ texnologiya"
   },
   "hero": {
-    "badge": "Lunatech Agency",
-    "headline": "Rəqəmsal cazibəni mühəndislik",
-    "sub": "Gələcəyə yönəlmiş rəqəmsal təcrübələr qururuq — cəlb edir, saxlayır və çevirir.",
-    "cta": "Başlayaq",
-    "ctaSecondary": "İşlərimiz",
+    "badge": "Kreativ texnologiya",
+    "headline": "Hərəkət edən və içinə çəkən rəqəmsal sənət",
+    "sub": "İmmersiv veb və mobil təcrübələr dizayn və kod edirik — zəngin motion, real vaxt 3D və qarşılıqlı təsirdə hekayəçilik; statik agentlik saytlarından seçilmək istəyən brendlər üçün.",
+    "cta": "Layihəyə başla",
+    "ctaSecondary": "İşlərə bax",
     "scrollHint": "Aşağı"
   },
   "services": {
-    "title": "İmkanlar",
-    "subtitle": "Məhsul, brend və motion üzrə şəffaf icra.",
+    "title": "Nə qururuq",
+    "subtitle": "Hiss, dərinlik və performansa fokus — adi şablon deyil.",
     "web": {
-      "title": "Veb inkişaf",
-      "desc": "Yüksək performanslı saytlar və tətbiqlər — müasir stack, təmiz arxitektura, detallara qayğı."
+      "title": "İmmersiv veb",
+      "desc": "Güclü qarşılıqlı təsirli saytlar və veb tətbiqlər — animasiya sistemləri, scroll hekayəsi, yerində olduqda WebGL və çatdırıla bilən mühəndislik."
     },
     "mobile": {
       "title": "Mobil tətbiqlər",
-      "desc": "iOS və Android üçün təbii təcrübə — stabil, sürətli, mağaza hazır."
+      "desc": "iOS və Android üçün təbii hiss — axıcı jestlər, motion əsaslı UI və brendin iddiasına uyğun cilalama."
     },
     "design": {
       "title": "UI / UX dizayn",
-      "desc": "Tədqiqat əsaslı interfeyslər — istifadəçini yönləndirir və brend hekayənizi gücləndirir."
+      "desc": "İlk gündən motion və dərinlik üçün düşünülmüş interfeyslər — iyerarxiya, ritm və məqsədli hallar."
     },
     "ai": {
       "title": "AI inteqrasiyası",
-      "desc": "Praktiki AI — köməkçilər, avtomatlaşdırma və ağıllı UX, boş vədlər olmadan."
+      "desc": "Məhsula uyğun ağıllı funksiyalar — köməkçilər, avtomatlaşdırma və real istifadədə də aydın UX."
     },
     "branding": {
-      "title": "Brend sistemləri",
-      "desc": "Vahid vizual dil, dizayn tokenləri və məhsulla birlikdə böyüyən təlimatlar."
+      "title": "Brend və dizayn sistemləri",
+      "desc": "Vizual dil, tokenlər və miqyaslanan komponentlər — yalnız statik təlimatlar yox, motion və 3D qaydaları da."
     },
     "motion": {
-      "title": "Motion dizayn",
-      "desc": "Premium mikro-animasiyalar və buraxılış hekayəsi — səs-küy yox, təsir var."
+      "title": "Motion və real vaxt 3D",
+      "desc": "Sinematik keçidlər, mikro qarşılıqlı təsirlər və hekayəni dəstəkləyən Three.js / R3F səhnələri — diqqəti yayındırmadan."
     }
   },
   "about": {
-    "title": "Niyə Lunatech",
-    "missionTitle": "Missiya",
-    "mission": "Rəqəmsal cazibə mühəndisliyi — düzgün istifadəçiləri cəlb edən və orbitdə saxlayan məhsul və brendlər.",
-    "philosophyTitle": "Fəlsəfə",
-    "philosophy": "Kosmos texnologiyasının sakitliyi və lüks sənətkarlıq. Biz qarışıqlıq əvəzinə aydınlığı, dekor əvəzinə dərinliyi seçirik.",
-    "whyTitle": "Necə işləyirik",
-    "why": "Kiçik təcrübəli komanda, sıx əks-əlaqə və alət kimi qurulmuş interfeyslər — dəqiq, işıqlı, canlı.",
-    "tagline": "Sirli. Ağıllı. Növbəti nəsil.",
-    "moonBlurb": "Ayın parçası — orbit, işıq və güclü dizaynın cazibəsi simvolu."
+    "title": "Vizyon",
+    "missionTitle": "Biz kimik",
+    "mission": "Lunatech kreativ texnologiya studiyasıdır. Vizual olaraq cəlbedici, güclü qarşılıqlı təsirli rəqəmsal məhsullar üzrə ixtisaslaşmışıq — irəli səviyyəli frontend sənətini göstərən iş, minimal slayd dekl kinosu yox.",
+    "philosophyTitle": "Yanaşmamız",
+    "philosophy": "Brendə uyğun olduqda qaranlıq, kinematik, futuristik üslub — həmişə aydınlıq və emosiya xidmətində. Motion və 3D-ni məqsədsiz deyil: diqqəti yönləndirmək, hekayəni gücləndirmək və yaddaqalan interfeys üçün istifadə edirik.",
+    "whyTitle": "Necə çatdırırıq",
+    "why": "Təcrübəli komanda, qısa əks-əlaqə döngələri və iterasiyaya uyğun təşkil olunmuş kod. Öz saytımızı da sizə nə edə biləcəyimizin canlı nümunəsi kimi görürük.",
+    "tagline": "Varsayılan olaraq interaktiv. Sənətkarlıqla premium.",
+    "moonBlurb": "Ay identikamızda orbit və işığı simvolizə edir — güclü dizaynın cazibəsi və mürəkkəb quruluşlara gətirdiyimiz sakit fokus."
   },
   "portfolio": {
-    "title": "Seçilmiş işlər",
-    "subtitle": "İmmersiv keislər — layihəni toxunaraq açın.",
+    "title": "İşlər və ilham",
+    "subtitle": "Geniş plitələr: tünd 3D tipli animasiyalı veb önizləmə və Aura linkləri. Canlı brauzer üçün Saytı aç; keis modaldadır.",
+    "coverAlt": "{title} — animasiyalı tünd 3D interfeys önizləməsi",
+    "previewHint": "Yuxarı hissə CSS animasiya səhnəsidir (skrinşot deyil). Aura üçün real UI — “Saytı aç”.",
+    "openSite": "Saytı aç",
     "viewCase": "Keisi aç",
     "modalClose": "Bağla",
+    "demoNote": "Nümunə istinad (Aura yeni vərəqdə açılır)",
     "project1": {
       "title": "Nebula Commerce",
       "tag": "Veb",
-      "summary": "Sinematik məhsul hekayəsi ilə headless vitrin.",
-      "body": "Keis (placeholder): konversiyaya yönəlmiş UX, edge performansı və mövsümi kampaniyalar üçün modul dizayn sistemi."
+      "summary": "Sinematik məhsul hekayəsi və scroll ilə naqillənən headless vitrin.",
+      "body": "İlham / placeholder: konversiyaya yönəlmiş UX, edge performansı, modul dizayn sistemi və mövsümi kampaniyalar üçün motion əsaslı məhsul səhifələri.",
+      "demoLink": "Aura: Services komponentləri"
     },
     "project2": {
       "title": "Pulse Fintech",
       "tag": "Mobil",
-      "summary": "Yeni nəsil bankçılıq üçün real vaxt portfel paneli.",
-      "body": "Keis (placeholder): biometrik axınlar, əlçatan data viz və etibar üçün motion ilə onboarding."
+      "summary": "Etibar üçün motion ilə onboarding olan real vaxt portfel təcrübəsi.",
+      "body": "İlham / placeholder: biometrik axınlar, əlçatan data vizualizasiyası və təhlükəsizlik və aydınlığı möhkəmləndirən animasiyalı hallar.",
+      "demoLink": "Aura: Mobile komponentləri"
     },
     "project3": {
       "title": "Aura Lifestyle",
       "tag": "UI/UX",
-      "summary": "Vərdiş döngələri və premium saxlama ilə wellness tətbiqi.",
-      "body": "Keis (placeholder): vərdiş dizaynı, şüşə UI və 12 bazar üçün lokalizasiya."
+      "summary": "Vərdiş döngələri, şüşə UI və saxlamaya yönəlik cilalama ilə wellness tətbiqi.",
+      "body": "İlham / placeholder: vərdiş dizaynı, qatlı interfeys dərinliyi və bir neçə bazar üçün lokalizasiya strategiyası.",
+      "demoLink": "Aura: Features komponentləri"
     },
     "project4": {
       "title": "Vertex AI Console",
       "tag": "AI",
-      "summary": "ML boru xətlərini idarə və monitorinq alətləri.",
-      "body": "Keis (placeholder): terminal üslubu, rollara əsaslanan iş sahələri və gecikməyə həssas canlı qrafiklər."
+      "summary": "ML boru xətləri üçün operator alətləri — sıx UI, motion-da da oxunaqlı.",
+      "body": "İlham / placeholder: terminal üslubu, rollara əsaslanan iş sahələri və gecikməyə həssas canlı qrafiklər.",
+      "demoLink": "Aura: Dashboard komponentləri"
     },
     "project5": {
       "title": "Lunar Rebrendinq",
       "tag": "Brend",
-      "summary": "Kosmos texnoloji startap üçün tam identifikator sistemi.",
-      "body": "Keis (placeholder): söz işarəsi, motion loqo və istehsal tərəfdaşları ilə uyğun komponent kitabxanası."
+      "summary": "Kosmos texnoloji startap üçün tam identikator — motion loqo daxil.",
+      "body": "İlham / placeholder: söz işarəsi, animasiyalı identikator və istehsal tərəfdaşları ilə uyğun komponent kitabxanası.",
+      "demoLink": "Aura: Hero bölmələri"
     },
     "project6": {
       "title": "Signal Launch Film",
-      "tag": "Motion",
-      "summary": "Flaqman cihaz üçün məhsul açılışı və sosial kəsiklər.",
-      "body": "Keis (placeholder): shader əsaslı hero, səs-reaktiv teaserlər və ödənişli media üçün modul hekayə."
+      "tag": "Motion / 3D",
+      "summary": "Məhsul açılışı və sosial kəsiklər — shader əsaslı hero və modul hekayə.",
+      "body": "İlham / placeholder: real vaxt vizuallar, səs-reaktiv teaserlər və ödənişli media üçün modul hekayəçilik.",
+      "demoLink": "Aura: CTA komponentləri"
     }
   },
   "contact": {
-    "title": "Layihəni işə sal",
-    "subtitle": "Nə qurduğunuzu yazın. İki iş günü ərzində cavab verəcəyik.",
-    "terminalStatus": "> Əlaqə qurulur…",
-    "emailLabel": "Birbaşa xətt",
-    "emailValue": "hello@lunatech.agency",
-    "ctaMail": "Yazın",
+    "title": "Unudulmaz bir şey quraq",
+    "subtitle": "Məhsulunuz və ya kampaniyanız haqqında yazın. Adətən iki iş günü ərzində cavab veririk.",
     "formName": "Ad",
     "formEmail": "E-poçt",
     "formMessage": "Mesaj",
-    "formSubmit": "Layihəni işə sal",
+    "formSubmit": "Brif göndər",
     "formNote": "Poçt proqramınızı açır — məlumat serverdə saxlanmır."
   },
   "footer": {

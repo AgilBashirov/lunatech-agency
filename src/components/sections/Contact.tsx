@@ -31,12 +31,12 @@ function FloatInput({
       <input
         id={id}
         placeholder=" "
-        className="peer w-full border-0 border-b border-white/[0.12] bg-transparent py-3 text-base text-white outline-none transition-[border-color,box-shadow] duration-300 ease-out focus:border-b-purple-500/70 focus:shadow-[0_8px_32px_rgba(34,211,238,0.12)] md:text-sm"
+        className="peer w-full border-0 border-b border-white/[0.12] bg-transparent py-3 text-base text-white outline-none transition-[border-color] duration-300 ease-out focus:border-b-cyan-400/55 focus:shadow-none md:text-sm"
         {...props}
       />
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-500 transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-400"
+        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-400 transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-300"
       >
         {label}
       </label>
@@ -58,12 +58,12 @@ function FloatTextarea({
         id={id}
         placeholder=" "
         rows={4}
-        className="peer w-full resize-y border-0 border-b border-white/[0.12] bg-transparent py-3 text-base text-white outline-none transition-[border-color,box-shadow] duration-300 ease-out focus:border-b-purple-500/70 focus:shadow-[0_8px_32px_rgba(34,211,238,0.12)] md:text-sm"
+        className="peer w-full resize-y border-0 border-b border-white/[0.12] bg-transparent py-3 text-base text-white outline-none transition-[border-color] duration-300 ease-out focus:border-b-cyan-400/55 focus:shadow-none md:text-sm"
         {...props}
       />
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-500 transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-400"
+        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-400 transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-300"
       >
         {label}
       </label>
@@ -103,8 +103,7 @@ export function Contact() {
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
             {t("title")}
           </h2>
-          <p className="mt-3 text-zinc-400">{t("subtitle")}</p>
-          <p className="font-mono mt-4 text-xs text-cyan-400/70">{t("terminalStatus")}</p>
+          <p className="mt-3 text-zinc-300">{t("subtitle")}</p>
         </motion.div>
 
         <motion.div
@@ -115,7 +114,7 @@ export function Contact() {
           className="relative mt-10"
         >
           <div
-            className="absolute inset-0 -m-10 rounded-[2rem] bg-[radial-gradient(ellipse_at_50%_40%,rgba(124,58,237,0.18),transparent_62%),radial-gradient(ellipse_at_80%_80%,rgba(34,211,238,0.1),transparent_55%)]"
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[min(100%,22rem)] w-[min(100%,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-[2rem] bg-[radial-gradient(ellipse_55%_42%_at_50%_58%,rgba(124,58,237,0.1),transparent_68%),radial-gradient(ellipse_40%_35%_at_50%_72%,rgba(34,211,238,0.06),transparent_65%)]"
             aria-hidden
           />
           <GlassCard interactive={false} className="relative border-white/[0.1]">
@@ -145,28 +144,16 @@ export function Contact() {
                 onChange={(e) => setMessage(e.target.value)}
               />
               <div className="flex flex-col items-center gap-3 pt-2">
-                <div
-                  className={cn(
-                    !reduce && "animate-cta-pulse rounded-full",
-                  )}
-                >
-                  <Button type="submit">{t("formSubmit")}</Button>
+                <div className="rounded-full">
+                  <Button type="submit" subtleGlow>
+                    {t("formSubmit")}
+                  </Button>
                 </div>
-                <p className="text-center text-xs text-zinc-500">{t("formNote")}</p>
+                <p className="text-center text-xs text-zinc-400">{t("formNote")}</p>
               </div>
             </form>
           </GlassCard>
         </motion.div>
-
-        <p className="mt-10 text-center font-mono text-[10px] uppercase tracking-widest text-zinc-600">
-          {t("emailLabel")}:{" "}
-          <a
-            href={`mailto:${MAIL}`}
-            className="text-cyan-400/80 transition-colors hover:text-cyan-300"
-          >
-            {t("emailValue")}
-          </a>
-        </p>
       </div>
     </Section>
   );

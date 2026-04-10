@@ -28,14 +28,14 @@ export async function Footer() {
               <Link href="/" className="inline-block w-fit">
                 <Image
                   src="/brand/logo.svg"
-                  alt="Lunatech Agency"
-                  width={180}
-                  height={180}
+                  alt="Lunatech agency"
+                  width={256}
+                  height={52}
                   className="h-8 w-auto opacity-95 drop-shadow-[0_0_18px_rgba(255,255,255,0.22)]"
                   unoptimized
                 />
               </Link>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-zinc-400">
                 © {new Date().getFullYear()} Lunatech Agency. {t("rights")}
               </p>
             </div>
@@ -100,7 +100,7 @@ export async function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-x-4 gap-y-2 border-t border-white/[0.06] pt-8 text-sm text-zinc-500 sm:gap-6">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 border-t border-white/[0.06] pt-8 text-sm text-zinc-400 sm:gap-6">
             <a
               href="#services"
               className="inline-flex min-h-11 items-center py-1 transition-colors duration-300 ease-out hover:text-white touch-manipulation"

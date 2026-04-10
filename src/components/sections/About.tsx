@@ -27,7 +27,7 @@ export async function About() {
               <h3 className="font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-purple-300/90">
                 {t("missionTitle")}
               </h3>
-              <p className="mt-2 text-base leading-relaxed text-zinc-400">
+              <p className="mt-2 text-base leading-relaxed text-zinc-300">
                 {t("mission")}
               </p>
             </div>
@@ -35,7 +35,7 @@ export async function About() {
               <h3 className="font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-cyan-300/90">
                 {t("philosophyTitle")}
               </h3>
-              <p className="mt-2 text-base leading-relaxed text-zinc-400">
+              <p className="mt-2 text-base leading-relaxed text-zinc-300">
                 {t("philosophy")}
               </p>
             </div>
@@ -43,12 +43,12 @@ export async function About() {
               <h3 className="font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-purple-300/90">
                 {t("whyTitle")}
               </h3>
-              <p className="mt-2 text-base leading-relaxed text-zinc-400">
+              <p className="mt-2 text-base leading-relaxed text-zinc-300">
                 {t("why")}
               </p>
             </div>
           </div>
-          <p className="mt-10 text-sm font-medium uppercase tracking-[0.2em] text-zinc-500">
+          <p className="mt-10 text-sm font-medium uppercase tracking-[0.2em] text-zinc-400">
             {t("tagline")}
           </p>
         </Reveal>
@@ -63,9 +63,9 @@ export async function About() {
                   <Image
                     src="/brand/logo.svg"
                     alt=""
-                    width={200}
-                    height={200}
-                    className="relative h-14 w-auto max-w-[240px] drop-shadow-[0_0_24px_rgba(255,255,255,0.35)]"
+                    width={256}
+                    height={52}
+                    className="relative h-14 w-auto max-w-[min(100%,280px)] drop-shadow-[0_0_24px_rgba(255,255,255,0.35)]"
                     unoptimized
                   />
                 </div>
@@ -73,7 +73,7 @@ export async function About() {
                   <div className="inline-flex rounded-lg border border-white/[0.08] bg-[#05060a]/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-cyan-200/80">
                     LUNAR.FRAGMENT
                   </div>
-                  <p className="text-sm leading-relaxed text-zinc-400">
+                  <p className="text-sm leading-relaxed text-zinc-300">
                     {t("moonBlurb")}
                   </p>
                 </div>
