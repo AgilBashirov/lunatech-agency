@@ -100,34 +100,33 @@ export async function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-x-4 gap-y-2 border-t border-white/[0.06] pt-8 text-sm text-zinc-400 sm:gap-6">
-            <a
-              href="#services"
-              className="inline-flex min-h-11 items-center py-1 transition-colors duration-300 ease-out hover:text-white touch-manipulation"
-            >
-              {nav("services")}
-            </a>
-            <a
-              href="#about"
-              className="inline-flex min-h-11 items-center py-1 transition-colors duration-300 ease-out hover:text-white touch-manipulation"
-            >
-              {nav("about")}
-            </a>
-            <a
-              href="#portfolio"
-              className="inline-flex min-h-11 items-center py-1 transition-colors duration-300 ease-out hover:text-white touch-manipulation"
-            >
-              {nav("portfolio")}
-            </a>
-            <a
-              href="#contact"
-              className="inline-flex min-h-11 items-center py-1 transition-colors duration-300 ease-out hover:text-white touch-manipulation"
-            >
-              {nav("contact")}
-            </a>
-            <span className="cursor-default">{t("privacy")}</span>
-            <span className="cursor-default">{t("terms")}</span>
-          </div>
+          <nav
+            className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-white/[0.06] pt-8 text-sm text-zinc-400 sm:gap-x-6"
+            aria-label="Footer"
+          >
+            {(
+              [
+                ["#services", nav("services")],
+                ["#about", nav("about")],
+                ["#portfolio", nav("portfolio")],
+                ["#contact", nav("contact")],
+              ] as const
+            ).map(([href, label]) => (
+              <a
+                key={href}
+                href={href}
+                className="inline-flex h-11 shrink-0 items-center transition-colors duration-300 ease-out hover:text-white touch-manipulation"
+              >
+                {label}
+              </a>
+            ))}
+            <span className="inline-flex h-11 shrink-0 items-center text-zinc-400">
+              {t("privacy")}
+            </span>
+            <span className="inline-flex h-11 shrink-0 items-center text-zinc-400">
+              {t("terms")}
+            </span>
+          </nav>
         </div>
       </div>
     </footer>
