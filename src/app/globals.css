@@ -46,19 +46,19 @@ html {
   color-scheme: dark;
   overflow-x: hidden;
   overscroll-behavior-x: none;
-  /* Stacked mobile navbar + anchor targets */
-  scroll-padding-top: 7.5rem;
+  /* Stacked mobile navbar + anchor targets + notch */
+  scroll-padding-top: calc(7.5rem + env(safe-area-inset-top, 0px));
 }
 
 @media (min-width: 768px) {
   html {
-    scroll-padding-top: 6rem;
+    scroll-padding-top: calc(6rem + env(safe-area-inset-top, 0px));
   }
 }
 
 @media (min-width: 1024px) {
   html {
-    scroll-padding-top: 5rem;
+    scroll-padding-top: calc(5rem + env(safe-area-inset-top, 0px));
   }
 }
 

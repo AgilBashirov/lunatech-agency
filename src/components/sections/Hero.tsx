@@ -13,7 +13,7 @@ export function Hero() {
   const { moonSceneReady } = useMoonReady();
 
   return (
-    <section className="relative z-10 flex min-h-[100svh] flex-col justify-center overflow-hidden px-4 pt-[calc(5rem+env(safe-area-inset-top,0px))] pb-[calc(7rem+env(safe-area-inset-bottom,0px))] sm:px-6 lg:px-8">
+    <section className="relative z-10 flex min-h-[100svh] flex-col justify-center overflow-hidden px-4 pt-20 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] sm:px-6 lg:px-8">
       <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.45]">
         <HeroVideo />
         <div className="hero-vignette absolute inset-0" aria-hidden />

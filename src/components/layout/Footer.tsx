@@ -21,7 +21,7 @@ export async function Footer() {
         className="h-px w-full bg-gradient-to-r from-transparent via-purple-500/35 to-transparent"
         aria-hidden
       />
-      <div className="border-t border-white/[0.06] bg-[#05060a]/80 py-12 backdrop-blur-md">
+      <div className="border-t border-white/[0.06] bg-[#05060a]/80 pt-12 pb-[calc(3rem+env(safe-area-inset-bottom,0px))] backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex flex-col gap-4">
