@@ -30,6 +30,7 @@ export function Navbar() {
 
   return (
     <header
+      id="site-header"
       className={cn(
         "sticky top-0 z-50 border-b border-white/[0.08] bg-[#05060a]/75 backdrop-blur-md pt-safe",
       )}

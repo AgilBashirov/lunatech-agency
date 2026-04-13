@@ -44,6 +44,6 @@ export default defineConfig({
     command: "npm run dev",
     url: "http://127.0.0.1:3000/az",
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 300_000,
   },
 });

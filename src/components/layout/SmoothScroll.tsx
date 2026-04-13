@@ -1,28 +1,73 @@
 "use client";
 
 import Lenis from "lenis";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { LenisContext } from "@/context/lenis-context";
 
-type Props = { children: ReactNode };
+gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Smooth scroll (Lenis). Keeps native scroll position in sync for listeners (e.g. moon parallax).
- * Avoid combining with CSS scroll-behavior: smooth on html.
+ * Smooth scroll (Lenis). Syncs with GSAP ScrollTrigger via scrollerProxy + ticker.
  */
-export function SmoothScroll({ children }: Props) {
+export function SmoothScroll({ children }: { children: ReactNode }) {
+  const [lenis, setLenis] = useState<Lenis | null>(null);
+
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
-    const lenis = new Lenis({
-      autoRaf: true,
+
+    const lenisInstance = new Lenis({
+      autoRaf: false,
       lerp: 0.09,
       smoothWheel: true,
     });
+
+    queueMicrotask(() => {
+      setLenis(lenisInstance);
+    });
+
+    lenisInstance.on("scroll", ScrollTrigger.update);
+
+    ScrollTrigger.scrollerProxy(document.documentElement, {
+      scrollTop(value) {
+        if (arguments.length && typeof value === "number") {
+          lenisInstance.scrollTo(value, { immediate: true });
+        }
+        return lenisInstance.scroll;
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+          bottom: window.innerHeight,
+          right: window.innerWidth,
+        } as DOMRect;
+      },
+      pinType: document.documentElement.style.transform ? "transform" : "fixed",
+    });
+
+    const onTick = (time: number) => {
+      lenisInstance.raf(time * 1000);
+    };
+    gsap.ticker.add(onTick);
+    gsap.ticker.lagSmoothing(0);
+
     return () => {
-      lenis.destroy();
+      gsap.ticker.remove(onTick);
+      lenisInstance.destroy();
+      queueMicrotask(() => {
+        setLenis(null);
+      });
+      ScrollTrigger.refresh();
     };
   }, []);
 
-  return children;
+  return (
+    <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>
+  );
 }

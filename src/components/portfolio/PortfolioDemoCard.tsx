@@ -10,20 +10,26 @@ type Props = {
   projectKey: ProjectKey;
   index: number;
   onOpenCase: (key: ProjectKey) => void;
+  /** Grid: entrance animation. Carousel: off to avoid scroll/snap conflicts. */
+  reveal?: boolean;
 };
 
-export function PortfolioDemoCard({ projectKey, index, onOpenCase }: Props) {
+export function PortfolioDemoCard({
+  projectKey,
+  index,
+  onOpenCase,
+  reveal = true,
+}: Props) {
   const t = useTranslations("portfolio");
   const coverLabel = t("coverAlt", { title: t(`${projectKey}.title`) });
 
-  return (
-    <Reveal delay={index * 0.06}>
-      <article
-        className={cn(
-          "group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[color:var(--card-border)] bg-[var(--card-bg)]",
-          "shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-shadow duration-300 hover:shadow-[0_0_48px_rgba(124,58,237,0.12)]",
-        )}
-      >
+  const card = (
+    <article
+      className={cn(
+        "group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-[color:var(--card-border)] bg-[var(--card-bg)]",
+        "shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-shadow duration-300 hover:shadow-[0_0_48px_rgba(124,58,237,0.12)]",
+      )}
+    >
         <div
           className="relative min-h-[200px] w-full overflow-hidden bg-[#030308] sm:min-h-0 sm:aspect-[16/10] xl:aspect-[2/1] xl:min-h-[220px]"
           style={{ isolation: "isolate" }}
@@ -59,6 +65,11 @@ export function PortfolioDemoCard({ projectKey, index, onOpenCase }: Props) {
           </button>
         </div>
       </article>
-    </Reveal>
   );
+
+  if (!reveal) {
+    return card;
+  }
+
+  return <Reveal delay={index * 0.06}>{card}</Reveal>;
 }

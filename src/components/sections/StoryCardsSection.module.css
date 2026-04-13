@@ -1,0 +1,86 @@
+.section {
+  position: relative;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+.viewport {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+
+.stack {
+  position: relative;
+  width: min(92vw, 56rem);
+  height: clamp(24rem, 68vh, 40rem);
+}
+
+.card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.85rem, 1.6vw, 1.2rem);
+  border-radius: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    radial-gradient(
+      ellipse at top right,
+      rgba(124, 58, 237, 0.14),
+      rgba(124, 58, 237, 0) 56%
+    ),
+    radial-gradient(
+      ellipse at bottom left,
+      rgba(34, 211, 238, 0.12),
+      rgba(34, 211, 238, 0) 60%
+    ),
+    rgba(11, 15, 26, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 26px 70px rgba(0, 0, 0, 0.42);
+  padding: clamp(1.5rem, 5vw, 3rem);
+  will-change: transform, opacity;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+.title {
+  background: linear-gradient(135deg, #7c3aed, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.4vw, 1rem);
+  color: rgba(228, 228, 231, 0.9);
+  font-size: clamp(0.95rem, 1.8vw, 1.125rem);
+  line-height: 1.65;
+  overflow: hidden;
+}
+
+.steps {
+  color: rgba(244, 244, 245, 0.96);
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: clamp(0.75rem, 1.7vw, 0.95rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 767px) {
+  .stack {
+    height: min(70vh, 31rem);
+  }
+}

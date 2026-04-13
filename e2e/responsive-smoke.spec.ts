@@ -32,4 +32,22 @@ test.describe("Responsive smoke", () => {
     const top = await section.evaluate((el) => el.getBoundingClientRect().top);
     expect(top).toBeGreaterThan(32);
   });
+
+  test("contact section and form fields visible", async ({ page }) => {
+    await page.goto("/az#contact", { waitUntil: "load" });
+    await expect(page.locator("#contact")).toBeVisible();
+    await expect(page.locator("#contact-name")).toBeVisible();
+    await expect(page.locator("#contact-email")).toBeVisible();
+    await expect(page.locator("#contact-message")).toBeVisible();
+  });
+
+  test("portfolio section visible", async ({ page }) => {
+    await page.goto("/az#portfolio", { waitUntil: "load" });
+    await expect(page.locator("#portfolio")).toBeVisible();
+  });
+
+  test("about anchor target exists", async ({ page }) => {
+    await page.goto("/az#about", { waitUntil: "load" });
+    await expect(page.locator("#about")).toBeVisible();
+  });
 });
