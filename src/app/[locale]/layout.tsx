@@ -71,6 +71,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body
         className="min-h-full text-[var(--foreground)] font-sans"
         style={{ backgroundColor: "#05060a" }}
+        suppressHydrationWarning
       >
         <NextIntlClientProvider messages={messages}>
           <SmoothScroll>{children}</SmoothScroll>

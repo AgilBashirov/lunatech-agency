@@ -58,7 +58,7 @@ function FloatTextarea({
         id={id}
         placeholder=" "
         rows={4}
-        className="peer w-full resize-y border-0 border-b border-white/20 bg-transparent py-3 text-base text-white outline-none transition-[border-color] duration-300 ease-out focus:border-b-cyan-400/55 focus:shadow-none md:text-sm"
+        className="peer w-full resize-none border-0 border-b border-white/20 bg-transparent py-3 text-base text-white outline-none transition-[border-color] duration-300 ease-out focus:border-b-cyan-400/55 focus:shadow-none md:text-sm"
         {...props}
       />
       <label
@@ -92,13 +92,13 @@ export function Contact() {
 
   return (
     <Section id="contact" className="z-10 pb-20 sm:pb-28">
-      <div className="mx-auto w-full max-w-lg md:mx-0 md:mr-auto">
+      <div className="mx-auto w-full max-w-lg">
         <motion.div
           initial={reduce ? false : { opacity: 1, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={motionTransition.smooth}
-          className="text-center md:text-left"
+          className="text-center"
         >
           <h2 className="text-gradient-heading text-3xl font-bold tracking-tight md:text-4xl drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)]">
             {t("title")}
@@ -113,15 +113,15 @@ export function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ ...motionTransition.smooth, delay: 0.06 }}
-          className="relative mt-10 rounded-3xl bg-[#05060a]/85 p-4 ring-1 ring-white/10 backdrop-blur-md sm:p-5 md:p-6"
+          className="relative mt-10"
         >
           <div
-            className="pointer-events-none absolute inset-0 z-0 rounded-[1.35rem] bg-[radial-gradient(ellipse_55%_42%_at_50%_58%,rgba(124,58,237,0.1),transparent_68%),radial-gradient(ellipse_40%_35%_at_50%_72%,rgba(34,211,238,0.06),transparent_65%)]"
+            className="pointer-events-none absolute inset-0 -inset-x-[min(14vw,5rem)] -inset-y-6 -z-10 rounded-[1.75rem] bg-[radial-gradient(ellipse_88%_92%_at_50%_48%,rgba(5,6,10,0.15),rgba(5,6,10,0.82)_52%,rgba(5,6,10,0.94)_100%)]"
             aria-hidden
           />
           <GlassCard
             interactive={false}
-            className="relative z-[1] border-white/[0.12] shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+            className="relative z-[1] overflow-hidden border-white/[0.12] bg-[#0b0f1a]/96 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-md"
           >
             <form onSubmit={submitMailto} className="flex flex-col gap-8">
               <FloatInput
