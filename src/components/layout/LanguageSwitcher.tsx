@@ -28,7 +28,7 @@ export function LanguageSwitcher() {
           type="button"
           onClick={() => router.replace(pathname, { locale: loc })}
           className={cn(
-            "inline-flex min-h-11 min-w-[44px] items-center justify-center rounded-full px-2.5 text-xs font-semibold tracking-wide transition-colors duration-300 ease-out",
+            "inline-flex min-h-11 min-w-10 items-center justify-center rounded-full px-2 text-xs font-semibold tracking-wide transition-colors duration-300 ease-out sm:min-w-11 sm:px-2.5",
             loc === locale
               ? "bg-white/15 text-white shadow-[0_0_12px_rgba(34,211,238,0.25)]"
               : "text-zinc-300 hover:text-white",

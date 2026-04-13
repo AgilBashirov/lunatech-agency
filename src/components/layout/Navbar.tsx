@@ -22,7 +22,7 @@ const contactLinkClass =
   "rounded-full border border-cyan-400/35 bg-cyan-400/10 text-sm font-semibold text-cyan-100 shadow-[0_0_20px_rgba(34,211,238,0.18)] transition-all duration-300 ease-out hover:border-cyan-300/50 hover:shadow-[0_0_28px_rgba(124,58,237,0.2)]";
 
 const mobileContactClass =
-  "inline-flex min-h-11 min-w-[44px] items-center justify-center rounded-full border border-cyan-400/35 bg-cyan-400/10 px-3 text-xs font-semibold text-cyan-100 shadow-[0_0_16px_rgba(34,211,238,0.15)] transition-all duration-300 ease-out hover:border-cyan-300/45 hover:shadow-[0_0_22px_rgba(34,211,238,0.22)]";
+  "inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-cyan-400/35 bg-cyan-400/10 px-2.5 text-xs font-semibold text-cyan-100 shadow-[0_0_16px_rgba(34,211,238,0.15)] transition-all duration-300 ease-out hover:border-cyan-300/45 hover:shadow-[0_0_22px_rgba(34,211,238,0.22)] sm:px-3";
 
 export function Navbar() {
   const t = useTranslations("nav");
@@ -35,23 +35,23 @@ export function Navbar() {
         "sticky top-0 z-50 border-b border-white/[0.08] bg-[#05060a]/75 backdrop-blur-md pt-safe",
       )}
     >
-      <nav className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 sm:px-6 lg:px-8 md:flex-row md:items-center md:justify-between md:gap-4">
-        <div className="flex items-center justify-between gap-3 md:contents">
+      <nav className="mx-auto flex max-w-6xl flex-col gap-2.5 px-3 py-3 sm:gap-3 sm:px-6 lg:px-8 md:flex-row md:items-center md:justify-between md:gap-4">
+        <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3 md:contents">
           <Link
             href="/"
-            className="flex shrink-0 items-center gap-3 rounded-xl py-1 opacity-95 transition-opacity duration-300 ease-out hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]"
+            className="flex min-w-0 max-w-[min(152px,48vw)] shrink items-center gap-2 rounded-xl py-1 opacity-95 transition-opacity duration-300 ease-out hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee] sm:max-w-none sm:shrink-0 sm:gap-3"
           >
             <Image
               src="/brand/logo.svg"
               alt="Lunatech agency"
               width={256}
               height={52}
-              className="h-9 w-auto sm:h-10"
+              className="h-8 w-full max-w-full object-contain object-left sm:h-10 sm:w-auto"
               priority
               unoptimized
             />
           </Link>
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 md:hidden">
             <LanguageSwitcher />
             {reduce ? (
               <a href="#contact" className={mobileContactClass}>
@@ -72,14 +72,24 @@ export function Navbar() {
         <div className="flex min-h-11 min-w-0 w-full snap-x snap-mandatory scroll-ps-1 scroll-pe-1 gap-1 overflow-x-auto overscroll-x-contain touch-pan-x pb-1 [-webkit-overflow-scrolling:touch] md:min-h-0 md:w-auto md:snap-none md:items-center md:gap-8 md:overflow-visible md:overscroll-x-auto md:touch-auto md:pb-0">
           {links.map(({ href, key }) =>
             reduce ? (
-              <a key={key} href={href} className={navLinkClass}>
+              <a
+                key={key}
+                href={href}
+                className={cn(
+                  navLinkClass,
+                  key === "contact" && "max-md:hidden",
+                )}
+              >
                 {t(key)}
               </a>
             ) : (
               <motion.a
                 key={key}
                 href={href}
-                className={navLinkClass}
+                className={cn(
+                  navLinkClass,
+                  key === "contact" && "max-md:hidden",
+                )}
                 whileTap={{ scale: 0.98 }}
                 transition={motionTransition.fast}
               >

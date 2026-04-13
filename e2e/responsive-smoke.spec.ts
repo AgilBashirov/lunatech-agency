@@ -9,6 +9,20 @@ import { test, expect } from "@playwright/test";
  * - iPad portret və landscape: bir sətir navbar (≥768px), grid düzümü, split view (dar en) davranışı.
  */
 test.describe("Responsive smoke", () => {
+  test("home page does not drift-scroll after load (no hash)", async ({ page }) => {
+    await page.goto("/az", { waitUntil: "networkidle" });
+    const samples: number[] = [];
+    for (let i = 0; i < 6; i++) {
+      samples.push(
+        await page.evaluate(() => window.scrollY || document.documentElement.scrollTop),
+      );
+      await page.waitForTimeout(400);
+    }
+    const min = Math.min(...samples);
+    const max = Math.max(...samples);
+    expect(max - min).toBeLessThanOrEqual(48);
+  });
+
   test("no significant horizontal overflow", async ({ page }) => {
     await page.goto("/az", { waitUntil: "load" });
     const delta = await page.evaluate(() => {
@@ -39,6 +53,32 @@ test.describe("Responsive smoke", () => {
     await expect(page.locator("#contact-name")).toBeVisible();
     await expect(page.locator("#contact-email")).toBeVisible();
     await expect(page.locator("#contact-message")).toBeVisible();
+  });
+
+  test("contact CTA scrolls #contact top just below header", async ({ page }) => {
+    await page.goto("/az", { waitUntil: "networkidle" });
+    const headerH = await page
+      .locator("#site-header")
+      .evaluate((el) => el.getBoundingClientRect().height);
+
+    const vw = page.viewportSize()?.width ?? 400;
+    const contactCtas = page.locator('#site-header a[href="#contact"]');
+    if (vw >= 768) {
+      await contactCtas.last().click();
+    } else {
+      await contactCtas.first().click();
+    }
+
+    await page.waitForFunction(
+      (expected) => {
+        const el = document.querySelector("#contact");
+        if (!el) return false;
+        const top = el.getBoundingClientRect().top;
+        return top >= expected - 20 && top <= expected + 100;
+      },
+      headerH,
+      { timeout: 12_000 },
+    );
   });
 
   test("portfolio section visible", async ({ page }) => {

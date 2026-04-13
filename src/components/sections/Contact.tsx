@@ -91,7 +91,10 @@ export function Contact() {
   );
 
   return (
-    <Section id="contact" className="z-10 pb-20 sm:pb-28">
+    <Section
+      id="contact"
+      className="z-10 !scroll-mt-0 pb-20 sm:pb-28"
+    >
       <div className="mx-auto w-full max-w-lg">
         <motion.div
           initial={reduce ? false : { opacity: 1, y: 20 }}
