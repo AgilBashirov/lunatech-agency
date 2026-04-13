@@ -52,7 +52,7 @@ export function PortfolioSection() {
     <>
       <Section
         id="portfolio"
-        className="z-10"
+        className="z-10 overflow-x-clip"
         containerClassName="max-w-[min(100%,90rem)]"
       >
         <Reveal>

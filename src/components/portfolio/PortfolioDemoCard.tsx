@@ -47,7 +47,7 @@ export function PortfolioDemoCard({
           />
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-white/[0.08] p-4 sm:p-5 lg:p-5">
+        <div className="flex flex-col gap-3 border-t border-white/[0.08] p-4 sm:gap-4 sm:p-5 md:p-5 lg:p-5">
           <div className="min-w-0">
             <h3 className="text-base font-semibold tracking-tight text-white sm:text-lg">
               {t(`${projectKey}.title`)}
