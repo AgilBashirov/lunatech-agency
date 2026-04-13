@@ -5,15 +5,19 @@ export function GlassCard({
   className,
   children,
   interactive = true,
+  disableBackdropBlur = false,
 }: {
   className?: string;
   children: ReactNode;
   interactive?: boolean;
+  /** When true, skip backdrop blur (avoids stacked blur with opaque fills). */
+  disableBackdropBlur?: boolean;
 }) {
   return (
     <div
       className={cn(
-        "glass-card group relative overflow-hidden rounded-2xl border border-[color:var(--card-border)] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-sm md:backdrop-blur-md md:p-8",
+        "glass-card group relative overflow-hidden rounded-2xl border border-[color:var(--card-border)] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] md:p-8",
+        !disableBackdropBlur && "backdrop-blur-sm md:backdrop-blur-md",
         interactive ? "bg-[var(--card-bg)]" : "bg-[var(--card-bg-inner)]",
         interactive &&
           "transition-all duration-300 hover:-translate-y-1 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(124,58,237,0.18),0_0_60px_rgba(34,211,238,0.06)]",

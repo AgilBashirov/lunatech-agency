@@ -115,13 +115,10 @@ export function Contact() {
           transition={{ ...motionTransition.smooth, delay: 0.06 }}
           className="relative mt-10"
         >
-          <div
-            className="pointer-events-none absolute inset-0 -inset-x-[min(14vw,5rem)] -inset-y-6 -z-10 rounded-[1.75rem] bg-[radial-gradient(ellipse_88%_92%_at_50%_48%,rgba(5,6,10,0.15),rgba(5,6,10,0.82)_52%,rgba(5,6,10,0.94)_100%)]"
-            aria-hidden
-          />
           <GlassCard
             interactive={false}
-            className="relative z-[1] overflow-hidden border-white/[0.12] bg-[#0b0f1a]/96 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-md"
+            disableBackdropBlur
+            className="relative z-[1] overflow-hidden border-white/[0.12] bg-[#0b0f1a]/96 shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
           >
             <form onSubmit={submitMailto} className="flex flex-col gap-8">
               <FloatInput

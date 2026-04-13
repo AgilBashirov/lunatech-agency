@@ -8,8 +8,20 @@ import styles from "./StoryCardsSection.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const INACTIVE_SCALE = 0.93;
-const INACTIVE_Y_PERCENT = 8;
+const INACTIVE_SCALE = 0.92;
+/** Inactive / incoming cards sit slightly below center (“next” scroll direction). */
+const ENTRANCE_Y_PERCENT = 14;
+/** Outgoing cards move upward off the focal point. */
+const EXIT_Y_PERCENT = 14;
+/**
+ * Timeline units spent on each full card before the next transition starts,
+ * and after the last transition so the final card can settle centered.
+ */
+const HOLD_PLATEAU = 0.72;
+const TRANSITION_DUR = 1;
+/** Previously `2.4` viewport heights mapped timeline duration `2`; scale when timeline grows. */
+const BASE_SCROLL_VH_PER_TIMELINE_UNIT = 2.4 / 2;
+
 /** Text fades faster than the card shell to reduce overlap while scrubbing. */
 const INNER_FADE_OUT_DUR = 0.28;
 const INNER_FADE_IN_START = 0.18;
@@ -39,9 +51,14 @@ export function StoryCardsSection() {
     }
 
     const ctx = gsap.context(() => {
+      const tFirst = HOLD_PLATEAU;
+      const tSecond = HOLD_PLATEAU + TRANSITION_DUR + HOLD_PLATEAU;
+      const timelineUnits = TRANSITION_DUR * 2 + HOLD_PLATEAU * 3;
+      const scrollVhMult = BASE_SCROLL_VH_PER_TIMELINE_UNIT * timelineUnits;
+
       gsap.set(cards, {
         autoAlpha: 0,
-        yPercent: INACTIVE_Y_PERCENT,
+        yPercent: ENTRANCE_Y_PERCENT,
         scale: INACTIVE_SCALE,
         force3D: true,
       });
@@ -50,11 +67,11 @@ export function StoryCardsSection() {
       gsap.set(inners[0], { autoAlpha: 1 });
 
       const timeline = gsap.timeline({
-        defaults: { ease: "none" },
+        defaults: { ease: "none", duration: TRANSITION_DUR },
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: () => `+=${window.innerHeight * 2.4}`,
+          end: () => `+=${window.innerHeight * scrollVhMult}`,
           pin: true,
           scrub: true,
           anticipatePin: 1,
@@ -65,29 +82,44 @@ export function StoryCardsSection() {
       timeline
         .to(
           cards[0],
-          { autoAlpha: 0, yPercent: -INACTIVE_Y_PERCENT, scale: INACTIVE_SCALE },
-          0,
+          { autoAlpha: 0, yPercent: -EXIT_Y_PERCENT, scale: INACTIVE_SCALE },
+          tFirst,
         )
-        .to(cards[1], { autoAlpha: 1, yPercent: 0, scale: 1 }, 0)
-        .to(inners[0], { autoAlpha: 0, duration: INNER_FADE_OUT_DUR }, 0)
+        .to(
+          cards[1],
+          { autoAlpha: 1, yPercent: 0, scale: 1 },
+          tFirst,
+        )
+        .to(inners[0], { autoAlpha: 0, duration: INNER_FADE_OUT_DUR }, tFirst)
         .fromTo(
           inners[1],
           { autoAlpha: 0 },
           { autoAlpha: 1, duration: INNER_FADE_IN_DUR },
-          INNER_FADE_IN_START,
+          tFirst + INNER_FADE_IN_START,
         )
         .to(
           cards[1],
-          { autoAlpha: 0, yPercent: -INACTIVE_Y_PERCENT, scale: INACTIVE_SCALE },
-          1,
+          { autoAlpha: 0, yPercent: -EXIT_Y_PERCENT, scale: INACTIVE_SCALE },
+          tSecond,
         )
-        .to(cards[2], { autoAlpha: 1, yPercent: 0, scale: 1 }, 1)
-        .to(inners[1], { autoAlpha: 0, duration: INNER_FADE_OUT_DUR }, 1)
+        .to(cards[2], { autoAlpha: 1, yPercent: 0, scale: 1 }, tSecond)
+        .to(inners[1], { autoAlpha: 0, duration: INNER_FADE_OUT_DUR }, tSecond)
         .fromTo(
           inners[2],
           { autoAlpha: 0 },
           { autoAlpha: 1, duration: INNER_FADE_IN_DUR },
-          1 + INNER_FADE_IN_START,
+          tSecond + INNER_FADE_IN_START,
+        )
+        .to(
+          cards[2],
+          {
+            autoAlpha: 1,
+            yPercent: 0,
+            scale: 1,
+            duration: HOLD_PLATEAU,
+            ease: "none",
+          },
+          tSecond + TRANSITION_DUR,
         );
     }, section);
 
