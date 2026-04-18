@@ -113,6 +113,24 @@ body {
   overscroll-behavior-x: none;
 }
 
+@layer base {
+  a[href]:not([aria-disabled="true"]),
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  input[type="button"]:not(:disabled),
+  input[type="submit"]:not(:disabled),
+  input[type="reset"]:not(:disabled),
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
 h1,
 h2,
 h3 {

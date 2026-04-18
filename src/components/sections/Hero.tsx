@@ -2,18 +2,36 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useLenis } from "@/context/lenis-context";
 import { useMoonReady } from "@/context/moon-ready";
 import { motionTransition } from "@/lib/motion";
+import { scrollToElementWithLenis } from "@/lib/smoothScroll";
 
 export function Hero() {
   const t = useTranslations("hero");
   const reduce = useReducedMotion();
+  const lenis = useLenis();
   const { moonSceneReady } = useMoonReady();
 
+  const scrollToNextSection = useCallback(() => {
+    const el = document.getElementById("services");
+    if (!el) {
+      return;
+    }
+    scrollToElementWithLenis(el, lenis, Boolean(reduce));
+    window.history.replaceState(null, "", "#services");
+  }, [lenis, reduce]);
+
+  const scrollHintClass =
+    "absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex min-h-[44px] min-w-[44px] -translate-x-1/2 flex-col items-center justify-center gap-2 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-400 transition-colors duration-300 ease-out hover:text-cyan-300/90";
+
   return (
-    <section className="relative z-10 flex min-h-[100svh] flex-col justify-center overflow-hidden px-4 pt-20 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] sm:px-6 lg:px-8">
+    <section
+      id="hero"
+      className="relative z-10 flex min-h-[100svh] flex-col justify-center overflow-hidden px-4 pt-20 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] sm:px-6 lg:px-8"
+    >
       <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.45]">
         <HeroVideo />
         <div className="hero-vignette absolute inset-0" aria-hidden />
@@ -67,24 +85,28 @@ export function Hero() {
       </div>
 
       {reduce ? (
-        <a
-          href="#services"
-          className="absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex min-h-[44px] min-w-[44px] -translate-x-1/2 flex-col items-center justify-center gap-2 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-400 transition-colors duration-300 ease-out hover:text-cyan-300/90"
+        <button
+          type="button"
+          className={scrollHintClass}
+          aria-label={t("scrollHint")}
+          onClick={scrollToNextSection}
         >
           <span>{t("scrollHint")}</span>
           <span className="h-8 w-px bg-gradient-to-b from-cyan-400/80 to-transparent animate-scroll-hint" />
-        </a>
+        </button>
       ) : (
-        <motion.a
-          href="#services"
-          className="absolute bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-1/2 z-[2] flex min-h-[44px] min-w-[44px] -translate-x-1/2 flex-col items-center justify-center gap-2 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-400 transition-colors duration-300 ease-out hover:text-cyan-300/90"
+        <motion.button
+          type="button"
+          className={scrollHintClass}
+          aria-label={t("scrollHint")}
+          onClick={scrollToNextSection}
           whileHover={{ y: -2 }}
           whileTap={{ scale: 0.97 }}
           transition={motionTransition.smooth}
         >
           <span>{t("scrollHint")}</span>
           <span className="h-8 w-px bg-gradient-to-b from-cyan-400/80 to-transparent animate-scroll-hint" />
-        </motion.a>
+        </motion.button>
       )}
     </section>
   );

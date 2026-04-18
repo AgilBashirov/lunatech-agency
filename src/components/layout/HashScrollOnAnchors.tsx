@@ -3,9 +3,7 @@
 import type Lenis from "lenis";
 import { useEffect, useRef } from "react";
 import { useLenis } from "@/context/lenis-context";
-
-/** Lenis + `scroll-padding` sonrası təxmini hizalanma düzəlişi (header alt sərhədi). */
-const LENIS_ANCHOR_NUDGE_PX = -14;
+import { LENIS_ANCHOR_OFFSET } from "@/lib/smoothScroll";
 
 function scrollToHashWithLenis(lenis: Lenis, id: string) {
   const el = document.getElementById(id);
@@ -13,7 +11,7 @@ function scrollToHashWithLenis(lenis: Lenis, id: string) {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       lenis.scrollTo(el, {
-        offset: LENIS_ANCHOR_NUDGE_PX,
+        offset: LENIS_ANCHOR_OFFSET,
         programmatic: true,
         force: true,
       });
@@ -60,7 +58,7 @@ export function HashScrollOnAnchors() {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           lenis.scrollTo(targetEl, {
-            offset: LENIS_ANCHOR_NUDGE_PX,
+            offset: LENIS_ANCHOR_OFFSET,
             programmatic: true,
             force: true,
           });

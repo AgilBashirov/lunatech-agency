@@ -16,7 +16,7 @@ export async function Footer() {
   const nav = await getTranslations("nav");
 
   return (
-    <footer className="relative z-10">
+    <footer id="site-footer" className="relative z-10">
       <div
         className="h-px w-full bg-gradient-to-r from-transparent via-purple-500/35 to-transparent"
         aria-hidden

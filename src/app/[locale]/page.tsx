@@ -3,10 +3,11 @@ import { MoonBackdrop } from "@/components/moon/MoonBackdrop";
 import { MoonReadyProvider } from "@/context/moon-ready";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
+import { ScrollToTopButton } from "@/components/layout/ScrollToTopButton";
 import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
 import { Portfolio } from "@/components/sections/Portfolio";
-import { StoryCardsSection } from "@/components/sections/StoryCardsSection";
+import { AgencyNarrativeSection } from "@/components/sections/AgencyNarrativeSection";
 import { Services } from "@/components/sections/Services";
 import { ValueStrip } from "@/components/sections/ValueStrip";
 
@@ -28,10 +29,11 @@ export default async function HomePage({ params }: Props) {
           <ValueStrip />
           <Services />
           <Portfolio />
-          <StoryCardsSection />
+          <AgencyNarrativeSection />
           <Contact />
         </main>
         <Footer />
+        <ScrollToTopButton />
       </div>
     </MoonReadyProvider>
   );

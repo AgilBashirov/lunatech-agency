@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
  *
  * Əl ilə Safari QA — real cihazda bir dəfə təsdiqləyin:
  * - iPhone: navbar (logo, dil, contact, üfüqi linklər), hero başlıq, #services / #portfolio / #contact,
- *   portfolio modal, contact + klaviatura.
+ *   portfolio (external demo links), contact + klaviatura.
  * - iPad portret və landscape: bir sətir navbar (≥768px), grid düzümü, split view (dar en) davranışı.
  */
 test.describe("Responsive smoke", () => {

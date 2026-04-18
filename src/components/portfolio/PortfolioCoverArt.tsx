@@ -1,9 +1,9 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import type { ProjectKey } from "./CaseStudyModal";
+import type { PortfolioProjectKey } from "@/lib/portfolioDemos";
 
-const ACCENT: Record<ProjectKey, { a: string; b: string }> = {
+const ACCENT: Record<PortfolioProjectKey, { a: string; b: string }> = {
   project1: { a: "124, 58, 237", b: "34, 211, 238" },
   project2: { a: "59, 130, 246", b: "34, 211, 238" },
   project3: { a: "167, 139, 250", b: "45, 212, 191" },
@@ -13,7 +13,7 @@ const ACCENT: Record<ProjectKey, { a: string; b: string }> = {
 };
 
 type Props = {
-  projectKey: ProjectKey;
+  projectKey: PortfolioProjectKey;
   index: number;
   label: string;
 };
