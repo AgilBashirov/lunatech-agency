@@ -232,7 +232,7 @@ function MobileAccordionBody({
   processT: (key: string) => string;
 }) {
   return (
-    <div className={styles.accPanelInner}>
+    <div className={styles.accBodyReveal}>
       {index === 0 ? (
         <div className={styles.accBody}>
           <p>{aboutT("p1")}</p>
@@ -311,7 +311,10 @@ export function AgencyNarrativeSection() {
             const headId = `${uid}-acc-h-${i}`;
             const panelId = `${uid}-acc-p-${i}`;
             return (
-              <div key={i} className={styles.accItem}>
+              <div
+                key={i}
+                className={cn(styles.accItem, open && styles.accItemOpen)}
+              >
                 <button
                   type="button"
                   id={headId}
@@ -321,27 +324,44 @@ export function AgencyNarrativeSection() {
                   onClick={() => setMobileOpen(open ? -1 : i)}
                 >
                   <span className={styles.accIcon} aria-hidden>
-                    {open ? "−" : "+"}
+                    <span className={styles.accIconGlyph}>
+                      <span className={styles.accIconBarH} />
+                      <span
+                        className={cn(
+                          styles.accIconBarV,
+                          open && styles.accIconBarVCollapsed,
+                        )}
+                      />
+                    </span>
                   </span>
                   <span className={styles.accHead}>
-                    <span className={styles.accTitle}>{navTitles[i]}</span>
+                    <span
+                      className={cn(styles.accTitle, open && styles.accTitleOpen)}
+                    >
+                      {navTitles[i]}
+                    </span>
                   </span>
                 </button>
-                {open ? (
-                  <div
-                    id={panelId}
-                    role="region"
-                    aria-labelledby={headId}
-                    className={styles.accPanel}
-                  >
-                    <MobileAccordionBody
-                      index={i}
-                      aboutT={aboutT}
-                      approachT={approachT}
-                      processT={processT}
-                    />
+                <div
+                  className={cn(styles.accExpand, open && styles.accExpandOpen)}
+                >
+                  <div className={styles.accExpandInner}>
+                    <div
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={headId}
+                      className={styles.accPanel}
+                      {...(!open ? { inert: true } : {})}
+                    >
+                      <MobileAccordionBody
+                        index={i}
+                        aboutT={aboutT}
+                        approachT={approachT}
+                        processT={processT}
+                      />
+                    </div>
                   </div>
-                ) : null}
+                </div>
               </div>
             );
           })}
