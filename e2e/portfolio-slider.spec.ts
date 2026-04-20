@@ -1,0 +1,141 @@
+import { test, expect, type Page } from "@playwright/test";
+
+const VIEWPORT = '#portfolio [data-testid="selected-work-viewport"]';
+
+type CarouselState = {
+  selectedSnap: number;
+  loop: boolean;
+  slideCount: number;
+};
+
+async function getSelectedWorkCarousel(page: Page): Promise<CarouselState | null> {
+  return page.evaluate((sel) => {
+    const el = document.querySelector(sel) as HTMLElement | null;
+    if (!el) return null;
+    const snap = Number(el.getAttribute("data-selected-snap"));
+    const loop = el.getAttribute("data-loop") === "true";
+    const slideCount = Number(el.getAttribute("data-slide-count"));
+    return {
+      selectedSnap: Number.isFinite(snap) ? snap : 0,
+      loop,
+      slideCount: Number.isFinite(slideCount) ? slideCount : 0,
+    };
+  }, VIEWPORT);
+}
+
+test.describe("Portfolio slider columns", () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test("desktop slide widths stay within 248–340px and are not hero-wide", async ({ page }) => {
+    await page.goto("/en", { waitUntil: "load" });
+    const portfolio = page.locator("#portfolio");
+    await expect(portfolio).toBeVisible();
+    await portfolio.scrollIntoViewIfNeeded();
+
+    const region = page.locator(VIEWPORT);
+    await expect(region).toBeVisible();
+
+    await expect
+      .poll(
+        async () => {
+          const n = await region.evaluate((el) => {
+            const slides = [...el.querySelectorAll("[data-embla-slide]")] as HTMLElement[];
+            return slides.filter((s) => {
+              const w = Math.round(s.getBoundingClientRect().width);
+              return w >= 244 && w <= 350;
+            }).length;
+          });
+          return n;
+        },
+        { timeout: 25_000 },
+      )
+      .toBeGreaterThanOrEqual(3);
+
+    const dims = await region.evaluate((el) => {
+      const vp = el.clientWidth;
+      const slides = [...el.querySelectorAll("[data-embla-slide]")] as HTMLElement[];
+      const widths = slides
+        .map((s) => Math.round(s.getBoundingClientRect().width))
+        .filter((w) => w > 40);
+      return { vp, widths };
+    });
+
+    expect(dims.widths.length).toBeGreaterThanOrEqual(3);
+    for (const w of dims.widths.slice(0, 5)) {
+      expect(w).toBeGreaterThanOrEqual(248);
+      expect(w).toBeLessThanOrEqual(340);
+      expect(w).toBeLessThan(dims.vp * 0.35);
+    }
+    expect(Math.abs(dims.widths[0]! - dims.widths[1]!)).toBeLessThanOrEqual(12);
+    expect(Math.abs(dims.widths[1]! - dims.widths[2]!)).toBeLessThanOrEqual(12);
+  });
+
+  test("navigation arrows are hidden on narrow viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/en", { waitUntil: "load" });
+    const portfolio = page.locator("#portfolio");
+    await portfolio.scrollIntoViewIfNeeded();
+    const prev = portfolio.locator('[id^="selected-work-prev-"]').first();
+    await expect(prev).toBeAttached();
+    await expect(prev).toBeHidden();
+  });
+});
+
+/**
+ * Carousel navigation (loop + variable-width slides): advancing must update the active snap.
+ * Uses a tablet/desktop band so side arrows are visible (see SelectedWorkSlider.module.css ≥768px).
+ */
+test.describe("Portfolio slider loop / navigation stress", () => {
+  test.use({ viewport: { width: 1200, height: 900 } });
+  test.describe.configure({ timeout: 120_000 });
+
+  async function gotoPortfolio(page: Page) {
+    await page.goto("/en", { waitUntil: "load" });
+    const portfolio = page.locator("#portfolio");
+    await expect(portfolio).toBeVisible({ timeout: 30_000 });
+  }
+
+  test("Embla carousel is ready with loop and multiple slides", async ({ page }) => {
+    await gotoPortfolio(page);
+    /** `VIEWPORT` already starts with `#portfolio`; do not chain `portfolio.locator` or the selector repeats. */
+    await expect(page.locator(VIEWPORT)).toBeVisible();
+
+    await expect
+      .poll(async () => getSelectedWorkCarousel(page), { timeout: 25_000 })
+      .toMatchObject({
+        selectedSnap: expect.any(Number),
+        loop: true,
+        slideCount: 6,
+      });
+  });
+
+  test("loop stress: repeated next advances through multiple snaps", async ({ page }) => {
+    await gotoPortfolio(page);
+    const next = page.locator("#portfolio").locator('[id^="selected-work-next-"]').first();
+    const prev = page.locator("#portfolio").locator('[id^="selected-work-prev-"]').first();
+    await expect(next).toBeVisible();
+    await expect(prev).toBeVisible();
+    await expect.poll(async () => getSelectedWorkCarousel(page), { timeout: 25_000 }).not.toBeNull();
+
+    const seen = new Set<number>();
+    for (let i = 0; i < 12; i++) {
+      const before = await getSelectedWorkCarousel(page);
+      expect(before).not.toBeNull();
+      seen.add(before!.selectedSnap);
+      await next.click();
+      await page.waitForFunction(
+        (args: { prev: number; sel: string }) => {
+          const el = document.querySelector(args.sel) as HTMLElement | null;
+          if (!el) return false;
+          const snap = Number(el.getAttribute("data-selected-snap"));
+          return Number.isFinite(snap) && snap !== args.prev;
+        },
+        { prev: before!.selectedSnap, sel: VIEWPORT },
+        { timeout: 30_000 },
+      );
+    }
+    const after = await getSelectedWorkCarousel(page);
+    seen.add(after!.selectedSnap);
+    expect(seen.size).toBeGreaterThanOrEqual(4);
+  });
+});

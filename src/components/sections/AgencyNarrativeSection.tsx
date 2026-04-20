@@ -1,293 +1,163 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import {
+  useCallback,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/cn";
 import styles from "./AgencyNarrativeSection.module.css";
 
-const BLOCK_COUNT = 3;
-const SENTINEL_IDS = [
-  "narrative-sentinel-0",
-  "narrative-sentinel-1",
-  "narrative-sentinel-2",
-] as const;
-
+const TAB_COUNT = 3;
 const PROCESS_STEPS = ["discover", "design", "build", "launch"] as const;
 
-const IO_THRESHOLDS = Array.from({ length: 21 }, (_, i) => i / 20);
-
-function useDesktopScrollActiveIndex() {
-  const [active, setActive] = useState(0);
-  const ratiosRef = useRef<number[]>([0, 0, 0]);
-  const rafRef = useRef<number | null>(null);
-  const sentinelElsRef = useRef<(HTMLElement | null)[]>([]);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const attachRafRef = useRef<number | null>(null);
-
-  const flush = useCallback(() => {
-    rafRef.current = null;
-    const ratios = ratiosRef.current;
-    let bestIdx = 0;
-    let best = ratios[0] ?? 0;
-    for (let i = 1; i < BLOCK_COUNT; i++) {
-      const v = ratios[i] ?? 0;
-      if (v > best) {
-        best = v;
-        bestIdx = i;
-      }
-    }
-    if (best < 0.02) {
-      return;
-    }
-    setActive((prev) => (prev === bestIdx ? prev : bestIdx));
-  }, []);
-
-  const scheduleFlush = useCallback(() => {
-    if (rafRef.current != null) {
-      return;
-    }
-    rafRef.current = window.requestAnimationFrame(flush);
-  }, [flush]);
-
-  const detachObserver = useCallback(() => {
-    observerRef.current?.disconnect();
-    observerRef.current = null;
-  }, []);
-
-  const attachObserver = useCallback(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    if (!mq.matches) {
-      detachObserver();
-      return;
-    }
-    const nodes = sentinelElsRef.current.filter(Boolean) as HTMLElement[];
-    if (nodes.length !== BLOCK_COUNT) {
-      return;
-    }
-    detachObserver();
-    ratiosRef.current = [0, 0, 0];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const idx = Number((entry.target as HTMLElement).dataset.narrativeIndex);
-          if (!Number.isFinite(idx) || idx < 0 || idx >= BLOCK_COUNT) {
-            continue;
-          }
-          ratiosRef.current[idx] = entry.intersectionRatio;
-        }
-        scheduleFlush();
-      },
-      {
-        threshold: IO_THRESHOLDS,
-        root: null,
-        rootMargin: "-40% 0px -40% 0px",
-      },
-    );
-    for (const el of nodes) {
-      observer.observe(el);
-    }
-    observerRef.current = observer;
-    scheduleFlush();
-  }, [detachObserver, scheduleFlush]);
-
-  const scheduleAttach = useCallback(() => {
-    if (attachRafRef.current != null) {
-      cancelAnimationFrame(attachRafRef.current);
-    }
-    attachRafRef.current = requestAnimationFrame(() => {
-      attachRafRef.current = null;
-      attachObserver();
-    });
-  }, [attachObserver]);
-
-  const registerSentinel = useCallback(
-    (index: number, el: HTMLElement | null) => {
-      sentinelElsRef.current[index] = el;
-      scheduleAttach();
-    },
-    [scheduleAttach],
-  );
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    const onMq = () => {
-      scheduleAttach();
-    };
-    mq.addEventListener("change", onMq);
-    scheduleAttach();
-    return () => {
-      mq.removeEventListener("change", onMq);
-      detachObserver();
-      if (rafRef.current != null) {
-        cancelAnimationFrame(rafRef.current);
-      }
-      if (attachRafRef.current != null) {
-        cancelAnimationFrame(attachRafRef.current);
-      }
-    };
-  }, [detachObserver, scheduleAttach]);
-
-  return { active, setActive, registerSentinel } as const;
-}
-
-function NarrativeProse({
-  title,
+function ProseContent({
   paragraphs,
+  className,
 }: {
-  title: string;
   paragraphs: readonly string[];
+  className?: string;
 }) {
   return (
-    <>
-      <h3 className={styles.panelTitle}>{title}</h3>
-      <div className={styles.panelBody}>
-        {paragraphs.map((text, i) => (
-          <p key={i}>{text}</p>
-        ))}
-      </div>
-    </>
+    <div className={cn(styles.prose, className)}>
+      {paragraphs.map((text, i) => (
+        <p key={i}>{text}</p>
+      ))}
+    </div>
   );
 }
 
-function NarrativeProcess({
-  title,
-  stepLabels,
-  subtitle,
+function ProcessTimeline({
+  steps,
+  footnote,
+  listLabel,
 }: {
-  title: string;
-  stepLabels: readonly string[];
-  subtitle: string;
+  steps: readonly { key: string; label: string; detail: string }[];
+  footnote: string;
+  listLabel: string;
 }) {
   return (
-    <>
-      <h3 className={styles.panelTitle}>{title}</h3>
-      <ol className={styles.timeline}>
-        {stepLabels.map((label, i) => (
-          <li key={PROCESS_STEPS[i]} className={styles.timelineItem}>
-            <div className={styles.timelineRail} aria-hidden>
-              <span className={styles.timelineNode} />
+    <div className={styles.processWrap}>
+      <ol className={styles.steps} aria-label={listLabel}>
+        {steps.map((step, i) => (
+          <li key={step.key} className={styles.step}>
+            <div className={styles.stepRail} aria-hidden>
+              <span className={styles.stepNode} />
             </div>
-            <div className={styles.timelineMain}>
-              <div className={styles.timelineRow}>
-                <span className={styles.timelineStepIndex}>
+            <div className={styles.stepBody}>
+              <div className={styles.stepMeta}>
+                <span className={styles.stepIndex}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className={styles.timelineStepLabel}>{label}</span>
+                <span className={styles.stepLabel}>{step.label}</span>
               </div>
+              <p className={styles.stepDetail}>{step.detail}</p>
             </div>
           </li>
         ))}
       </ol>
-      <p className={styles.timelineFootnote}>{subtitle}</p>
-    </>
-  );
-}
-
-function DesktopPanelBody({
-  index,
-  aboutT,
-  approachT,
-  processT,
-}: {
-  index: number;
-  aboutT: (key: string) => string;
-  approachT: (key: string) => string;
-  processT: (key: string) => string;
-}) {
-  if (index === 0) {
-    return (
-      <NarrativeProse
-        title={aboutT("title")}
-        paragraphs={[aboutT("p1"), aboutT("p2"), aboutT("p3")]}
-      />
-    );
-  }
-  if (index === 1) {
-    return (
-      <NarrativeProse
-        title={approachT("title")}
-        paragraphs={[approachT("p1"), approachT("p2"), approachT("p3")]}
-      />
-    );
-  }
-  return (
-    <NarrativeProcess
-      title={processT("title")}
-      stepLabels={PROCESS_STEPS.map((k) => processT(k))}
-      subtitle={processT("subtitle")}
-    />
-  );
-}
-
-function MobileAccordionBody({
-  index,
-  aboutT,
-  approachT,
-  processT,
-}: {
-  index: number;
-  aboutT: (key: string) => string;
-  approachT: (key: string) => string;
-  processT: (key: string) => string;
-}) {
-  return (
-    <div className={styles.accBodyReveal}>
-      {index === 0 ? (
-        <div className={styles.accBody}>
-          <p>{aboutT("p1")}</p>
-          <p>{aboutT("p2")}</p>
-          <p>{aboutT("p3")}</p>
-        </div>
-      ) : null}
-      {index === 1 ? (
-        <div className={styles.accBody}>
-          <p>{approachT("p1")}</p>
-          <p>{approachT("p2")}</p>
-          <p>{approachT("p3")}</p>
-        </div>
-      ) : null}
-      {index === 2 ? (
-        <div className={styles.accBody}>
-          <ol className={styles.timeline} aria-label={processT("title")}>
-            {PROCESS_STEPS.map((k, i) => (
-              <li key={k} className={styles.timelineItem}>
-                <div className={styles.timelineRail} aria-hidden>
-                  <span className={styles.timelineNode} />
-                </div>
-                <div className={styles.timelineMain}>
-                  <div className={styles.timelineRow}>
-                    <span className={styles.timelineStepIndex}>
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className={styles.timelineStepLabel}>{processT(k)}</span>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <p className={styles.timelineFootnote}>{processT("subtitle")}</p>
-        </div>
-      ) : null}
+      <p className={styles.processFoot}>{footnote}</p>
     </div>
   );
 }
 
 export function AgencyNarrativeSection() {
   const uid = useId();
+  const locale = useLocale();
   const aboutT = useTranslations("about");
   const approachT = useTranslations("approach");
   const processT = useTranslations("process");
 
-  const navTitles = [aboutT("title"), approachT("title"), processT("title")] as const;
-  const landmarkLabel = `${navTitles[0]} · ${navTitles[1]} · ${navTitles[2]}`;
+  const tabLabels = [
+    aboutT("title"),
+    approachT("title"),
+    processT("title"),
+  ] as const;
 
-  const { active, setActive, registerSentinel } = useDesktopScrollActiveIndex();
-  const [mobileOpen, setMobileOpen] = useState(0);
+  const landmarkLabel = `${tabLabels[0]} · ${tabLabels[1]} · ${tabLabels[2]}`;
 
-  const onRailClick = useCallback((index: number) => {
-    setActive(index);
-  }, [setActive]);
+  const [active, setActive] = useState(0);
+  const [panelMinPx, setPanelMinPx] = useState(360);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const panelOuterRef = useRef<HTMLDivElement>(null);
+  const panelMeasureRef = useRef<HTMLDivElement>(null);
+  const measureSlotRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const focusTab = useCallback((index: number) => {
+    const i = ((index % TAB_COUNT) + TAB_COUNT) % TAB_COUNT;
+    setActive(i);
+    tabRefs.current[i]?.focus();
+  }, []);
+
+  const onTabKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        e.preventDefault();
+        focusTab(active + 1);
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        focusTab(active - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        focusTab(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        focusTab(TAB_COUNT - 1);
+      }
+    },
+    [active, focusTab],
+  );
+
+  const aboutParagraphs = [aboutT("p1"), aboutT("p2"), aboutT("p3")] as const;
+  const approachParagraphs = [
+    approachT("p1"),
+    approachT("p2"),
+    approachT("p3"),
+  ] as const;
+
+  const processSteps = PROCESS_STEPS.map((key) => ({
+    key,
+    label: processT(key),
+    detail: processT(`${key}Detail`),
+  }));
+
+  const panelTitleId = `${uid}-panel-title`;
+
+  useLayoutEffect(() => {
+    const outer = panelOuterRef.current;
+    const measure = panelMeasureRef.current;
+    if (!outer || !measure) return;
+
+    const mq = window.matchMedia("(min-width: 768px)");
+
+    const syncWidthAndHeight = () => {
+      if (!mq.matches) return;
+      const w = outer.offsetWidth;
+      if (w <= 0) return;
+      measure.style.width = `${w}px`;
+      let maxH = 280;
+      for (const slot of measureSlotRefs.current) {
+        if (slot) maxH = Math.max(maxH, slot.offsetHeight);
+      }
+      if (maxH <= 0) return;
+      setPanelMinPx((prev) => (Math.abs(prev - maxH) <= 1 ? prev : maxH));
+    };
+
+    const ro = new ResizeObserver(syncWidthAndHeight);
+    ro.observe(outer);
+    ro.observe(measure);
+    syncWidthAndHeight();
+    mq.addEventListener("change", syncWidthAndHeight);
+    return () => {
+      ro.disconnect();
+      mq.removeEventListener("change", syncWidthAndHeight);
+    };
+  }, [locale]);
 
   return (
     <section
@@ -295,135 +165,167 @@ export function AgencyNarrativeSection() {
       className={styles.section}
       aria-labelledby={`${uid}-landmark`}
     >
-      <Container>
+      <Container className={styles.inner}>
         <h2 id={`${uid}-landmark`} className="sr-only">
           {landmarkLabel}
         </h2>
 
-        <div className={styles.intro} aria-hidden>
-          <div className={styles.introRule} />
+        <div className={styles.rule} aria-hidden />
+
+        {/* Mobile / tablet: calm stacked narrative (no accordion) */}
+        <div className={styles.stack}>
+          <article className={styles.stackCard} aria-labelledby={`${uid}-m-about`}>
+            <h3 id={`${uid}-m-about`} className={styles.stackTitle}>
+              {tabLabels[0]}
+            </h3>
+            <ProseContent paragraphs={aboutParagraphs} />
+          </article>
+          <article
+            className={styles.stackCard}
+            aria-labelledby={`${uid}-m-approach`}
+          >
+            <h3 id={`${uid}-m-approach`} className={styles.stackTitle}>
+              {tabLabels[1]}
+            </h3>
+            <ProseContent paragraphs={approachParagraphs} />
+          </article>
+          <article className={styles.stackCard} aria-labelledby={`${uid}-m-proc`}>
+            <h3 id={`${uid}-m-proc`} className={styles.stackTitle}>
+              {tabLabels[2]}
+            </h3>
+            <ProcessTimeline
+              steps={processSteps}
+              footnote={processT("subtitle")}
+              listLabel={processT("title")}
+            />
+          </article>
         </div>
 
-        {/* Mobile: single-expand accordion */}
-        <div className={styles.mobileOnly}>
-          {[0, 1, 2].map((i) => {
-            const open = mobileOpen === i;
-            const headId = `${uid}-acc-h-${i}`;
-            const panelId = `${uid}-acc-p-${i}`;
-            return (
+        {/* Desktop: index + single panel (click to switch, no scroll coupling) */}
+        <div className={styles.split}>
+          <div className={styles.indexCol}>
+            <div className={styles.indexShell}>
               <div
-                key={i}
-                className={cn(styles.accItem, open && styles.accItemOpen)}
+                role="tablist"
+                aria-label={landmarkLabel}
+                aria-orientation="vertical"
+                className={styles.tabList}
               >
-                <button
-                  type="button"
-                  id={headId}
-                  className={cn(styles.accTrigger, open && styles.accTriggerOpen)}
-                  aria-expanded={open}
-                  aria-controls={panelId}
-                  onClick={() => setMobileOpen(open ? -1 : i)}
-                >
-                  <span className={styles.accIcon} aria-hidden>
-                    <span className={styles.accIconGlyph}>
-                      <span className={styles.accIconBarH} />
-                      <span
-                        className={cn(
-                          styles.accIconBarV,
-                          open && styles.accIconBarVCollapsed,
-                        )}
-                      />
-                    </span>
-                  </span>
-                  <span className={styles.accHead}>
-                    <span
-                      className={cn(styles.accTitle, open && styles.accTitleOpen)}
+                {([0, 1, 2] as const).map((i) => {
+                  const selected = active === i;
+                  const tabId = `${uid}-tab-${i}`;
+                  const panelId = `${uid}-panel`;
+                  return (
+                    <button
+                      key={i}
+                      ref={(el) => {
+                        tabRefs.current[i] = el;
+                      }}
+                      type="button"
+                      role="tab"
+                      id={tabId}
+                      tabIndex={selected ? 0 : -1}
+                      aria-selected={selected}
+                      aria-controls={panelId}
+                      className={cn(styles.tab, selected && styles.tabActive)}
+                      onClick={() => setActive(i)}
+                      onKeyDown={onTabKeyDown}
                     >
-                      {navTitles[i]}
-                    </span>
-                  </span>
-                </button>
-                <div
-                  className={cn(styles.accExpand, open && styles.accExpandOpen)}
-                >
-                  <div className={styles.accExpandInner}>
-                    <div
-                      id={panelId}
-                      role="region"
-                      aria-labelledby={headId}
-                      className={styles.accPanel}
-                      {...(!open ? { inert: true } : {})}
-                    >
-                      <MobileAccordionBody
-                        index={i}
-                        aboutT={aboutT}
-                        approachT={approachT}
-                        processT={processT}
+                      <span className={styles.tabIndex} aria-hidden>
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className={styles.tabLabel}>{tabLabels[i]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className={styles.indexAccent} aria-hidden />
+            </div>
+          </div>
+
+          <div className={styles.panelCol}>
+            <div
+              ref={panelOuterRef}
+              id={`${uid}-panel`}
+              role="tabpanel"
+              aria-labelledby={`${uid}-tab-${active}`}
+              className={styles.panelOuter}
+            >
+              <div ref={panelMeasureRef} className={styles.measureHost}>
+                <div className={styles.measureStack}>
+                  <div
+                    ref={(el) => {
+                      measureSlotRefs.current[0] = el;
+                    }}
+                    className={styles.measureSlot}
+                  >
+                    <div className={cn(styles.panelCard, styles.measurePanel)}>
+                      <h3 className={styles.panelHeading}>{tabLabels[0]}</h3>
+                      <ProseContent paragraphs={aboutParagraphs} />
+                    </div>
+                  </div>
+                  <div
+                    ref={(el) => {
+                      measureSlotRefs.current[1] = el;
+                    }}
+                    className={styles.measureSlot}
+                  >
+                    <div className={cn(styles.panelCard, styles.measurePanel)}>
+                      <h3 className={styles.panelHeading}>{tabLabels[1]}</h3>
+                      <ProseContent paragraphs={approachParagraphs} />
+                    </div>
+                  </div>
+                  <div
+                    ref={(el) => {
+                      measureSlotRefs.current[2] = el;
+                    }}
+                    className={styles.measureSlot}
+                  >
+                    <div className={cn(styles.panelCard, styles.measurePanel)}>
+                      <h3 className={styles.panelHeading}>{tabLabels[2]}</h3>
+                      <ProcessTimeline
+                        steps={processSteps}
+                        footnote={processT("subtitle")}
+                        listLabel={processT("title")}
                       />
                     </div>
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Desktop: sticky rail + scroll-synced panel */}
-        <div className={styles.desktopShell}>
-          <aside className={styles.rail}>
-            <nav className={styles.railNav}>
-              {[0, 1, 2].map((i) => (
-                <a
-                  key={i}
-                  id={`${uid}-nav-${i}`}
-                  href={`#${SENTINEL_IDS[i]}`}
-                  className={cn(styles.railLink, active === i && styles.railLinkActive)}
-                  aria-current={active === i ? "true" : undefined}
-                  onClick={() => onRailClick(i)}
-                >
-                  <span className={styles.railIndex}>{String(i + 1).padStart(2, "0")}</span>
-                  <span className={styles.railLabel}>{navTitles[i]}</span>
-                </a>
-              ))}
-            </nav>
-            <div className={styles.progress} aria-hidden>
-              <div className={styles.progressTrack}>
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className={cn(styles.progressDot, active === i && styles.progressDotActive)}
-                  />
-                ))}
-              </div>
-            </div>
-          </aside>
-
-          <div className={styles.stageRoot}>
-            {[0, 1, 2].map((i) => (
               <div
-                key={i}
-                id={SENTINEL_IDS[i]}
-                ref={(el) => registerSentinel(i, el)}
-                className={styles.sentinel}
-                data-narrative-index={i}
-                aria-hidden
-              />
-            ))}
-
-            <div className={styles.panelLayer}>
-              <div className={styles.panelSticky}>
-                <article
-                  className={styles.panelCard}
-                  aria-labelledby={`${uid}-nav-${active}`}
-                >
-                  <div key={active} className={cn(styles.panelSwap)}>
-                    <DesktopPanelBody
-                      index={active}
-                      aboutT={aboutT}
-                      approachT={approachT}
-                      processT={processT}
-                    />
-                  </div>
-                </article>
+                className={styles.panelCard}
+                style={{ minHeight: Math.max(panelMinPx, 280) }}
+              >
+                <div key={active} className={styles.panelBody}>
+                  {active === 0 ? (
+                    <>
+                      <h3 className={styles.panelHeading} id={panelTitleId}>
+                        {tabLabels[0]}
+                      </h3>
+                      <ProseContent paragraphs={aboutParagraphs} />
+                    </>
+                  ) : null}
+                  {active === 1 ? (
+                    <>
+                      <h3 className={styles.panelHeading} id={panelTitleId}>
+                        {tabLabels[1]}
+                      </h3>
+                      <ProseContent paragraphs={approachParagraphs} />
+                    </>
+                  ) : null}
+                  {active === 2 ? (
+                    <>
+                      <h3 className={styles.panelHeading} id={panelTitleId}>
+                        {tabLabels[2]}
+                      </h3>
+                      <ProcessTimeline
+                        steps={processSteps}
+                        footnote={processT("subtitle")}
+                        listLabel={processT("title")}
+                      />
+                    </>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>

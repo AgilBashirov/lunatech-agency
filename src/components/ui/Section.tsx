@@ -7,6 +7,7 @@ export function Section({
   className,
   containerClassName,
   ariaLabelledBy,
+  uncontained,
   children,
 }: {
   id?: string;
@@ -15,6 +16,12 @@ export function Section({
   containerClassName?: string;
   /** When `id` lives on a child (e.g. in-page scroll target), keep the landmark labelled. */
   ariaLabelledBy?: string;
+  /**
+   * When true, children are not wrapped in the default max-width `Container`.
+   * Use for full-bleed bands (e.g. carousels) while keeping the same section spacing/landmark.
+   * Compose your own `Container` only around text blocks that should stay column-width.
+   */
+  uncontained?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -26,7 +33,11 @@ export function Section({
         className,
       )}
     >
-      <Container className={containerClassName}>{children}</Container>
+      {uncontained ? (
+        children
+      ) : (
+        <Container className={containerClassName}>{children}</Container>
+      )}
     </section>
   );
 }

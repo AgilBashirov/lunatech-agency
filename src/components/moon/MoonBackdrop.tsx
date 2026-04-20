@@ -15,7 +15,7 @@ const DEFAULT_TIER = {
   sphereSegments: 32,
   antialias: false,
   idleTimeScale: 0.5,
-  scrollMotionScale: 0.42,
+  scrollMotionScale: 0.4,
 } as const;
 
 type MoonTier = {
@@ -41,25 +41,25 @@ function useMoonResponsive(): MoonTier {
           sphereSegments: 32,
           antialias: false,
           idleTimeScale: 0.5,
-          scrollMotionScale: 0.42,
+          scrollMotionScale: 0.4,
         });
       } else if (!desktopUp.matches) {
         setTier({
-          offsetX: 0.88,
+          offsetX: 0.78,
           dprMax: 1.5,
           sphereSegments: 48,
           antialias: true,
           idleTimeScale: 0.75,
-          scrollMotionScale: 0.68,
+          scrollMotionScale: 0.62,
         });
       } else {
         setTier({
-          offsetX: 1.25,
+          offsetX: 1.02,
           dprMax: 2,
           sphereSegments: 64,
           antialias: true,
           idleTimeScale: 1,
-          scrollMotionScale: 1,
+          scrollMotionScale: 0.88,
         });
       }
     };

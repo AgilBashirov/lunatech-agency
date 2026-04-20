@@ -22,7 +22,9 @@ export default async function HomePage({ params }: Props) {
   return (
     <MoonReadyProvider>
       <MoonBackdrop />
-      <div className="relative z-[2] flex min-h-full min-w-0 max-w-full flex-col overflow-x-hidden">
+      {/* No overflow-x here: html/body already suppress horizontal page scroll; an extra
+          overflow-x-hidden on this wrapper was clipping descendants (e.g. portfolio rail edges). */}
+      <div className="relative z-[2] flex min-h-full min-w-0 max-w-full flex-col">
         <Navbar />
         <main className="min-w-0 flex-1">
           <Hero />

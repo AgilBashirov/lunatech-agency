@@ -59,6 +59,10 @@
     "design": "Design",
     "build": "Build",
     "launch": "Launch",
+    "discoverDetail": "Align on goals, constraints, and audiences before we shape the work.",
+    "designDetail": "Structure, visuals, and interaction — crafted for clarity and conversion.",
+    "buildDetail": "Engineering with polish: performance, accessibility, QA, and resilient delivery.",
+    "launchDetail": "Ship, measure, and iterate with a clear handover and support plan.",
     "subtitle": "Each phase is planned and transparent."
   },
   "portfolio": {
@@ -68,6 +72,13 @@
     "viewCase": "View case",
     "modalClose": "Close",
     "demoNote": "Sample reference (opens Aura in a new tab)",
+    "sliderNavLabel": "Selected work carousel",
+    "sliderDotsLabel": "Slides",
+    "sliderPrev": "Previous project",
+    "sliderNext": "Next project",
+    "sliderGoTo": "Go to slide {index}",
+    "sliderAriaCarouselRole": "carousel",
+    "sliderSlideLabel": "Slide {current} of {total}",
     "project1": {
       "title": "Nebula Commerce",
       "tag": "Web",

@@ -1,5 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
+/** Dedicated port avoids clashing with a developer `next dev` on :3000. */
+const PLAYWRIGHT_PORT = process.env.PLAYWRIGHT_PORT ?? "3044";
+const origin = `http://127.0.0.1:${PLAYWRIGHT_PORT}`;
+
 /** Viewport-only projects so `npx playwright install chromium` kifayətdir (WebKit tələb olunmur). */
 export default defineConfig({
   testDir: "e2e",
@@ -10,7 +14,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: origin,
     ...devices["Desktop Chrome"],
   },
   projects: [
@@ -41,8 +45,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
-    url: "http://127.0.0.1:3000/az",
+    command: `npm run start -- -p ${PLAYWRIGHT_PORT}`,
+    url: `${origin}/az`,
     reuseExistingServer: !process.env.CI,
     timeout: 300_000,
   },

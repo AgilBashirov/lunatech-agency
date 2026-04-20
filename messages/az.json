@@ -59,6 +59,10 @@
     "design": "Dizayn",
     "build": "Hazırlıq",
     "launch": "Buraxılış",
+    "discoverDetail": "Məqsədlər, məhdudiyyətlər və auditoriya işin formasından əvvəl uyğunlaşdırılır.",
+    "designDetail": "Struktur, vizual və qarşılıqlı əlaqə — aydınlıq və konversiya üçün hazırlanır.",
+    "buildDetail": "Mühəndislik cilalanmış şəkildə: performans, əlçatanlıq, QA və dayanıqlı çatdırılma.",
+    "launchDetail": "Buraxılış, ölçü və iterasiya — aydın təhvil və dəstək planı ilə.",
     "subtitle": "Hər mərhələ planlı və şəffaf şəkildə idarə olunur"
   },
   "portfolio": {
@@ -68,6 +72,13 @@
     "viewCase": "Keisi aç",
     "modalClose": "Bağla",
     "demoNote": "Nümunə istinad (Aura yeni vərəqdə açılır)",
+    "sliderNavLabel": "Seçilmiş işlər karuseli",
+    "sliderDotsLabel": "Slaydlar",
+    "sliderPrev": "Əvvəlki layihə",
+    "sliderNext": "Növbəti layihə",
+    "sliderGoTo": "{index} slayda keç",
+    "sliderAriaCarouselRole": "karusel",
+    "sliderSlideLabel": "Slayd {current} / {total}",
     "project1": {
       "title": "Nebula Commerce",
       "tag": "Veb",
