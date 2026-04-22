@@ -10,18 +10,20 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.15",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
-    "embla-carousel-autoplay": "^8.6.0",
-    "embla-carousel-react": "^8.6.0",
+    "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "gsap": "^3.14.2",
     "lenis": "^1.3.21",
+    "lucide-react": "^1.8.0",
     "next": "16.2.2",
     "next-intl": "^4.9.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "tailwind-merge": "^3.5.0",
     "three": "^0.183.2"
   },
   "devDependencies": {

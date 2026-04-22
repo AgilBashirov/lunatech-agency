@@ -24,6 +24,22 @@
   --gradient-accent: linear-gradient(135deg, #7c3aed, #22d3ee);
   --duration-fast: 180ms;
   --duration-normal: 300ms;
+
+  /* shadcn-style tokens (components/ui) */
+  --border: var(--card-border);
+  --input: var(--glass-border);
+  --ring: rgba(34, 211, 238, 0.45);
+  --card: var(--card-bg);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface);
+  --popover-foreground: var(--foreground);
+  --primary: var(--neon-purple);
+  --primary-foreground: #fafafa;
+  --secondary: rgba(255, 255, 255, 0.08);
+  --secondary-foreground: var(--foreground);
+  --muted-foreground: var(--muted);
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
 }
 
 @theme inline {
@@ -38,6 +54,20 @@
   --font-sans: var(--font-inter);
   --font-heading: var(--font-space-grotesk);
   --font-mono: var(--font-geist-mono);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
 }
 
 html {

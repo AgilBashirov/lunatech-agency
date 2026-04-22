@@ -70,20 +70,39 @@ test.describe("Portfolio slider columns", () => {
     expect(Math.abs(dims.widths[1]! - dims.widths[2]!)).toBeLessThanOrEqual(12);
   });
 
-  test("navigation arrows are hidden on narrow viewport", async ({ page }) => {
+  test("navigation arrows are visible on narrow viewport", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/en", { waitUntil: "load" });
     const portfolio = page.locator("#portfolio");
     await portfolio.scrollIntoViewIfNeeded();
     const prev = portfolio.locator('[id^="selected-work-prev-"]').first();
-    await expect(prev).toBeAttached();
-    await expect(prev).toBeHidden();
+    const next = portfolio.locator('[id^="selected-work-next-"]').first();
+    await expect(prev).toBeVisible();
+    await expect(next).toBeVisible();
+    await expect(page.locator(VIEWPORT)).toBeVisible();
+    await expect
+      .poll(async () => getSelectedWorkCarousel(page), { timeout: 25_000 })
+      .not.toBeNull();
+
+    const before = await getSelectedWorkCarousel(page);
+    expect(before).not.toBeNull();
+    await next.click({ force: true });
+    await page.waitForFunction(
+      (args: { prev: number; sel: string }) => {
+        const el = document.querySelector(args.sel) as HTMLElement | null;
+        if (!el) return false;
+        const snap = Number(el.getAttribute("data-selected-snap"));
+        return Number.isFinite(snap) && snap !== args.prev;
+      },
+      { prev: before!.selectedSnap, sel: VIEWPORT },
+      { timeout: 30_000 },
+    );
   });
 });
 
 /**
  * Carousel navigation (loop + variable-width slides): advancing must update the active snap.
- * Uses a tablet/desktop band so side arrows are visible (see SelectedWorkSlider.module.css ≥768px).
+ * Uses a comfortable viewport width so the carousel and side arrows are usable.
  */
 test.describe("Portfolio slider loop / navigation stress", () => {
   test.use({ viewport: { width: 1200, height: 900 } });
@@ -93,9 +112,10 @@ test.describe("Portfolio slider loop / navigation stress", () => {
     await page.goto("/en", { waitUntil: "load" });
     const portfolio = page.locator("#portfolio");
     await expect(portfolio).toBeVisible({ timeout: 30_000 });
+    await portfolio.scrollIntoViewIfNeeded();
   }
 
-  test("Embla carousel is ready with loop and multiple slides", async ({ page }) => {
+  test("portfolio carousel is ready with loop and multiple slides", async ({ page }) => {
     await gotoPortfolio(page);
     /** `VIEWPORT` already starts with `#portfolio`; do not chain `portfolio.locator` or the selector repeats. */
     await expect(page.locator(VIEWPORT)).toBeVisible();
@@ -122,7 +142,7 @@ test.describe("Portfolio slider loop / navigation stress", () => {
       const before = await getSelectedWorkCarousel(page);
       expect(before).not.toBeNull();
       seen.add(before!.selectedSnap);
-      await next.click();
+      await next.click({ force: true });
       await page.waitForFunction(
         (args: { prev: number; sel: string }) => {
           const el = document.querySelector(args.sel) as HTMLElement | null;
