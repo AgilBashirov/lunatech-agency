@@ -3,15 +3,14 @@
 import type Lenis from "lenis";
 import { useEffect, useRef } from "react";
 import { useLenis } from "@/context/lenis-context";
-import { LENIS_ANCHOR_OFFSET } from "@/lib/smoothScroll";
+import { getScrollYToCenterElement } from "@/lib/smoothScroll";
 
-function scrollToHashWithLenis(lenis: Lenis, id: string) {
+function scrollToHashCentered(lenis: Lenis, id: string) {
   const el = document.getElementById(id);
   if (!el) return;
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      lenis.scrollTo(el, {
-        offset: LENIS_ANCHOR_OFFSET,
+      lenis.scrollTo(getScrollYToCenterElement(el), {
         programmatic: true,
         force: true,
       });
@@ -20,13 +19,11 @@ function scrollToHashWithLenis(lenis: Lenis, id: string) {
 }
 
 /**
- * Lenis aktiv olanda brauzerin `#anchor` keçidi `html` üzrə `scroll-padding` ilə
- * sinxron işləmir. `scrollTo(HTMLElement)` Lenis-in daxilində `scroll-margin` və
- * root `scroll-padding-top` çıxır ([globals.css](src/app/globals.css)).
+ * Lenis aktiv olanda brauzerin default `#anchor` davranışı ilə sinxron deyil.
+ * Klik və ilkin `location.hash` üçün hədəf bölməni viewportun şaquli mərkəzinə
+ * yaxınlaşdırırıq ki, istifadəçi həmin blokun UI-ni rahat görsün.
  *
- * İlkin yükləmə: əvvəl `lenis === null` ikən `scrollIntoView` çağırmaq, sonra Lenis
- * gələndə yenidən `scrollTo` etmək ikiqat scroll yaradırdı — yalnız Lenis hazır olanda
- * bir dəfə scroll edirik.
+ * İlkin yükləmə: Lenis hazır olanda bir dəfə `scrollTo` (ikiqat scroll yoxdur).
  */
 export function HashScrollOnAnchors() {
   const lenis = useLenis();
@@ -49,16 +46,19 @@ export function HashScrollOnAnchors() {
       const targetEl = document.getElementById(id);
       if (!targetEl) return;
 
+      e.preventDefault();
+
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
       if (!lenis) {
+        targetEl.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+        window.history.replaceState(null, "", `#${id}`);
         return;
       }
 
-      e.preventDefault();
-
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          lenis.scrollTo(targetEl, {
-            offset: LENIS_ANCHOR_OFFSET,
+          lenis.scrollTo(getScrollYToCenterElement(targetEl), {
             programmatic: true,
             force: true,
           });
@@ -80,7 +80,7 @@ export function HashScrollOnAnchors() {
       initialHashDoneRef.current = true;
       const id = hash.slice(1);
       const el = document.getElementById(id);
-      el?.scrollIntoView({ behavior: "auto", block: "start" });
+      el?.scrollIntoView({ behavior: "auto", block: "center" });
       return;
     }
 
@@ -88,7 +88,7 @@ export function HashScrollOnAnchors() {
     if (initialHashDoneRef.current) return;
     initialHashDoneRef.current = true;
 
-    scrollToHashWithLenis(lenis, hash.slice(1));
+    scrollToHashCentered(lenis, hash.slice(1));
   }, [lenis]);
 
   return null;

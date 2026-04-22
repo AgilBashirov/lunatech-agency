@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/cn";
 import { animate, motion, useMotionValue } from "framer-motion";
 import {
   useCallback,
@@ -73,9 +74,8 @@ const DEMO_CARDS: CardsSliderCard[] = [
   },
 ];
 
-const CARD_W = 320;
-const GAP = 24;
-const STEP = CARD_W + GAP;
+/** Fallback step (px) before first layout measure. */
+const FALLBACK_SLIDE_STEP = 344;
 
 function BrandArrow({
   direction,
@@ -95,7 +95,7 @@ function BrandArrow({
     <button
       id={id}
       type="button"
-      className="absolute top-1/2 z-40 inline-flex min-h-[52px] min-w-[52px] -translate-y-1/2 cursor-pointer touch-manipulation items-center justify-center rounded-full border-none bg-transparent p-3 transition-opacity hover:opacity-90 active:opacity-80"
+      className="absolute top-1/2 z-40 inline-flex min-h-[52px] min-w-[52px] origin-center -translate-y-1/2 cursor-pointer touch-manipulation items-center justify-center rounded-full border-none bg-transparent p-3 transition-[transform,opacity] duration-300 ease-out hover:scale-110 hover:opacity-100 active:scale-100 active:opacity-90 motion-reduce:transition-none motion-reduce:hover:scale-100"
       style={{ [isPrev ? "left" : "right"]: "0.05rem" }}
       aria-label={ariaLabel}
       onClick={onPress}
@@ -170,6 +170,7 @@ export function CardsSlider({
   const trackRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const [maxScroll, setMaxScroll] = useState(0);
+  const [slideStep, setSlideStep] = useState(FALLBACK_SLIDE_STEP);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const count = cards.length;
@@ -179,6 +180,18 @@ export function CardsSlider({
     const vp = viewportRef.current;
     const tr = trackRef.current;
     if (!vp || !tr) return;
+    const slides = tr.querySelectorAll("[data-embla-slide]");
+    let step = FALLBACK_SLIDE_STEP;
+    if (slides.length >= 2) {
+      const a = slides[0] as HTMLElement;
+      const b = slides[1] as HTMLElement;
+      step = Math.max(1, Math.round(b.offsetLeft - a.offsetLeft));
+    } else if (slides.length === 1) {
+      const one = slides[0] as HTMLElement;
+      step = Math.max(1, Math.round(one.getBoundingClientRect().width + 16));
+    }
+    setSlideStep(step);
+
     const max = Math.max(0, tr.scrollWidth - vp.clientWidth);
     setMaxScroll(max);
     const pos = -x.get();
@@ -187,13 +200,20 @@ export function CardsSlider({
   }, [x]);
 
   useEffect(() => {
-    measure();
+    const initial = requestAnimationFrame(() => {
+      measure();
+    });
     const ro = new ResizeObserver(() => {
       requestAnimationFrame(measure);
     });
     const vp = viewportRef.current;
+    const tr = trackRef.current;
     if (vp) ro.observe(vp);
-    return () => ro.disconnect();
+    if (tr) ro.observe(tr);
+    return () => {
+      cancelAnimationFrame(initial);
+      ro.disconnect();
+    };
   }, [cards, measure]);
 
   useEffect(() => {
@@ -206,10 +226,10 @@ export function CardsSlider({
 
   const snapX = useCallback(
     (index: number) => {
-      const raw = index * STEP;
+      const raw = index * slideStep;
       return -Math.min(raw, maxScroll);
     },
-    [maxScroll],
+    [maxScroll, slideStep],
   );
 
   const scrollToIndex = useCallback(
@@ -265,10 +285,10 @@ export function CardsSlider({
   const onDragEndSnap = useCallback(() => {
     if (!showNav || maxScroll <= 0) return;
     const pos = -x.get();
-    const idx = Math.round(pos / STEP);
+    const idx = Math.round(pos / slideStep);
     const clamped = Math.max(0, Math.min(count - 1, idx));
     scrollToIndex(clamped);
-  }, [count, maxScroll, scrollToIndex, showNav, x]);
+  }, [count, maxScroll, scrollToIndex, showNav, slideStep, x]);
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
@@ -285,7 +305,7 @@ export function CardsSlider({
   );
 
   return (
-    <div className="group/slider relative mx-auto w-full max-w-[min(100%,90rem)] px-4 py-6 sm:px-6 md:px-8">
+    <div className="group/slider relative mx-auto w-full max-w-[min(100%,90rem)] px-3 py-4 sm:px-5 sm:py-5 md:px-8 md:py-6">
       {showNav ? (
         <>
           <BrandArrow
@@ -307,7 +327,7 @@ export function CardsSlider({
 
       <div
         ref={viewportRef}
-        className="-mx-2 cursor-grab overflow-hidden px-2 py-4 active:cursor-grabbing sm:-mx-4 sm:px-4"
+        className="-mx-1 cursor-grab overflow-hidden px-1 py-3 active:cursor-grabbing sm:-mx-3 sm:px-3 sm:py-4 md:-mx-4 md:px-4"
         data-testid="selected-work-viewport"
         data-selected-snap={activeIndex}
         data-loop={loop ? "true" : "false"}
@@ -326,34 +346,20 @@ export function CardsSlider({
           dragMomentum
           style={{ x }}
           onDragEnd={onDragEndSnap}
-          className="flex gap-6"
+          className="flex gap-4 sm:gap-6"
         >
           {cards.map((card) => (
             <motion.div
               key={card.id}
               data-embla-slide=""
-              className="h-[420px] min-w-[320px] max-w-[320px] shrink-0"
+              className="h-[clamp(17.25rem,52vw,23.75rem)] w-[min(20rem,calc(100vw-2.25rem))] min-w-[min(20rem,calc(100vw-2.25rem))] max-w-[min(20rem,calc(100vw-2.25rem))] shrink-0 md:h-[380px] md:w-[320px] md:min-w-[320px] md:max-w-[320px]"
               whileHover={{ y: -10, transition: { duration: 0.3 } }}
             >
-              {card.href ? (
-                <a
-                  href={card.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  draggable={false}
-                  onDragStart={(e) => e.preventDefault()}
-                  className="block h-full min-h-0 touch-manipulation rounded-3xl text-inherit no-underline outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label={`${card.title} — ${viewDetailsLabel}`}
-                >
-                  <CardContent
-                    card={card}
-                    viewDetailsLabel={viewDetailsLabel}
-                    showHeroCta
-                  />
-                </a>
-              ) : (
-                <CardContent card={card} viewDetailsLabel={viewDetailsLabel} showHeroCta={false} />
-              )}
+              <CardContent
+                card={card}
+                viewDetailsLabel={viewDetailsLabel}
+                ctaHref={card.href}
+              />
             </motion.div>
           ))}
         </motion.div>
@@ -365,17 +371,26 @@ export function CardsSlider({
 function CardContent({
   card,
   viewDetailsLabel,
-  showHeroCta,
+  ctaHref,
 }: {
   card: CardsSliderCard;
   viewDetailsLabel: string;
-  showHeroCta: boolean;
+  ctaHref?: string;
 }) {
   return (
-    <Card className="group/card relative flex h-full min-h-0 flex-col overflow-hidden rounded-3xl border-border/50 bg-card/30 backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10">
-      <div className="relative h-48 shrink-0 overflow-hidden bg-[#030308]">
+    <Card
+      className={cn(
+        "group/card relative flex h-full min-h-0 flex-col overflow-hidden rounded-3xl",
+        "border-border bg-card/95 text-card-foreground shadow-[0_14px_44px_-18px_rgba(0,0,0,0.75)]",
+        "backdrop-blur-md transition-[border-color,box-shadow] duration-500 ease-out",
+        "hover:border-primary/35 hover:shadow-[0_20px_50px_-14px_rgba(0,0,0,0.65),0_0_0_1px_var(--glow-purple),0_0_36px_var(--glow-cyan)]",
+      )}
+    >
+      <div className="relative h-40 shrink-0 overflow-hidden bg-surface ring-1 ring-inset ring-white/[0.06] sm:h-44">
         {card.cover ? (
-          <div className="h-full w-full [&_.portfolio-cover]:min-h-[12rem]">{card.cover}</div>
+          <div className="h-full w-full [&_.portfolio-cover]:min-h-[10rem] sm:[&_.portfolio-cover]:min-h-[11rem]">
+            {card.cover}
+          </div>
         ) : card.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- demo Unsplash URLs; portfolio uses `cover` slot
           <img
@@ -385,39 +400,71 @@ function CardContent({
             className="h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-110"
           />
         ) : null}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-60 transition-opacity duration-300 group-hover/card:opacity-40" />
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-background/55 to-transparent opacity-70 transition-opacity duration-300 group-hover/card:opacity-55"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_100%,rgba(124,58,237,0.12),transparent_55%)]"
+          aria-hidden
+        />
 
         <div className="absolute left-4 top-4 z-[1]">
           <Badge
-            variant="secondary"
-            className="border-white/10 bg-background/50 px-3 py-1 text-xs font-medium backdrop-blur-md"
+            variant="outline"
+            className="border-primary/30 bg-background/55 px-3 py-1 text-xs font-medium text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-md"
           >
             {card.category}
           </Badge>
         </div>
-
-        {showHeroCta ? (
-          <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center">
-            <motion.span
-              aria-hidden
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-white/92 px-6 py-2.5 text-sm font-semibold text-black shadow-lg ring-1 ring-black/10"
-            >
-              {viewDetailsLabel}
-            </motion.span>
-          </div>
-        ) : null}
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-4 p-6">
-        <div className="space-y-3">
-          <h3 className="text-xl font-bold leading-tight tracking-tight text-foreground transition-colors group-hover/card:text-primary">
+      {ctaHref ? (
+        <motion.a
+          href={ctaHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          whileTap={{ scale: 0.995 }}
+          className={cn(
+            "group/link flex min-h-0 flex-1 flex-col gap-2 border-t border-white/[0.06]",
+            "bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)]",
+            "px-4 pb-4 pt-3 text-left text-inherit no-underline outline-none sm:px-5 sm:pb-5 sm:pt-3.5",
+            "touch-manipulation transition-[background-color] duration-200",
+            "hover:bg-[color-mix(in_oklab,var(--card-bg-inner)_96%,white)]",
+            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#22d3ee]/80",
+          )}
+          aria-label={`${card.title} — ${viewDetailsLabel}`}
+        >
+          <h3 className="text-gradient-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
             {card.title}
           </h3>
-          <p className="line-clamp-4 text-sm leading-relaxed text-muted-foreground">{card.description}</p>
+          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground sm:text-sm sm:leading-relaxed">
+            {card.description}
+          </p>
+          <span className="mt-auto flex items-center gap-1.5 pt-0.5 text-xs font-semibold tracking-wide text-cyan-300/95 sm:text-sm">
+            {viewDetailsLabel}
+            <span
+              aria-hidden
+              className="inline-block transition-transform duration-200 group-hover/link:translate-x-0.5"
+            >
+              →
+            </span>
+          </span>
+        </motion.a>
+      ) : (
+        <div className="flex min-h-0 flex-1 flex-col gap-2 border-t border-white/[0.06] bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)] px-4 pb-4 pt-3 sm:px-5 sm:pb-5 sm:pt-3.5">
+          <div className="min-h-0 space-y-1.5">
+            <h3 className="text-gradient-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
+              {card.title}
+            </h3>
+            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground sm:text-sm sm:leading-relaxed">
+              {card.description}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </Card>
   );
 }

@@ -12,17 +12,10 @@ const links = [
   { href: "#services", key: "services" as const },
   { href: "#about", key: "about" as const },
   { href: "#portfolio", key: "portfolio" as const },
-  { href: "#contact", key: "contact" as const },
 ];
 
 const navLinkClass =
   "flex min-h-11 shrink-0 snap-start items-center rounded-full px-3 py-2 text-xs font-medium text-zinc-300 transition-colors duration-300 ease-out hover:bg-white/[0.04] hover:text-white md:min-h-0 md:rounded-none md:bg-transparent md:px-0 md:py-0 md:text-sm";
-
-const contactLinkClass =
-  "rounded-full border border-cyan-400/35 bg-cyan-400/10 text-sm font-semibold text-cyan-100 shadow-[0_0_20px_rgba(34,211,238,0.18)] transition-all duration-300 ease-out hover:border-cyan-300/50 hover:shadow-[0_0_28px_rgba(124,58,237,0.2)]";
-
-const mobileContactClass =
-  "inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-cyan-400/35 bg-cyan-400/10 px-2.5 text-xs font-semibold text-cyan-100 shadow-[0_0_16px_rgba(34,211,238,0.15)] transition-all duration-300 ease-out hover:border-cyan-300/45 hover:shadow-[0_0_22px_rgba(34,211,238,0.22)] sm:px-3";
 
 export function Navbar() {
   const t = useTranslations("nav");
@@ -53,43 +46,19 @@ export function Navbar() {
           </Link>
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 md:hidden">
             <LanguageSwitcher />
-            {reduce ? (
-              <a href="#contact" className={mobileContactClass}>
-                {t("contact")}
-              </a>
-            ) : (
-              <motion.a
-                href="#contact"
-                className={mobileContactClass}
-                whileTap={{ scale: 0.98 }}
-                transition={motionTransition.fast}
-              >
-                {t("contact")}
-              </motion.a>
-            )}
           </div>
         </div>
         <div className="flex min-h-11 min-w-0 w-full snap-x snap-mandatory scroll-ps-1 scroll-pe-1 gap-1 overflow-x-auto overscroll-x-contain touch-pan-x pb-1 [-webkit-overflow-scrolling:touch] md:min-h-0 md:w-auto md:snap-none md:items-center md:gap-8 md:overflow-visible md:overscroll-x-auto md:touch-auto md:pb-0">
           {links.map(({ href, key }) =>
             reduce ? (
-              <a
-                key={key}
-                href={href}
-                className={cn(
-                  navLinkClass,
-                  key === "contact" && "max-md:hidden",
-                )}
-              >
+              <a key={key} href={href} className={navLinkClass}>
                 {t(key)}
               </a>
             ) : (
               <motion.a
                 key={key}
                 href={href}
-                className={cn(
-                  navLinkClass,
-                  key === "contact" && "max-md:hidden",
-                )}
+                className={navLinkClass}
                 whileTap={{ scale: 0.98 }}
                 transition={motionTransition.fast}
               >
@@ -100,20 +69,6 @@ export function Navbar() {
         </div>
         <div className="hidden items-center gap-3 md:flex">
           <LanguageSwitcher />
-          {reduce ? (
-            <a href="#contact" className={cn(contactLinkClass, "px-4 py-2")}>
-              {t("contact")}
-            </a>
-          ) : (
-            <motion.a
-              href="#contact"
-              className={cn(contactLinkClass, "px-4 py-2")}
-              whileTap={{ scale: 0.98 }}
-              transition={motionTransition.fast}
-            >
-              {t("contact")}
-            </motion.a>
-          )}
         </div>
       </nav>
     </header>
