@@ -74,4 +74,12 @@ test.describe("Responsive smoke", () => {
     await page.goto("/az#about", { waitUntil: "load" });
     await expect(page.locator("#about")).toBeVisible();
   });
+
+  test("language switcher changes locale path", async ({ page }) => {
+    await page.goto("/az", { waitUntil: "load" });
+    const lang = page.getByRole("group", { name: "Language" });
+    await expect(lang).toBeVisible();
+    await lang.getByRole("button", { name: "EN" }).click();
+    await expect(page).toHaveURL(/\/en(\/|$)/);
+  });
 });

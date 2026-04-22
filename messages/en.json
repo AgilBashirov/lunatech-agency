@@ -69,7 +69,7 @@
     "title": "Selected work",
     "subtitle": "Every project — one problem, one approach, and a measurable outcome.",
     "coverAlt": "{title} — animated dark 3D-style interface preview",
-    "viewCase": "View case",
+    "viewCase": "Visit site",
     "modalClose": "Close",
     "demoNote": "Sample reference (opens Aura in a new tab)",
     "sliderNavLabel": "Selected work carousel",
@@ -81,42 +81,36 @@
     "sliderSlideLabel": "Slide {current} of {total}",
     "project1": {
       "title": "Nebula Commerce",
-      "tag": "Web",
       "summary": "Headless storefront with cinematic product storytelling and scroll-driven narrative.",
       "body": "Inspiration / placeholder: conversion-led UX, edge performance, modular design system, and motion-led product pages for seasonal campaigns.",
       "demoLink": "Services components on Aura"
     },
     "project2": {
       "title": "Pulse Fintech",
-      "tag": "Mobile",
       "summary": "Real-time portfolio experience with motion-led onboarding for trust.",
       "body": "Inspiration / placeholder: biometric flows, accessible data visualization, and animated states that reinforce security and clarity.",
       "demoLink": "Mobile components on Aura"
     },
     "project3": {
       "title": "Aura Lifestyle",
-      "tag": "UI/UX",
       "summary": "Wellness app with habit loops, glass UI, and retention-focused craft.",
       "body": "Inspiration / placeholder: habit design, layered interface depth, and localized content strategy across multiple markets.",
       "demoLink": "Features components on Aura"
     },
     "project4": {
       "title": "Vertex AI Console",
-      "tag": "AI",
       "summary": "Operator tools for ML pipelines — dense UI, still readable in motion.",
       "body": "Inspiration / placeholder: terminal-native patterns, role-based workspaces, and latency-aware live charts.",
       "demoLink": "Dashboard components on Aura"
     },
     "project5": {
       "title": "Lunar Rebrand",
-      "tag": "Branding",
       "summary": "Full identity for a space-tech hardware startup — including motion logo.",
       "body": "Inspiration / placeholder: wordmark, animated identity, and component library aligned with manufacturing partners.",
       "demoLink": "Hero sections on Aura"
     },
     "project6": {
       "title": "Signal Launch Film",
-      "tag": "Motion / 3D",
       "summary": "Product reveal and social cutdowns — shader-led hero and modular story beats.",
       "body": "Inspiration / placeholder: real-time visuals, audio-reactive teasers, and paid-media-ready modular storytelling.",
       "demoLink": "CTA components on Aura"

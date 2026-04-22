@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
 import { animate, motion, useMotionValue } from "framer-motion";
@@ -18,7 +17,6 @@ export type CardsSliderCard = {
   id: number;
   title: string;
   description: string;
-  category: string;
   href?: string;
   /** Remote hero image (demo mode) */
   imageUrl?: string;
@@ -32,7 +30,6 @@ const DEMO_CARDS: CardsSliderCard[] = [
     title: "Liquid Motion",
     description:
       "Experience the fluid dynamics of modern web interactions with physics-based animations.",
-    category: "Animation",
     imageUrl:
       "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
   },
@@ -41,7 +38,6 @@ const DEMO_CARDS: CardsSliderCard[] = [
     title: "Glassmorphism",
     description:
       "Blur the lines between layers with advanced backdrop filters and transparency effects.",
-    category: "Design",
     imageUrl:
       "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80",
   },
@@ -50,7 +46,6 @@ const DEMO_CARDS: CardsSliderCard[] = [
     title: "Dark Mode",
     description:
       "Easy on the eyes, elegant in appearance. A seamless transition to the dark side.",
-    category: "Theme",
     imageUrl:
       "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&q=80",
   },
@@ -59,7 +54,6 @@ const DEMO_CARDS: CardsSliderCard[] = [
     title: "Micro-Interactions",
     description:
       "Delightful details that make the difference between good and great user experience.",
-    category: "UX",
     imageUrl:
       "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&q=80",
   },
@@ -68,7 +62,6 @@ const DEMO_CARDS: CardsSliderCard[] = [
     title: "Responsive Layouts",
     description:
       "Fluid grids that adapt to any screen size, ensuring your content looks perfect everywhere.",
-    category: "Layout",
     imageUrl:
       "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
   },
@@ -408,58 +401,52 @@ function CardContent({
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_100%,rgba(124,58,237,0.12),transparent_55%)]"
           aria-hidden
         />
-
-        <div className="absolute left-4 top-4 z-[1]">
-          <Badge
-            variant="outline"
-            className="border-primary/30 bg-background/55 px-3 py-1 text-xs font-medium text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-md"
-          >
-            {card.category}
-          </Badge>
-        </div>
       </div>
 
       {ctaHref ? (
-        <motion.a
-          href={ctaHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          draggable={false}
-          onDragStart={(e) => e.preventDefault()}
-          whileTap={{ scale: 0.995 }}
-          className={cn(
-            "group/link flex min-h-0 flex-1 flex-col gap-2 border-t border-white/[0.06]",
-            "bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)]",
-            "px-4 pb-4 pt-3 text-left text-inherit no-underline outline-none sm:px-5 sm:pb-5 sm:pt-3.5",
-            "touch-manipulation transition-[background-color] duration-200",
-            "hover:bg-[color-mix(in_oklab,var(--card-bg-inner)_96%,white)]",
-            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#22d3ee]/80",
-          )}
-          aria-label={`${card.title} — ${viewDetailsLabel}`}
-        >
-          <h3 className="text-gradient-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
-            {card.title}
-          </h3>
-          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground sm:text-sm sm:leading-relaxed">
-            {card.description}
-          </p>
-          <span className="mt-auto flex items-center gap-1.5 pt-0.5 text-xs font-semibold tracking-wide text-cyan-300/95 sm:text-sm">
-            {viewDetailsLabel}
-            <span
-              aria-hidden
-              className="inline-block transition-transform duration-200 group-hover/link:translate-x-0.5"
+        <div className="flex min-h-0 flex-1 flex-col gap-3 border-t border-white/[0.06] bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)] px-4 pb-4 pt-3 sm:px-5 sm:pb-5 sm:pt-3.5">
+          <div className="min-h-0 space-y-1.5">
+            <h3 className="text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
+              {card.title}
+            </h3>
+            <p className="line-clamp-2 text-xs leading-snug text-slate-500 sm:text-sm sm:leading-relaxed">
+              {card.description}
+            </p>
+          </div>
+          <span className="gradient-border-wrap gradient-border-wrap--subtle mt-auto inline-flex w-fit max-w-full rounded-full self-start">
+            <motion.a
+              href={ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              draggable={false}
+              onDragStart={(e) => e.preventDefault()}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className={cn(
+                "group/btn gradient-border-inner inline-flex h-11 max-w-full shrink items-center justify-center gap-1.5 rounded-full px-3.5 sm:gap-2 sm:px-5 md:px-6",
+                "text-[0.8125rem] font-semibold leading-none tracking-wide text-white no-underline outline-none touch-manipulation sm:text-sm",
+                "transition-shadow duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]",
+                "hover:shadow-[0_0_18px_rgba(124,58,237,0.35),0_0_28px_rgba(34,211,238,0.12)]",
+              )}
+              aria-label={`${card.title} — ${viewDetailsLabel}`}
             >
-              →
-            </span>
+              {viewDetailsLabel}
+              <span
+                aria-hidden
+                className="inline-block transition-transform duration-200 group-hover/btn:translate-x-0.5"
+              >
+                →
+              </span>
+            </motion.a>
           </span>
-        </motion.a>
+        </div>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col gap-2 border-t border-white/[0.06] bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)] px-4 pb-4 pt-3 sm:px-5 sm:pb-5 sm:pt-3.5">
           <div className="min-h-0 space-y-1.5">
-            <h3 className="text-gradient-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
+            <h3 className="text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
               {card.title}
             </h3>
-            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground sm:text-sm sm:leading-relaxed">
+            <p className="line-clamp-2 text-xs leading-snug text-slate-500 sm:text-sm sm:leading-relaxed">
               {card.description}
             </p>
           </div>

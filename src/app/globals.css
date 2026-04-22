@@ -51,9 +51,10 @@
   --color-neon-purple: var(--neon-purple);
   --color-neon-pink: var(--neon-pink);
   --color-neon-blue: var(--neon-blue);
-  --font-sans: var(--font-inter);
-  --font-heading: var(--font-space-grotesk);
-  --font-mono: var(--font-geist-mono);
+  /* Full stacks so Tailwind utilities match body when next/font vars load */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -138,7 +139,8 @@ body {
   min-height: 100%;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  /* Match @theme --font-sans (next/font sets --font-inter on <html>) */
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   overflow-x: hidden;
   overscroll-behavior-x: none;
 }
@@ -161,10 +163,10 @@ body {
   }
 }
 
+/* Display: Space Grotesk for page-level titles only; body + card titles use Inter (font-sans) */
 h1,
-h2,
-h3 {
-  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+h2 {
+  font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Hero + section titles: accent gradient (same as hero headline) */
@@ -174,6 +176,12 @@ h3 {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Card / rail titles — solid, slight cyan mix; reads clearly under section H2 gradient */
+.text-card-heading {
+  color: color-mix(in oklab, #fafafa 88%, var(--neon-cyan) 12%);
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.42);
 }
 
 .surface-glass {

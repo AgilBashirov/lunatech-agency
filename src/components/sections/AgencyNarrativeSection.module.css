@@ -311,6 +311,7 @@
 
 .panelHeading {
   margin: 0 0 clamp(0.95rem, 2vw, 1.2rem);
+  font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   background: var(--gradient-accent);
   -webkit-background-clip: text;
   background-clip: text;

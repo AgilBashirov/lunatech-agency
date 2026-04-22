@@ -9,19 +9,24 @@ import { routing } from "@/i18n/routing";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   weight: ["500", "600", "700"],
+  display: "swap",
+  adjustFontFallback: true,
 });
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "500", "600"],
+  display: "swap",
+  adjustFontFallback: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
 });
 
 /**

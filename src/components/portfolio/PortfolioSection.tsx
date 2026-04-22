@@ -28,7 +28,6 @@ export function PortfolioSection() {
         id: i + 1,
         title: t(`${key}.title`),
         description: t(`${key}.summary`),
-        category: t(`${key}.tag`),
         href: AURA_DEMO_URLS[key],
         cover: (
           <PortfolioCoverArt
@@ -49,7 +48,7 @@ export function PortfolioSection() {
             <h2 className="text-gradient-heading text-3xl font-bold tracking-tight md:text-4xl drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)]">
               {t("title")}
             </h2>
-            <p className="mx-auto mt-3 max-w-3xl text-zinc-300">{t("subtitle")}</p>
+            <p className="mx-auto mt-3 max-w-3xl text-slate-400">{t("subtitle")}</p>
           </div>
         </Reveal>
       </Container>

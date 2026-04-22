@@ -12,7 +12,7 @@ import {
 } from "react";
 import * as THREE from "three";
 import { useMoonReady } from "@/context/moon-ready";
-import { useStableLayoutViewportSize } from "@/hooks/useStableLayoutViewportSize";
+import { useMoonBackdropVisualBox } from "@/hooks/useMoonBackdropVisualBox";
 
 function MoonLoadGate({ onReady }: { onReady: () => void }) {
   const { active, progress } = useProgress();
@@ -324,7 +324,7 @@ export function MoonScene({
   const { markMoonReady } = useMoonReady();
   const [useFile, setUseFile] = useState(false);
   const [checked, setChecked] = useState(false);
-  const layoutSize = useStableLayoutViewportSize();
+  const backdropBox = useMoonBackdropVisualBox();
 
   useEffect(() => {
     let cancelled = false;
@@ -352,38 +352,46 @@ export function MoonScene({
     return null;
   }
 
-  const w = layoutSize.width > 0 ? layoutSize.width : undefined;
-  const h = layoutSize.height > 0 ? layoutSize.height : undefined;
+  const invScale = backdropBox.scale > 0 ? 1 / backdropBox.scale : 1;
+  const innerW = Math.max(1, backdropBox.innerW);
+  const innerH = Math.max(1, backdropBox.innerH);
 
   return (
     <div
-      className="pointer-events-none fixed left-0 top-0 z-[1] overflow-hidden"
+      className="pointer-events-none fixed z-[1] overflow-hidden"
       style={{
-        width: w ?? "100vw",
-        height: h ?? "100svh",
+        left: backdropBox.offsetLeft,
+        top: backdropBox.offsetTop,
+        width: Math.max(1, backdropBox.outerW),
+        height: Math.max(1, backdropBox.outerH),
+        transform: `scale(${invScale})`,
+        transformOrigin: "top left",
+        willChange: "transform",
       }}
       aria-hidden
     >
-      <Canvas
-        camera={{ position: [0, 0, BASE_CAMERA_Z], fov: 40 }}
-        dpr={[1, dprMax]}
-        resize={{ scroll: false }}
-        gl={{
-          alpha: true,
-          antialias,
-          powerPreference: "high-performance",
-        }}
-        style={{ background: "transparent", width: "100%", height: "100%" }}
-      >
-        <MoonWorld
-          useFile={useFile}
-          offsetX={offsetX}
-          sphereSegments={sphereSegments}
-          idleTimeScale={idleTimeScale}
-          scrollMotionScale={scrollMotionScale}
-          onReady={markMoonReady}
-        />
-      </Canvas>
+      <div className="overflow-hidden" style={{ width: innerW, height: innerH }}>
+        <Canvas
+          camera={{ position: [0, 0, BASE_CAMERA_Z], fov: 40 }}
+          dpr={[1, dprMax]}
+          resize={{ scroll: false }}
+          gl={{
+            alpha: true,
+            antialias,
+            powerPreference: "high-performance",
+          }}
+          style={{ background: "transparent", width: "100%", height: "100%" }}
+        >
+          <MoonWorld
+            useFile={useFile}
+            offsetX={offsetX}
+            sphereSegments={sphereSegments}
+            idleTimeScale={idleTimeScale}
+            scrollMotionScale={scrollMotionScale}
+            onReady={markMoonReady}
+          />
+        </Canvas>
+      </div>
     </div>
   );
 }

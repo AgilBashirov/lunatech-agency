@@ -69,7 +69,7 @@
     "title": "Seçilmiş işlər",
     "subtitle": "Hər layihə — bir problem, bir yanaşma və ölçülə bilən nəticədir.",
     "coverAlt": "{title} — animasiyalı tünd 3D interfeys önizləməsi",
-    "viewCase": "Keisi aç",
+    "viewCase": "Sayta bax",
     "modalClose": "Bağla",
     "demoNote": "Nümunə istinad (Aura yeni vərəqdə açılır)",
     "sliderNavLabel": "Seçilmiş işlər karuseli",
@@ -81,42 +81,36 @@
     "sliderSlideLabel": "Slayd {current} / {total}",
     "project1": {
       "title": "Nebula Commerce",
-      "tag": "Veb",
       "summary": "Sinematik məhsul hekayəsi və scroll ilə naqillənən headless vitrin.",
       "body": "İlham / placeholder: konversiyaya yönəlmiş UX, edge performansı, modul dizayn sistemi və mövsümi kampaniyalar üçün motion əsaslı məhsul səhifələri.",
       "demoLink": "Aura: Services komponentləri"
     },
     "project2": {
       "title": "Pulse Fintech",
-      "tag": "Mobil",
       "summary": "Etibar üçün motion ilə onboarding olan real vaxt portfel təcrübəsi.",
       "body": "İlham / placeholder: biometrik axınlar, əlçatan data vizualizasiyası və təhlükəsizlik və aydınlığı möhkəmləndirən animasiyalı hallar.",
       "demoLink": "Aura: Mobile komponentləri"
     },
     "project3": {
       "title": "Aura Lifestyle",
-      "tag": "UI/UX",
       "summary": "Vərdiş döngələri, şüşə UI və saxlamaya yönəlik cilalama ilə wellness tətbiqi.",
       "body": "İlham / placeholder: vərdiş dizaynı, qatlı interfeys dərinliyi və bir neçə bazar üçün lokalizasiya strategiyası.",
       "demoLink": "Aura: Features komponentləri"
     },
     "project4": {
       "title": "Vertex AI Console",
-      "tag": "AI",
       "summary": "ML boru xətləri üçün operator alətləri — sıx UI, motion-da da oxunaqlı.",
       "body": "İlham / placeholder: terminal üslubu, rollara əsaslanan iş sahələri və gecikməyə həssas canlı qrafiklər.",
       "demoLink": "Aura: Dashboard komponentləri"
     },
     "project5": {
       "title": "Lunar Rebrendinq",
-      "tag": "Brend",
       "summary": "Kosmos texnoloji startap üçün tam identikator — motion loqo daxil.",
       "body": "İlham / placeholder: söz işarəsi, animasiyalı identikator və istehsal tərəfdaşları ilə uyğun komponent kitabxanası.",
       "demoLink": "Aura: Hero bölmələri"
     },
     "project6": {
       "title": "Signal Launch Film",
-      "tag": "Motion / 3D",
       "summary": "Məhsul açılışı və sosial kəsiklər — shader əsaslı hero və modul hekayə.",
       "body": "İlham / placeholder: real vaxt vizuallar, səs-reaktiv teaserlər və ödənişli media üçün modul hekayəçilik.",
       "demoLink": "Aura: CTA komponentləri"

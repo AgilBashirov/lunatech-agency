@@ -58,7 +58,7 @@ export async function Services() {
           >
             {t("title")}
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-zinc-300 md:mx-0 md:mt-4">
+          <p className="mx-auto mt-3 max-w-2xl text-slate-400 md:mx-0 md:mt-4">
             {t("subtitle")}
           </p>
         </div>
@@ -79,10 +79,10 @@ export async function Services() {
               >
                 <Icon className={cn("h-8 w-8 sm:h-9 sm:w-9", iconClass)} />
               </span>
-              <h3 className="text-gradient-heading text-lg font-semibold leading-snug">
+              <h3 className="text-card-heading text-lg font-semibold leading-snug">
                 {t(`${key}.title`)}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400 [text-shadow:0_1px_18px_rgba(0,0,0,0.35)]">
+              <p className="mt-2 text-sm leading-relaxed text-slate-500 [text-shadow:0_1px_14px_rgba(0,0,0,0.35)]">
                 {t(`${key}.desc`)}
               </p>
             </GlassCard>
