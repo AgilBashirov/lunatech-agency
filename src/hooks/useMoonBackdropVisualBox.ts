@@ -74,17 +74,9 @@ export function useMoonBackdropVisualBox() {
 
     const vv = window.visualViewport;
     vv?.addEventListener("resize", apply);
-    vv?.addEventListener("scroll", apply);
-    window.addEventListener("resize", apply);
-    window.addEventListener("orientationchange", apply);
-
-    return () => {
-      vv?.removeEventListener("resize", apply);
-      vv?.removeEventListener("scroll", apply);
-      window.removeEventListener("resize", apply);
-      window.removeEventListener("orientationchange", apply);
-    };
-  }, []);
-
-  return box;
-}
+    // NOTE: We deliberately do NOT subscribe to `visualViewport.scroll`.
+    // On mobile the URL bar collapse/expand fires that event and the moon
+    // backdrop would be re-sized on every scroll tick — visually the moon
+    // would appear to subtly grow / shrink as the user scrolled. The
+    // `resize` listener above already handles the cases that matter
+    // (orientation, browser window resize, 

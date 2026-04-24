@@ -1,31 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 52" fill="none" role="img" aria-labelledby="logoTitle">
-  <title id="logoTitle">Lunatech agency</title>
-  <defs>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;700&amp;family=Space+Grotesk:wght@700&amp;display=swap");
-    </style>
-  </defs>
-  <!-- Mirrored D / moon: flat vertical edge right, smooth bulge left (same topology as reference) -->
-  <path fill="#ffffff" d="M 36 5 L 36 47 Q 2 26 36 5 Z" />
-  <!-- Top: bold wordmark; bottom: lighter, tracked to match “Lunatech” width -->
-  <text
-    x="49"
-    y="25"
-    fill="#ffffff"
-    font-family="'Space Grotesk', Inter, system-ui, sans-serif"
-    font-size="19"
-    font-weight="700"
-    letter-spacing="-0.02em"
-  >Lunatech</text>
-  <text
-    x="49"
-    y="43.5"
-    fill="#ffffff"
-    font-family="Inter, system-ui, sans-serif"
-    font-size="10"
-    font-weight="300"
-    letter-spacing="0.22em"
-    textLength="124"
-    lengthAdjust="spacing"
-  >agency</text>
-</svg>
+<svg width="700" height="250" viewBox="0 0 700 250" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="logoTitle">
+<title id="logoTitle">Lunatech agency</title>
+<path d="M124.52 249.04C55.7496 249.04 0 193.291 0 124.52C0 55.7496 55.7496 0 124.52 0V249.04Z" fill="white"/>
+<path d="M699.842 138.598V172.024H684.036V138.857C684.036 135.532 683.345 132.509 681.963 129.788C680.625 127.024 678.789 124.822 676.457 123.181C674.168 121.54 671.62 120.719 668.813 120.719C665.617 120.719 662.961 121.54 660.845 123.181C658.729 124.822 657.153 127.024 656.116 129.788C655.08 132.509 654.562 135.532 654.562 138.857V172.024H638.626V74.8555H654.432V113.399C656.03 110.247 658.189 108.152 660.91 107.116C663.631 106.079 666.783 105.561 670.368 105.561C676.328 105.561 681.488 107.072 685.85 110.095C690.255 113.075 693.667 117.07 696.085 122.08C698.504 127.089 699.756 132.595 699.842 138.598Z" fill="white"/>
+<path d="M614.263 152.526L628.514 160.235C625.534 164.294 621.799 167.555 617.307 170.017C612.816 172.478 607.914 173.709 602.603 173.70

@@ -2,11 +2,19 @@
 
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
-import { animate, motion, useMotionValue } from "framer-motion";
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  type MotionValue,
+  type PanInfo,
+} from "framer-motion";
 import {
   useCallback,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
   type KeyboardEvent,
@@ -67,8 +75,79 @@ const DEMO_CARDS: CardsSliderCard[] = [
   },
 ];
 
-/** Fallback step (px) before first layout measure. */
-const FALLBACK_SLIDE_STEP = 344;
+/** Transition used by arrow/dot/keyboard navigation + drag-end snap. */
+const SPRING_TRANSITION = {
+  type: "spring" as const,
+  stiffness: 280,
+  damping: 32,
+  mass: 1,
+};
+/** Used for reduced-motion users and for post-animation silent wraps. */
+const INSTANT_TRANSITION = { duration: 0 } as const;
+
+/** Drag velocity threshold (px/s) that forces a one-slide advance regardless of proximity. */
+const FLICK_VELOCITY = 320;
+
+/**
+ * For seamless infinite loop we render `count * LOOP_COPIES` cards in the track
+ * and keep the canonical position anchored to the *middle* copy. After any
+ * animation settles, the virtual index is silently wrapped back into the
+ * middle copy — visually identical because adjacent copies share content.
+ */
+const LOOP_COPIES = 3;
+const LOOP_ANCHOR_COPY = 1;
+
+/** Card height. Keeping this fixed per breakpoint avoids layout shift as width changes. */
+const CARD_HEIGHT_MOBILE = 380; // below sm
+const CARD_HEIGHT_TABLET = 380; // sm..lg
+const CARD_HEIGHT_DESKTOP = 380; // lg+
+
+type SliderLayout = {
+  /** Number of cards visible simultaneously at this breakpoint. */
+  visible: number;
+  /** Flex gap (px) between cards. */
+  gap: number;
+  /** Whether arrow controls should render at this breakpoint. */
+  arrows: boolean;
+};
+
+/**
+ * Resolves the slider layout from the window width.
+ *  - <640px (mobile)         → 1 card, no arrows
+ *  - 640..1023 (tablet)      → 3 cards, no arrows
+ *  - 1024..1439 (laptop)     → 4 cards, arrows
+ *  - 1440..1919 (wide)       → 5 cards, arrows
+ *  - ≥1920px (ultra-wide)    → 6 cards, arrows  ← prevents oversized cards on 1920+ displays
+ */
+function resolveLayout(width: number): SliderLayout {
+  if (width >= 1920) return { visible: 6, gap: 28, arrows: true };
+  if (width >= 1440) return { visible: 5, gap: 28, arrows: true };
+  if (width >= 1024) return { visible: 4, gap: 24, arrows: true };
+  if (width >= 640) return { visible: 3, gap: 20, arrows: false };
+  return { visible: 1, gap: 16, arrows: false };
+}
+
+function useSliderLayout(): SliderLayout {
+  // Start with a neutral "mobile" default for SSR; real value is computed on mount.
+  const [layout, setLayout] = useState<SliderLayout>(() => ({
+    visible: 1,
+    gap: 16,
+    arrows: false,
+  }));
+
+  useEffect(() => {
+    const apply = () => setLayout(resolveLayout(window.innerWidth));
+    apply();
+    window.addEventListener("resize", apply, { passive: true });
+    window.addEventListener("orientationchange", apply);
+    return () => {
+      window.removeEventListener("resize", apply);
+      window.removeEventListener("orientationchange", apply);
+    };
+  }, []);
+
+  return layout;
+}
 
 function BrandArrow({
   direction,
@@ -76,27 +155,46 @@ function BrandArrow({
   id,
   ariaLabel,
   onPress,
+  disabled = false,
+  className,
 }: {
   direction: "prev" | "next";
   gradId: string;
   id: string;
   ariaLabel: string;
   onPress: () => void;
+  disabled?: boolean;
+  className?: string;
 }) {
   const isPrev = direction === "prev";
   return (
     <button
       id={id}
       type="button"
-      className="absolute top-1/2 z-40 inline-flex min-h-[52px] min-w-[52px] origin-center -translate-y-1/2 cursor-pointer touch-manipulation items-center justify-center rounded-full border-none bg-transparent p-3 transition-[transform,opacity] duration-300 ease-out hover:scale-110 hover:opacity-100 active:scale-100 active:opacity-90 motion-reduce:transition-none motion-reduce:hover:scale-100"
-      style={{ [isPrev ? "left" : "right"]: "0.05rem" }}
+      className={cn(
+        // Compact 36×36 chevron pill — refined, less chrome than the previous
+        // 44×44 glass pill. Arrows only render at lg+ (desktop) so mouse
+        // targets are fine at this size.
+        "absolute top-1/2 z-40 -translate-y-1/2 touch-manipulation",
+        "inline-flex h-9 w-9 items-center justify-center rounded-full",
+        "border border-white/[0.07] bg-[rgba(8,11,20,0.72)] backdrop-blur-sm",
+        "shadow-[0_4px_12px_rgba(0,0,0,0.4)]",
+        "transition-[transform,opacity,background-color,border-color,box-shadow] duration-300 ease-out motion-reduce:transition-none",
+        disabled
+          ? "pointer-events-none opacity-0"
+          : "cursor-pointer opacity-80 hover:opacity-100 hover:border-white/20 hover:bg-[rgba(12,15,25,0.85)] hover:shadow-[0_4px_18px_rgba(124,58,237,0.28),0_0_0_1px_rgba(124,58,237,0.18)] active:scale-[0.94] motion-reduce:hover:scale-100",
+        className,
+      )}
+      style={{ [isPrev ? "left" : "right"]: "0.75rem" }}
       aria-label={ariaLabel}
+      aria-disabled={disabled || undefined}
+      disabled={disabled}
       onClick={onPress}
     >
       <svg
         className="block"
-        width="42"
-        height="42"
+        width="14"
+        height="14"
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -104,54 +202,94 @@ function BrandArrow({
       >
         <defs>
           <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#7c3aed" />
-            <stop offset="100%" stopColor="#22d3ee" />
+            <stop offset="0%" stopColor="#a78bfa" />
+            <stop offset="100%" stopColor="#67e8f9" />
           </linearGradient>
         </defs>
-        {isPrev ? (
-          <path
-            d="M14 6l-6 6 6 6"
-            stroke={`url(#${gradId})`}
-            strokeWidth="2.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        ) : (
-          <path
-            d="M10 6l6 6-6 6"
-            stroke={`url(#${gradId})`}
-            strokeWidth="2.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        )}
+        <path
+          d={isPrev ? "M14 6l-6 6 6 6" : "M10 6l6 6-6 6"}
+          stroke={`url(#${gradId})`}
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     </button>
   );
 }
 
+function Dot({
+  index,
+  active,
+  label,
+  onSelect,
+}: {
+  index: number;
+  active: boolean;
+  label: string;
+  onSelect: (index: number) => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      aria-label={label}
+      tabIndex={active ? 0 : -1}
+      onClick={() => onSelect(index)}
+      className={cn(
+        "relative h-2 rounded-full transition-all duration-300 ease-out touch-manipulation",
+        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#22d3ee]",
+        active
+          ? "w-8 bg-[linear-gradient(90deg,#7c3aed,#22d3ee)] shadow-[0_0_10px_rgba(124,58,237,0.45)]"
+          : "w-2 bg-white/20 hover:bg-white/35 motion-reduce:transition-none",
+      )}
+    />
+  );
+}
+
+export type ArrowVisibility = "always" | "desktop" | "never";
+
 type CardsSliderProps = {
   cards?: CardsSliderCard[];
-  /** When true, last → first / first → last and `data-loop="true"` for tests. */
+  /** When true, wraps seamlessly from the last card back to the first. */
   loop?: boolean;
-  /** Match portfolio SelectedWorkSlider chrome (labels from next-intl). */
+  /** When true, advances automatically on a timer (pauses on hover/drag/hidden/interaction). */
+  autoplay?: boolean;
+  /** Milliseconds between autoplay advances. Defaults to 5000. */
+  autoplayDelay?: number;
+  /** Milliseconds to pause autoplay after a user interaction. Defaults to 6000. */
+  autoplayResumeDelay?: number;
+  /** When arrows are shown. "desktop" = only at ≥1024px. */
+  arrowsOn?: ArrowVisibility;
+  /** Show pagination dots below the rail. Defaults true when count > 1. */
+  showDots?: boolean;
   ariaScrollLeft?: string;
   ariaScrollRight?: string;
   ariaRegion?: string;
   ariaRoleDescription?: string;
   viewDetailsLabel?: string;
+  /** Builds per-slide aria-label, e.g. `(current, total) => "Slide 2 of 6"`. */
+  slideLabel?: (current: number, total: number) => string;
 };
 
 export function CardsSlider({
   cards: cardsProp,
   loop = false,
+  autoplay = false,
+  autoplayDelay = 5000,
+  autoplayResumeDelay = 6000,
+  arrowsOn = "always",
+  showDots,
   ariaScrollLeft = "Scroll left",
   ariaScrollRight = "Scroll right",
   ariaRegion = "Carousel",
   ariaRoleDescription = "carousel",
   viewDetailsLabel = "View Details",
+  slideLabel,
 }: CardsSliderProps) {
   const cards = cardsProp ?? DEMO_CARDS;
+  const count = cards.length;
   const uid = useId();
   const idBase = `cs${uid.replace(/[^a-zA-Z0-9]/g, "")}`;
   const gradPrev = `${idBase}-gp`;
@@ -159,299 +297,151 @@ export function CardsSlider({
   const prevBtnId = `selected-work-prev-${idBase}`;
   const nextBtnId = `selected-work-next-${idBase}`;
 
+  const layout = useSliderLayout();
+  const visible = Math.max(1, Math.min(layout.visible, count));
+  const gap = layout.gap;
+
+  const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const [maxScroll, setMaxScroll] = useState(0);
-  const [slideStep, setSlideStep] = useState(FALLBACK_SLIDE_STEP);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const x: MotionValue<number> = useMotionValue(0);
+  const prefersReducedMotion = useReducedMotion() ?? false;
 
-  const count = cards.length;
-  const showNav = count > 1;
-
-  const measure = useCallback(() => {
-    const vp = viewportRef.current;
-    const tr = trackRef.current;
-    if (!vp || !tr) return;
-    const slides = tr.querySelectorAll("[data-embla-slide]");
-    let step = FALLBACK_SLIDE_STEP;
-    if (slides.length >= 2) {
-      const a = slides[0] as HTMLElement;
-      const b = slides[1] as HTMLElement;
-      step = Math.max(1, Math.round(b.offsetLeft - a.offsetLeft));
-    } else if (slides.length === 1) {
-      const one = slides[0] as HTMLElement;
-      step = Math.max(1, Math.round(one.getBoundingClientRect().width + 16));
-    }
-    setSlideStep(step);
-
-    const max = Math.max(0, tr.scrollWidth - vp.clientWidth);
-    setMaxScroll(max);
-    const pos = -x.get();
-    if (pos > max) x.set(-max);
-    if (pos < 0) x.set(0);
-  }, [x]);
-
+  // Measure the rail viewport so card widths can divide it cleanly.
+  const [viewportWidth, setViewportWidth] = useState(0);
   useEffect(() => {
-    const initial = requestAnimationFrame(() => {
-      measure();
-    });
-    const ro = new ResizeObserver(() => {
-      requestAnimationFrame(measure);
-    });
     const vp = viewportRef.current;
-    const tr = trackRef.current;
-    if (vp) ro.observe(vp);
-    if (tr) ro.observe(tr);
+    if (!vp) return;
+    let rafId = 0;
+    const schedule = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        setViewportWidth(vp.clientWidth);
+      });
+    };
+    schedule();
+    const ro = new ResizeObserver(schedule);
+    ro.observe(vp);
     return () => {
-      cancelAnimationFrame(initial);
+      if (rafId) cancelAnimationFrame(rafId);
       ro.disconnect();
     };
-  }, [cards, measure]);
+  }, []);
 
+  // Card width is the viewport minus inter-card gaps, divided by visibleCount.
+  // Math.floor prevents sub-pixel overflow that would cause a slight clip.
+  const cardWidth = useMemo(() => {
+    if (viewportWidth <= 0) return 0;
+    const totalGap = (visible - 1) * gap;
+    return Math.max(160, Math.floor((viewportWidth - totalGap) / visible));
+  }, [viewportWidth, visible, gap]);
+
+  /** Distance to advance for one slide step. */
+  const slideStep = cardWidth + gap;
+
+  const cardHeight = useMemo(() => {
+    if (visible >= 4) return CARD_HEIGHT_DESKTOP;
+    if (visible >= 2) return CARD_HEIGHT_TABLET;
+    return CARD_HEIGHT_MOBILE;
+  }, [visible]);
+
+  /** Base virtual index for the middle copy, so "0" canonically equals this value. */
+  const CANONICAL_BASE = loop ? count * LOOP_ANCHOR_COPY : 0;
+
+  /**
+   * Virtual index is the SOURCE OF TRUTH for the slider position. The track's
+   * x motion value is derived from it. Rapid clicks bump this integer
+   * deterministically; React re-renders, the effect below retargets the
+   * animation (or snaps instantly on resize). No drift, no lost clicks.
+   */
+  const [virtualIdx, setVirtualIdx] = useState<number>(() => CANONICAL_BASE);
+
+  /**
+   * Synchronous mirror of `virtualIdx`. Event handlers (rapid clicks, drag end,
+   * autoplay tick) write here BEFORE React commits the next render — that way
+   * a follow-up handler in the same tick reads the latest position rather than
+   * the stale React state value, and we cannot lose increments.
+   */
+  const virtualIdxRef = useRef<number>(CANONICAL_BASE);
   useEffect(() => {
-    x.set(0);
-    const id = requestAnimationFrame(() => {
-      setActiveIndex(0);
-    });
-    return () => cancelAnimationFrame(id);
-  }, [cards.length, x]);
+    virtualIdxRef.current = virtualIdx;
+  }, [virtualIdx]);
 
-  const snapX = useCallback(
-    (index: number) => {
-      const raw = index * slideStep;
-      return -Math.min(raw, maxScroll);
-    },
-    [maxScroll, slideStep],
-  );
+  // Reset when the card set or base changes (e.g. locale swap, count change).
+  useEffect(() => {
+    virtualIdxRef.current = CANONICAL_BASE;
+    setVirtualIdx(CANONICAL_BASE);
+  }, [CANONICAL_BASE, count]);
 
-  const scrollToIndex = useCallback(
-    (index: number) => {
-      const clamped = Math.max(0, Math.min(count - 1, index));
-      setActiveIndex(clamped);
-      animate(x, snapX(clamped), {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-        mass: 1,
-      });
-    },
-    [count, snapX, x],
-  );
+  /** Active canonical index (0..count-1) — drives dots / live region. */
+  const activeIndex = useMemo(() => {
+    if (count <= 0) return 0;
+    return (((virtualIdx - CANONICAL_BASE) % count) + count) % count;
+  }, [virtualIdx, CANONICAL_BASE, count]);
 
-  const goNext = useCallback(() => {
-    if (!showNav) return;
-    setActiveIndex((prev) => {
-      const n = loop ? (prev + 1) % count : Math.min(prev + 1, count - 1);
-      void animate(x, snapX(n), {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-        mass: 1,
-      });
-      return n;
-    });
-  }, [count, loop, showNav, snapX, x]);
+  /** In non-loop mode, how far we can scroll before running out of cards. */
+  const maxVirtualNonLoop = useMemo(() => {
+    if (loop) return Number.POSITIVE_INFINITY;
+    return Math.max(0, count - visible);
+  }, [loop, count, visible]);
 
-  const goPrev = useCallback(() => {
-    if (!showNav) return;
-    setActiveIndex((prev) => {
-      const n = loop ? (prev - 1 + count) % count : Math.max(prev - 1, 0);
-      void animate(x, snapX(n), {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-        mass: 1,
-      });
-      return n;
-    });
-  }, [count, loop, showNav, snapX, x]);
+  const showNav = count > 1 && (loop || maxVirtualNonLoop > 0);
+  const dotsVisible = (showDots ?? true) && count > 1 && (loop || maxVirtualNonLoop > 0);
 
-  const scrollTo = useCallback(
-    (dir: "left" | "right") => {
-      if (dir === "left") goPrev();
-      else goNext();
-    },
-    [goNext, goPrev],
-  );
+  // Track the previous slideStep so we can detect resize vs navigation.
+  const prevSlideStepRef = useRef(0);
+  const prevVirtualIdxRef = useRef<number>(CANONICAL_BASE);
+  const hasMountedRef = useRef(false);
 
-  const onDragEndSnap = useCallback(() => {
-    if (!showNav || maxScroll <= 0) return;
-    const pos = -x.get();
-    const idx = Math.round(pos / slideStep);
-    const clamped = Math.max(0, Math.min(count - 1, idx));
-    scrollToIndex(clamped);
-  }, [count, maxScroll, scrollToIndex, showNav, slideStep, x]);
+  /**
+   * Drive x from virtualIdx + slideStep. This effect is the SINGLE WRITER for
+   * animated motion. Any navigation change (setVirtualIdx) reruns it, stops the
+   * previous animation cleanly, and starts a fresh one from the current x.
+   *
+   * Important: callers (advance / drag end / autoplay) ALWAYS pre-wrap
+   * virtualIdx + x so the target stays inside the rendered triple-copy track.
+   * This effect therefore never has to wrap post-animation, and the rail can
+   * never scroll into a blank region — even under sustained rapid clicking.
+   */
+  useEffect(() => {
+    if (slideStep <= 0) return;
+    const target = -virtualIdx * slideStep;
 
-  const onKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLDivElement>) => {
-      if (!showNav) return;
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        goPrev();
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        goNext();
-      }
-    },
-    [goNext, goPrev, showNav],
-  );
+    const isFirst = !hasMountedRef.current;
+    const slideStepChanged = prevSlideStepRef.current !== slideStep;
+    const virtualIdxChanged = prevVirtualIdxRef.current !== virtualIdx;
+    prevSlideStepRef.current = slideStep;
+    prevVirtualIdxRef.current = virtualIdx;
+    hasMountedRef.current = true;
 
-  return (
-    <div className="group/slider relative mx-auto w-full max-w-[min(100%,90rem)] px-3 py-4 sm:px-5 sm:py-5 md:px-8 md:py-6">
-      {showNav ? (
-        <>
-          <BrandArrow
-            direction="prev"
-            gradId={gradPrev}
-            id={prevBtnId}
-            ariaLabel={ariaScrollLeft}
-            onPress={() => scrollTo("left")}
-          />
-          <BrandArrow
-            direction="next"
-            gradId={gradNext}
-            id={nextBtnId}
-            ariaLabel={ariaScrollRight}
-            onPress={() => scrollTo("right")}
-          />
-        </>
-      ) : null}
+    // Resize / mount: snap instantly to avoid an entrance slide-in.
+    const shouldSnap =
+      isFirst ||
+      prefersReducedMotion ||
+      (slideStepChanged && !virtualIdxChanged);
 
-      <div
-        ref={viewportRef}
-        className="-mx-1 cursor-grab overflow-hidden px-1 py-3 active:cursor-grabbing sm:-mx-3 sm:px-3 sm:py-4 md:-mx-4 md:px-4"
-        data-testid="selected-work-viewport"
-        data-selected-snap={activeIndex}
-        data-loop={loop ? "true" : "false"}
-        data-slide-count={count}
-        tabIndex={showNav ? 0 : undefined}
-        role="region"
-        aria-roledescription={ariaRoleDescription}
-        aria-label={ariaRegion}
-        onKeyDown={onKeyDown}
-      >
-        <motion.div
-          ref={trackRef}
-          drag={showNav && maxScroll > 0 ? "x" : false}
-          dragConstraints={{ left: -maxScroll, right: 0 }}
-          dragElastic={0.1}
-          dragMomentum
-          style={{ x }}
-          onDragEnd={onDragEndSnap}
-          className="flex gap-4 sm:gap-6"
-        >
-          {cards.map((card) => (
-            <motion.div
-              key={card.id}
-              data-embla-slide=""
-              className="h-[clamp(17.25rem,52vw,23.75rem)] w-[min(20rem,calc(100vw-2.25rem))] min-w-[min(20rem,calc(100vw-2.25rem))] max-w-[min(20rem,calc(100vw-2.25rem))] shrink-0 md:h-[380px] md:w-[320px] md:min-w-[320px] md:max-w-[320px]"
-              whileHover={{ y: -10, transition: { duration: 0.3 } }}
-            >
-              <CardContent
-                card={card}
-                viewDetailsLabel={viewDetailsLabel}
-                ctaHref={card.href}
-              />
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </div>
-  );
-}
+    if (shouldSnap) {
+      x.set(target);
+      return;
+    }
 
-function CardContent({
-  card,
-  viewDetailsLabel,
-  ctaHref,
-}: {
-  card: CardsSliderCard;
-  viewDetailsLabel: string;
-  ctaHref?: string;
-}) {
-  return (
-    <Card
-      className={cn(
-        "group/card relative flex h-full min-h-0 flex-col overflow-hidden rounded-3xl",
-        "border-border bg-card/95 text-card-foreground shadow-[0_14px_44px_-18px_rgba(0,0,0,0.75)]",
-        "backdrop-blur-md transition-[border-color,box-shadow] duration-500 ease-out",
-        "hover:border-primary/35 hover:shadow-[0_20px_50px_-14px_rgba(0,0,0,0.65),0_0_0_1px_var(--glow-purple),0_0_36px_var(--glow-cyan)]",
-      )}
-    >
-      <div className="relative h-40 shrink-0 overflow-hidden bg-surface ring-1 ring-inset ring-white/[0.06] sm:h-44">
-        {card.cover ? (
-          <div className="h-full w-full [&_.portfolio-cover]:min-h-[10rem] sm:[&_.portfolio-cover]:min-h-[11rem]">
-            {card.cover}
-          </div>
-        ) : card.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- demo Unsplash URLs; portfolio uses `cover` slot
-          <img
-            src={card.imageUrl}
-            alt={card.title}
-            draggable={false}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-110"
-          />
-        ) : null}
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-background/55 to-transparent opacity-70 transition-opacity duration-300 group-hover/card:opacity-55"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_100%,rgba(124,58,237,0.12),transparent_55%)]"
-          aria-hidden
-        />
-      </div>
+    const controls = animate(x, target, SPRING_TRANSITION);
+    return () => {
+      controls.stop();
+    };
+  }, [virtualIdx, slideStep, prefersReducedMotion, x]);
 
-      {ctaHref ? (
-        <div className="flex min-h-0 flex-1 flex-col gap-3 border-t border-white/[0.06] bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)] px-4 pb-4 pt-3 sm:px-5 sm:pb-5 sm:pt-3.5">
-          <div className="min-h-0 space-y-1.5">
-            <h3 className="text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
-              {card.title}
-            </h3>
-            <p className="line-clamp-2 text-xs leading-snug text-slate-500 sm:text-sm sm:leading-relaxed">
-              {card.description}
-            </p>
-          </div>
-          <span className="gradient-border-wrap gradient-border-wrap--subtle mt-auto inline-flex w-fit max-w-full rounded-full self-start">
-            <motion.a
-              href={ctaHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              draggable={false}
-              onDragStart={(e) => e.preventDefault()}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              className={cn(
-                "group/btn gradient-border-inner inline-flex h-11 max-w-full shrink items-center justify-center gap-1.5 rounded-full px-3.5 sm:gap-2 sm:px-5 md:px-6",
-                "text-[0.8125rem] font-semibold leading-none tracking-wide text-white no-underline outline-none touch-manipulation sm:text-sm",
-                "transition-shadow duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]",
-                "hover:shadow-[0_0_18px_rgba(124,58,237,0.35),0_0_28px_rgba(34,211,238,0.12)]",
-              )}
-              aria-label={`${card.title} — ${viewDetailsLabel}`}
-            >
-              {viewDetailsLabel}
-              <span
-                aria-hidden
-                className="inline-block transition-transform duration-200 group-hover/btn:translate-x-0.5"
-              >
-                →
-              </span>
-            </motion.a>
-          </span>
-        </div>
-      ) : (
-        <div className="flex min-h-0 flex-1 flex-col gap-2 border-t border-white/[0.06] bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)] px-4 pb-4 pt-3 sm:px-5 sm:pb-5 sm:pt-3.5">
-          <div className="min-h-0 space-y-1.5">
-            <h3 className="text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
-              {card.title}
-            </h3>
-            <p className="line-clamp-2 text-xs leading-snug text-slate-500 sm:text-sm sm:leading-relaxed">
-              {card.description}
-            </p>
-          </div>
-        </div>
-      )}
-    </Card>
-  );
-}
+  // ————— Navigation API —————
+  const lastInteractionAtRef = useRef(0);
+  const markInteraction = useCallback(() => {
+    lastInteractionAtRef.current = Date.now();
+  }, []);
+
+  /**
+   * Pre-animation safe-wrap. Given a *raw* desired virtualIdx, returns the
+   * equivalent index inside the canonical range plus the x shift needed to
+   * keep the visual position content-identical.
+   *
+   * Why: the rendered track only contains `LOOP_COPIES * count` cards. If we
+   * let `virtualIdx` (and therefore the animation target `-virtualIdx*S`)
+   *

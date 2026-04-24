@@ -67,7 +67,8 @@ export function ScrollToTopButton() {
     const hero = document.getElementById("hero");
     if (hero) {
       scrollToElementWithLenis(hero, lenis, Boolean(reduce));
-      window.history.replaceState(null, "", "#hero");
+      // Don't write #hero to the URL — keeps reloads landing at top instead
+      // of triggering an auto-scroll on the next refresh.
       return;
     }
     scrollToTopWithLenis(lenis, Boolean(reduce));
@@ -107,10 +108,4 @@ export function ScrollToTopButton() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-            </svg>
-          </span>
-        </span>
-      </span>
-    </button>
-  );
-}
+    

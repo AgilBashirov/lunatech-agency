@@ -251,7 +251,11 @@ export function AgencyNarrativeSection() {
               aria-labelledby={`${uid}-tab-${active}`}
               className={styles.panelOuter}
             >
-              <div ref={panelMeasureRef} className={styles.measureHost}>
+              <div
+                ref={panelMeasureRef}
+                className={styles.measureHost}
+                aria-hidden
+              >
                 <div className={styles.measureStack}>
                   <div
                     ref={(el) => {
@@ -327,10 +331,4 @@ export function AgencyNarrativeSection() {
                   ) : null}
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </Container>
-    </section>
-  );
-}
+            </div

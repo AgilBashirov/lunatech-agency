@@ -1,6 +1,6 @@
 "use client";
 
-import { Center, useGLTF, useProgress } from "@react-three/drei";
+import { Center, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Suspense,
@@ -14,73 +14,25 @@ import * as THREE from "three";
 import { useMoonReady } from "@/context/moon-ready";
 import { useMoonBackdropVisualBox } from "@/hooks/useMoonBackdropVisualBox";
 
-function MoonLoadGate({ onReady }: { onReady: () => void }) {
-  const { active, progress } = useProgress();
+/**
+ * Fires `onReady` on the first WebGL render frame. Replaces the previous
+ * `MoonLoadGate` which relied on drei's `useProgress` — that hook tracks
+ * `THREE.DefaultLoadingManager` events, and now that we no longer load any
+ * external resource (no GLB), the progress event never reaches 100, so the
+ * "ready" callback was never firing and the hero placeholder glow stayed
+ * stuck on top of the moon.
+ *
+ * For a procedural mesh the right "ready" moment is simply when the renderer
+ * has produced its first frame — that's exactly what `useFrame` gives us.
+ */
+function MoonReadyOnFirstFrame({ onReady }: { onReady: () => void }) {
   const fired = useRef(false);
-  const frames = useRef(0);
-  const activeRef = useRef(active);
-  const progressRef = useRef(progress);
-
-  useLayoutEffect(() => {
-    activeRef.current = active;
-    progressRef.current = progress;
-  }, [active, progress]);
-
-  useEffect(() => {
-    if (fired.current) return;
-    if (!active && progress >= 100) {
-      fired.current = true;
-      onReady();
-    }
-  }, [active, progress, onReady]);
-
-  useEffect(() => {
-    if (fired.current) return;
-    const t = window.setTimeout(() => {
-      if (fired.current) return;
-      fired.current = true;
-      onReady();
-    }, 8000);
-    return () => window.clearTimeout(t);
-  }, [onReady]);
-
   useFrame(() => {
     if (fired.current) return;
-    frames.current += 1;
-    if (
-      frames.current >= 48 &&
-      !activeRef.current &&
-      progressRef.current < 100
-    ) {
-      fired.current = true;
-      onReady();
-    }
+    fired.current = true;
+    onReady();
   });
-
   return null;
-}
-
-/** Opaque PBR — avoids transparency sorting artifacts on layered GLTF meshes. */
-function softenMaterials(root: THREE.Object3D) {
-  root.traverse((child) => {
-    const mesh = child as THREE.Mesh;
-    if (!mesh.isMesh || !mesh.material) return;
-    const mats = Array.isArray(mesh.material)
-      ? mesh.material
-      : [mesh.material];
-    for (const m of mats) {
-      if (
-        m instanceof THREE.MeshStandardMaterial ||
-        m instanceof THREE.MeshPhysicalMaterial
-      ) {
-        m.transparent = false;
-        m.opacity = 1;
-        m.depthWrite = true;
-        m.roughness = Math.min(1, m.roughness + 0.08);
-        m.metalness = Math.max(0, m.metalness - 0.06);
-      }
-    }
-  });
 }
 
 function FallbackMoon({ segments = 64 }: { segments?: number }) {
@@ -102,6 +54,37 @@ function FallbackMoon({ segments = 64 }: { segments?: number }) {
   );
 }
 
+/**
+ * Cleans up the loaded GLB so the layered meshes render correctly under our
+ * lighting rig (some authoring tools leave transparency / depthWrite settings
+ * that cause z-fighting on a sphere with multiple texture passes).
+ */
+function softenMaterials(root: THREE.Object3D) {
+  root.traverse((child) => {
+    const mesh = child as THREE.Mesh;
+    if (!mesh.isMesh || !mesh.material) return;
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    for (const m of mats) {
+      if (
+        m instanceof THREE.MeshStandardMaterial ||
+        m instanceof THREE.MeshPhysicalMaterial
+      ) {
+        m.transparent = false;
+        m.opacity = 1;
+        m.depthWrite = true;
+        m.roughness = Math.min(1, m.roughness + 0.08);
+        m.metalness = Math.max(0, m.metalness - 0.06);
+      }
+    }
+  });
+}
+
+/**
+ * High-fidelity moon model. Loaded lazily via Suspense — while the GLB is
+ * downloading, `FallbackMoon` is shown by the parent `<Suspense>` boundary,
+ * so the user sees something on the first frame and the detailed model
+ * fades in once it's parsed.
+ */
 function GLTFMoon() {
   const { scene } = useGLTF("/models/moon.glb");
   const clone = useMemo(() => {
@@ -109,7 +92,6 @@ function GLTFMoon() {
     softenMaterials(c);
     return c;
   }, [scene]);
-
   return (
     <Center>
       <primitive object={clone} scale={1.15} />
@@ -138,11 +120,6 @@ function ScrollAndIdleGroup({
   const idleY = useRef(0);
 
   const targetPosY = useRef(0);
-  const targetPosZ = useRef(0);
-  const targetScale = useRef(1);
-
-  const targetCamZ = useRef(BASE_CAMERA_Z);
-  const targetCamY = useRef(0);
 
   const reduceMotionRef = useRef(false);
 
@@ -169,18 +146,18 @@ function ScrollAndIdleGroup({
       const reduce = reduceMotionRef.current ? 0.1 : 1;
       const blend = tier * reduce;
 
+      // Scroll-coupled rotation + slight position drift. Scale and camera-Z
+      // are intentionally NOT updated from scroll — those visually grow /
+      // shrink the moon as the page scrolls, which the design no longer
+      // wants. The moon's apparent size now stays constant while only its
+      // orientation tracks the scroll progress.
       targetRotY.current = p * Math.PI * 3.85 * blend;
       targetRotX.current = p * 0.58 * blend;
 
       targetPosY.current = (p - 0.5) * 0.42 * blend;
-      targetPosZ.current = p * 0.34 * blend;
-
-      const scaleTop = 1 + 0.058 * blend;
-      const scaleBottom = 1 - 0.024 * blend;
-      targetScale.current = THREE.MathUtils.lerp(scaleTop, scaleBottom, p);
-
-      targetCamZ.current = BASE_CAMERA_Z - p * 0.52 * blend;
-      targetCamY.current = (p - 0.5) * 0.16 * blend;
+      // targetPosZ.current intentionally left at 0 — moving along Z would
+      // change the perspective size of the sphere, reading as "the moon
+      // grew / shrank" while scrolling.
     };
 
     const schedule = () => {
@@ -202,7 +179,7 @@ function ScrollAndIdleGroup({
     }
   }, [offsetX]);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     const idleMul = reduceMotionRef.current ? 0.18 : 1;
     idleY.current +=
       delta * ((2 * Math.PI) / 24) * idleTimeScale * idleMul;
@@ -215,6 +192,7 @@ function ScrollAndIdleGroup({
 
     if (!group.current) return;
 
+    // Rotation tracks scroll + idle drift.
     group.current.rotation.y = scrollRotY.current + idleY.current * 0.2;
     group.current.rotation.x = THREE.MathUtils.lerp(
       group.current.rotation.x,
@@ -222,6 +200,10 @@ function ScrollAndIdleGroup({
       0.048,
     );
 
+    // Position-X holds at the configured offsetX; position-Y drifts very
+    // slightly with scroll so the moon doesn't feel frozen, but stays inside
+    // a fixed visual frame. Position-Z and scale are NOT touched — the
+    // moon's apparent size must stay constant during scroll.
     group.current.position.x = THREE.MathUtils.lerp(
       group.current.position.x,
       offsetX,
@@ -232,32 +214,6 @@ function ScrollAndIdleGroup({
       targetPosY.current,
       0.078,
     );
-    group.current.position.z = THREE.MathUtils.lerp(
-      group.current.position.z,
-      targetPosZ.current,
-      0.072,
-    );
-
-    const s = THREE.MathUtils.lerp(
-      group.current.scale.x,
-      targetScale.current,
-      0.06,
-    );
-    group.current.scale.setScalar(s);
-
-    const cam = state.camera;
-    if (cam instanceof THREE.PerspectiveCamera) {
-      cam.position.z = THREE.MathUtils.lerp(
-        cam.position.z,
-        targetCamZ.current,
-        0.055,
-      );
-      cam.position.y = THREE.MathUtils.lerp(
-        cam.position.y,
-        targetCamY.current,
-        0.05,
-      );
-    }
   });
 
   return <group ref={group}>{children}</group>;
@@ -280,7 +236,7 @@ function MoonWorld({
 }) {
   return (
     <>
-      <MoonLoadGate onReady={onReady} />
+      <MoonReadyOnFirstFrame onReady={onReady} />
       <ambientLight intensity={0.14} />
       <hemisphereLight args={["#c4d2ea", "#1a1028", 0.52]} />
       <directionalLight
@@ -298,6 +254,12 @@ function MoonWorld({
         idleTimeScale={idleTimeScale}
         scrollMotionScale={scrollMotionScale}
       >
+        {/*
+          Suspense fallback shows the procedural FallbackMoon immediately
+          while the high-detail GLB is being fetched/parsed. Once the GLTF
+          resolves, the detailed model takes over with no visible jump
+          (same scale + position via <Center scale={1.15}>).
+        */}
         <Suspense fallback={<FallbackMoon segments={sphereSegments} />}>
           {useFile ? <GLTFMoon /> : <FallbackMoon segments={sphereSegments} />}
         </Suspense>
@@ -322,19 +284,27 @@ export function MoonScene({
   scrollMotionScale?: number;
 }) {
   const { markMoonReady } = useMoonReady();
-  const [useFile, setUseFile] = useState(false);
-  const [checked, setChecked] = useState(false);
   const backdropBox = useMoonBackdropVisualBox();
+  const [useFile, setUseFile] = useState(false);
 
+  /**
+   * Probe the GLB before requesting it. If the file is missing or the network
+   * fails, we never call `useGLTF` so React doesn't suspend forever — the
+   * procedural FallbackMoon stays as the rendered moon.
+   *
+   * Note: the placeholder glow over the hero is dismissed by
+   * `MoonReadyOnFirstFrame` as soon as the canvas paints its first frame,
+   * which happens with the procedural moon — so the user never has to wait
+   * for the GLB before the page chrome settles.
+   */
   useEffect(() => {
     let cancelled = false;
     fetch("/models/moon.glb", { method: "HEAD" })
       .then((res) => {
         if (!cancelled && res.ok) setUseFile(true);
       })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setChecked(true);
+      .catch(() => {
+        // Network failure → stick with the procedural moon.
       });
     return () => {
       cancelled = true;
@@ -342,15 +312,10 @@ export function MoonScene({
   }, []);
 
   useEffect(() => {
-    if (!checked) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       markMoonReady();
     }
-  }, [checked, markMoonReady]);
-
-  if (!checked) {
-    return null;
-  }
+  }, [markMoonReady]);
 
   const invScale = backdropBox.scale > 0 ? 1 / backdropBox.scale : 1;
   const innerW = Math.max(1, backdropBox.innerW);
@@ -374,24 +339,4 @@ export function MoonScene({
         <Canvas
           camera={{ position: [0, 0, BASE_CAMERA_Z], fov: 40 }}
           dpr={[1, dprMax]}
-          resize={{ scroll: false }}
-          gl={{
-            alpha: true,
-            antialias,
-            powerPreference: "high-performance",
-          }}
-          style={{ background: "transparent", width: "100%", height: "100%" }}
-        >
-          <MoonWorld
-            useFile={useFile}
-            offsetX={offsetX}
-            sphereSegments={sphereSegments}
-            idleTimeScale={idleTimeScale}
-            scrollMotionScale={scrollMotionScale}
-            onReady={markMoonReady}
-          />
-        </Canvas>
-      </div>
-    </div>
-  );
-}
+          

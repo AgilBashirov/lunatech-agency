@@ -52,9 +52,14 @@ export function PortfolioSection() {
           </div>
         </Reveal>
       </Container>
-      <div className="relative mt-8 w-full min-w-0 overflow-x-visible pb-1">
+      <div className="relative mt-10 w-full min-w-0 overflow-x-visible pb-1 sm:mt-12">
+        {/*
+          Soft focus veil — keeps the moon atmospheric without fighting the card
+          row. Lower opacity + taller/narrower ellipse so the rail area is clear
+          and the fade tapers smoothly into the surrounding section.
+        */}
         <div
-          className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[min(72vh,560px)] w-[min(118vw,1600px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(5,6,10,0.5)_0%,rgba(5,6,10,0.22)_45%,transparent_72%)]"
+          className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[min(68vh,520px)] w-[min(108vw,1480px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(5,6,10,0.42)_0%,rgba(5,6,10,0.18)_50%,transparent_78%)]"
           aria-hidden
         />
         <div className="relative z-[1]">
@@ -62,14 +67,5 @@ export function PortfolioSection() {
             key={locale}
             cards={cards}
             loop
-            ariaScrollLeft={t("sliderPrev")}
-            ariaScrollRight={t("sliderNext")}
-            ariaRegion={t("sliderNavLabel")}
-            ariaRoleDescription={t("sliderAriaCarouselRole")}
-            viewDetailsLabel={t("viewCase")}
-          />
-        </div>
-      </div>
-    </Section>
-  );
-}
+            autoplay
+            autop

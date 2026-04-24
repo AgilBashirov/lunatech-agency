@@ -3,17 +3,26 @@
 .section {
   position: relative;
   isolation: isolate;
-  scroll-margin-top: 7.25rem;
+  /* Match the global Section primitive's vertical rhythm: py-16 / py-20 / py-28. */
+  scroll-margin-top: 7rem;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
   background:
     radial-gradient(ellipse 72% 48% at 50% 0%, rgba(124, 58, 237, 0.08), transparent 58%),
     linear-gradient(180deg, rgba(11, 15, 26, 0.4) 0%, transparent 45%);
-  padding-block: clamp(3rem, 5.5vw, 5rem);
+  padding-block: 4rem;
+}
+
+@media (min-width: 640px) {
+  .section {
+    padding-block: 5rem;
+    scroll-margin-top: 8rem;
+  }
 }
 
 @media (min-width: 768px) {
   .section {
-    scroll-margin-top: 6.5rem;
+    padding-block: 7rem;
+    scroll-margin-top: 6rem;
   }
 }
 
@@ -60,7 +69,10 @@
 
 .stackCard {
   margin: 0;
-  padding: clamp(1.15rem, 3vw, 1.5rem) clamp(1.1rem, 3vw, 1.35rem);
+  /* Bumped lower bounds so the prose has comfortable breathing room on
+     320 px viewports (was clamping to ~11 px horizontal on the smallest
+     screens — too cramped for body copy). */
+  padding: clamp(1.25rem, 3.2vw, 1.5rem) clamp(1.25rem, 4vw, 1.5rem);
   border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.09);
   background:
@@ -168,12 +180,13 @@
 }
 
 .tab {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
   width: 100%;
   margin: 0;
-  padding: 0.62rem 0.55rem 0.62rem 0.65rem;
+  padding: 0.62rem 0.55rem 0.62rem 0.75rem;
   border: none;
   border-radius: 0.6rem;
   background: transparent;
@@ -185,14 +198,35 @@
   line-height: 1.35;
   text-align: left;
   cursor: pointer;
+  /* Animate the active rail via ::before so the underlying tab doesn't repaint. */
   transition:
-    color var(--duration-normal, 300ms) ease,
-    background-color var(--duration-normal, 300ms) ease;
+    color 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Left rail — subtle on hover, accented when active, animated in height. */
+.tab::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.9), rgba(34, 211, 238, 0.9));
+  transform: translateY(-50%);
+  transition: height 260ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
+  opacity: 0;
 }
 
 .tab:hover {
   color: rgba(244, 244, 245, 0.94);
   background: rgba(255, 255, 255, 0.04);
+}
+
+.tab:hover::before {
+  height: 40%;
+  opacity: 0.55;
 }
 
 .tab:focus-visible {
@@ -202,8 +236,19 @@
 
 .tabActive {
   color: rgba(244, 244, 245, 0.98);
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 3px 0 0 0 rgba(34, 211, 238, 0.72);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tabActive::before {
+  height: 72%;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab,
+  .tab::before {
+    transition: none;
+  }
 }
 
 .tabIndex {
@@ -289,24 +334,44 @@
 }
 
 .panelBody {
-  animation: panelReveal 320ms cubic-bezier(0.22, 1, 0.32, 1) both;
+  animation: panelReveal 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .panelBody {
     animation: none;
+    will-change: auto;
   }
 }
 
 @keyframes panelReveal {
   from {
     opacity: 0;
-    transform: translate3d(0, 5px, 0);
+    transform: translate3d(0, 8px, 0);
   }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }
+}
+
+/* Strengthen the panel's connection to the active tab: the panel card picks up
+   an accent rail on its leading edge while the tab rail pulses in from the left. */
+.panelCard {
+  position: relative;
+}
+
+.panelCard::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 12%;
+  bottom: 12%;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.0), rgba(34, 211, 238, 0.35) 40%, rgba(124, 58, 237, 0.25) 100%);
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .panelHeading {
@@ -341,92 +406,4 @@
 .step {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 0.75rem 1rem;
-  padding-bottom: clamp(0.95rem, 2vw, 1.25rem);
-}
-
-.step:last-child {
-  padding-bottom: 0;
-}
-
-.stepRail {
-  position: relative;
-  width: 0.5rem;
-  display: flex;
-  justify-content: center;
-}
-
-.stepRail::before {
-  content: "";
-  position: absolute;
-  top: 0.5rem;
-  bottom: -0.25rem;
-  width: 1px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.14),
-    rgba(255, 255, 255, 0.04)
-  );
-}
-
-.step:last-child .stepRail::before {
-  bottom: 0.5rem;
-}
-
-.stepNode {
-  position: relative;
-  z-index: 1;
-  margin-top: 0.15rem;
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(11, 15, 26, 0.95);
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.07);
-}
-
-.step:first-child .stepNode {
-  border-color: rgba(34, 211, 238, 0.42);
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
-}
-
-.stepBody {
-  min-width: 0;
-  padding-top: 0;
-}
-
-.stepMeta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.45rem 0.65rem;
-}
-
-.stepIndex {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  color: rgba(161, 161, 170, 0.92);
-}
-
-.stepLabel {
-  font-size: clamp(0.98rem, 1.2vw, 1.06rem);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  color: rgba(244, 244, 245, 0.96);
-}
-
-.stepDetail {
-  margin: 0.45rem 0 0;
-  font-size: 0.875rem;
-  line-height: 1.58;
-  color: rgba(161, 161, 170, 0.94);
-}
-
-.processFoot {
-  margin: clamp(1rem, 2vw, 1.35rem) 0 0;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: rgba(161, 161, 170, 0.9);
-}
+  gap: 0.75rem 

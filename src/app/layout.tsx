@@ -1,10 +1,4 @@
-import type { ReactNode } from "react";
-import "./globals.css";
-
-type Props = {
-  children: ReactNode;
-};
-
-export default function RootLayout({ children }: Props) {
-  return children;
-}
+import type { Viewport } from "next";
+import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
+import { getLocale } from "next-intl/server";
+import type { ReactNode } from "r
