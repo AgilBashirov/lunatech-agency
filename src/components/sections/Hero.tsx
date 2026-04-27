@@ -21,8 +21,7 @@ export function Hero() {
       return;
     }
     scrollToElementWithLenis(el, lenis, Boolean(reduce));
-    // Intentionally NOT writing the hash to the URL — keeps reloads clean
-    // (the page won't auto-scroll back here on the next refresh).
+    window.history.replaceState(null, "", "#services");
   }, [lenis, reduce]);
 
   const scrollHintClass =
@@ -146,4 +145,8 @@ function HeroVideo() {
       preload={preload}
       onError={() => setMediaOk(false)}
     >
-      <source src="/hero/hero.webm" type="video/
+      <source src="/hero/hero.webm" type="video/webm" />
+      <source src="/hero/hero.mp4" type="video/mp4" />
+    </video>
+  );
+}

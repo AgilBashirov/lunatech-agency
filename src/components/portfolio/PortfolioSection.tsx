@@ -68,4 +68,21 @@ export function PortfolioSection() {
             cards={cards}
             loop
             autoplay
-            autop
+            autoplayDelay={5000}
+            autoplayResumeDelay={6000}
+            arrowsOn="desktop"
+            showDots
+            ariaScrollLeft={t("sliderPrev")}
+            ariaScrollRight={t("sliderNext")}
+            ariaRegion={t("sliderNavLabel")}
+            ariaRoleDescription={t("sliderAriaCarouselRole")}
+            viewDetailsLabel={t("viewCase")}
+            slideLabel={(current, total) =>
+              t("sliderSlideLabel", { current, total })
+            }
+          />
+        </div>
+      </div>
+    </Section>
+  );
+}

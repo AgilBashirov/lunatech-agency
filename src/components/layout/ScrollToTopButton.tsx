@@ -108,4 +108,10 @@ export function ScrollToTopButton() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-    
+            </svg>
+          </span>
+        </span>
+      </span>
+    </button>
+  );
+}

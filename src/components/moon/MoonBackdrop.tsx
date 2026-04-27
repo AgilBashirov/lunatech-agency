@@ -37,8 +37,8 @@ function useMoonResponsive(): MoonTier {
       if (!tabletUp.matches) {
         setTier({
           offsetX: 0.6,
-          dprMax: 1, // mobile: clamp DPR to 1 (was 1.25) — fewer fragment ops, faster init
-          sphereSegments: 24, // was 32 — fewer triangles for the procedural fallback
+          dprMax: 1.25,
+          sphereSegments: 32,
           antialias: false,
           idleTimeScale: 0.5,
           scrollMotionScale: 0.4,
@@ -46,8 +46,8 @@ function useMoonResponsive(): MoonTier {
       } else if (!desktopUp.matches) {
         setTier({
           offsetX: 0.78,
-          dprMax: 1.25, // was 1.5
-          sphereSegments: 36, // was 48
+          dprMax: 1.5,
+          sphereSegments: 48,
           antialias: true,
           idleTimeScale: 0.75,
           scrollMotionScale: 0.62,
@@ -55,8 +55,8 @@ function useMoonResponsive(): MoonTier {
       } else {
         setTier({
           offsetX: 1.02,
-          dprMax: 1.75, // was 2 — barely visible quality drop, ~25% fewer pixels to shade
-          sphereSegments: 56, // was 64
+          dprMax: 2,
+          sphereSegments: 64,
           antialias: true,
           idleTimeScale: 1,
           scrollMotionScale: 0.88,
@@ -81,4 +81,12 @@ export function MoonBackdrop() {
   const tier = useMoonResponsive();
   return (
     <MoonScene
-    
+      offsetX={tier.offsetX}
+      dprMax={tier.dprMax}
+      sphereSegments={tier.sphereSegments}
+      antialias={tier.antialias}
+      idleTimeScale={tier.idleTimeScale}
+      scrollMotionScale={tier.scrollMotionScale}
+    />
+  );
+}

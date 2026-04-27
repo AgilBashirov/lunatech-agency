@@ -5,11 +5,7 @@ import { useEffect, useRef } from "react";
 import { useLenis } from "@/context/lenis-context";
 import { getScrollYToCenterElement } from "@/lib/smoothScroll";
 
-/**
- * Smooth scroll for in-page anchor *clicks* (user-initiated). Centres the
- * target vertically because Lenis bypasses the browser's `scroll-padding-top`.
- */
-function smoothScrollToHash(lenis: Lenis, id: string) {
+function scrollToHashCentered(lenis: Lenis, id: string) {
   const el = document.getElementById(id);
   if (!el) return;
   requestAnimationFrame(() => {
@@ -23,29 +19,11 @@ function smoothScrollToHash(lenis: Lenis, id: string) {
 }
 
 /**
- * INSTANT scroll for the initial-load case. We never animate the entry —
- * a page reload that lands on an anchor should appear already-positioned at
- * that anchor, not visibly scroll there from the top. (Animating it makes
- * users perceive an unexpected "page jumps down" on reload, especially when
- * other async work — fonts, the moon canvas — finishes loading at the same
- * moment as the scroll animation runs.)
- */
-function instantScrollToHash(id: string) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  // Target the same vertical centre as the smooth path uses, but jump to it
-  // synchronously without involving Lenis (Lenis would animate even with
-  // `immediate: true` on some setups).
-  const y = getScrollYToCenterElement(el);
-  window.scrollTo({ top: y, behavior: "auto" });
-}
-
-/**
- * URL hash navigation handler.
- *  - Click on an in-page anchor: smooth scroll via Lenis. We do NOT add the
- *    hash to the URL — keeping reloads clean (no auto-scroll on reload).
- *  - Initial load with a hash already in the URL (deep link): jump
- *    instantly to the target so it appears as if the page loaded there.
+ * Lenis aktiv olanda brauzerin default `#anchor` davranışı ilə sinxron deyil.
+ * Klik və ilkin `location.hash` üçün hədəf bölməni viewportun şaquli mərkəzinə
+ * yaxınlaşdırırıq ki, istifadəçi həmin blokun UI-ni rahat görsün.
+ *
+ * İlkin yükləmə: Lenis hazır olanda bir dəfə `scrollTo` (ikiqat scroll yoxdur).
  */
 export function HashScrollOnAnchors() {
   const lenis = useLenis();
@@ -72,13 +50,46 @@ export function HashScrollOnAnchors() {
 
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      if (!lenis || reduce) {
+      if (!lenis) {
         targetEl.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+        window.history.replaceState(null, "", `#${id}`);
         return;
       }
 
-      smoothScrollToHash(lenis, id);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          lenis.scrollTo(getScrollYToCenterElement(targetEl), {
+            programmatic: true,
+            force: true,
+          });
+          window.history.replaceState(null, "", `#${id}`);
+        });
+      });
     };
 
     document.addEventListener("click", onClickCapture, true);
-    return () => document.removeEventList
+    return () => document.removeEventListener("click", onClickCapture, true);
+  }, [lenis]);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash || hash.length < 2) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (initialHashDoneRef.current) return;
+      initialHashDoneRef.current = true;
+      const id = hash.slice(1);
+      const el = document.getElementById(id);
+      el?.scrollIntoView({ behavior: "auto", block: "center" });
+      return;
+    }
+
+    if (!lenis) return;
+    if (initialHashDoneRef.current) return;
+    initialHashDoneRef.current = true;
+
+    scrollToHashCentered(lenis, hash.slice(1));
+  }, [lenis]);
+
+  return null;
+}
