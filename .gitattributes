@@ -1,0 +1,18 @@
+# Normalize line endings: LF in the repo, native on checkout
+# Prevents Windows CRLF churn in tracked files
+* text=auto eol=lf
+
+# Binary assets — never touch them
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.mp4 binary
+*.webm binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.pdf binary
