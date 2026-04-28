@@ -2,6 +2,7 @@ import type { Viewport } from "next";
 import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { getLocale } from "next-intl/server";
 import type { ReactNode } from "react";
+import { PreventZoom } from "@/components/layout/PreventZoom";
 import "./globals.css";
 
 const inter = Inter({
@@ -24,6 +25,12 @@ const geistMono = Geist_Mono({
 
 export const viewport: Viewport = {
   themeColor: "#05060a",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  minimumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 type Props = { children: ReactNode };
@@ -36,6 +43,7 @@ export default async function RootLayout({ children }: Props) {
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable} antialiased`}
       >
+        <PreventZoom />
         {children}
       </body>
     </html>
