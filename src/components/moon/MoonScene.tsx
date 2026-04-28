@@ -124,11 +124,15 @@ function ScrollAndIdleGroup({
   offsetX,
   idleTimeScale = 1,
   scrollMotionScale = 1,
+  scrollZoomScale = 1,
 }: {
   children: React.ReactNode;
   offsetX: number;
   idleTimeScale?: number;
   scrollMotionScale?: number;
+  /** Drives only size-affecting transforms (posZ, scale, cameraZ). Decoupled
+   *  from scrollMotionScale so mobile/tablet can keep rotation but lock size. */
+  scrollZoomScale?: number;
 }) {
   const group = useRef<THREE.Group>(null);
 
@@ -165,21 +169,21 @@ function ScrollAndIdleGroup({
       const max = el.scrollHeight - window.innerHeight;
       const p = max > 0 ? window.scrollY / max : 0;
 
-      const tier = scrollMotionScale;
       const reduce = reduceMotionRef.current ? 0.1 : 1;
-      const blend = tier * reduce;
+      const blend = scrollMotionScale * reduce;
+      const zoomBlend = scrollZoomScale * reduce;
 
       targetRotY.current = p * Math.PI * 3.85 * blend;
       targetRotX.current = p * 0.58 * blend;
 
       targetPosY.current = (p - 0.5) * 0.42 * blend;
-      targetPosZ.current = p * 0.34 * blend;
+      targetPosZ.current = p * 0.34 * zoomBlend;
 
-      const scaleTop = 1 + 0.058 * blend;
-      const scaleBottom = 1 - 0.024 * blend;
+      const scaleTop = 1 + 0.058 * zoomBlend;
+      const scaleBottom = 1 - 0.024 * zoomBlend;
       targetScale.current = THREE.MathUtils.lerp(scaleTop, scaleBottom, p);
 
-      targetCamZ.current = BASE_CAMERA_Z - p * 0.52 * blend;
+      targetCamZ.current = BASE_CAMERA_Z - p * 0.52 * zoomBlend;
       targetCamY.current = (p - 0.5) * 0.16 * blend;
     };
 
@@ -194,7 +198,7 @@ function ScrollAndIdleGroup({
       window.removeEventListener("scroll", schedule);
       if (rafId != null) window.cancelAnimationFrame(rafId);
     };
-  }, [scrollMotionScale]);
+  }, [scrollMotionScale, scrollZoomScale]);
 
   useLayoutEffect(() => {
     if (group.current) {
@@ -269,6 +273,7 @@ function MoonWorld({
   sphereSegments,
   idleTimeScale,
   scrollMotionScale,
+  scrollZoomScale,
   onReady,
 }: {
   useFile: boolean;
@@ -276,6 +281,7 @@ function MoonWorld({
   sphereSegments: number;
   idleTimeScale: number;
   scrollMotionScale: number;
+  scrollZoomScale: number;
   onReady: () => void;
 }) {
   return (
@@ -297,6 +303,7 @@ function MoonWorld({
         offsetX={offsetX}
         idleTimeScale={idleTimeScale}
         scrollMotionScale={scrollMotionScale}
+        scrollZoomScale={scrollZoomScale}
       >
         <Suspense fallback={<FallbackMoon segments={sphereSegments} />}>
           {useFile ? <GLTFMoon /> : <FallbackMoon segments={sphereSegments} />}
@@ -313,6 +320,7 @@ export function MoonScene({
   antialias = true,
   idleTimeScale = 1,
   scrollMotionScale = 1,
+  scrollZoomScale = 1,
 }: {
   offsetX?: number;
   dprMax?: number;
@@ -320,6 +328,7 @@ export function MoonScene({
   antialias?: boolean;
   idleTimeScale?: number;
   scrollMotionScale?: number;
+  scrollZoomScale?: number;
 }) {
   const { markMoonReady } = useMoonReady();
   const [useFile, setUseFile] = useState(false);
@@ -388,6 +397,7 @@ export function MoonScene({
             sphereSegments={sphereSegments}
             idleTimeScale={idleTimeScale}
             scrollMotionScale={scrollMotionScale}
+            scrollZoomScale={scrollZoomScale}
             onReady={markMoonReady}
           />
         </Canvas>

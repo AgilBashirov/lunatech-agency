@@ -9,15 +9,18 @@ const MoonScene = dynamic(
 );
 
 /** Conservative defaults = phone tier until matchMedia runs (avoids flash / null).
- *  scrollMotionScale=0 on phone/tablet keeps the moon at a fixed visual size
- *  during scroll (no scale, posZ, or camera dolly drift). Idle rotation still runs. */
+ *  - scrollMotionScale  → drives rotation (Y/X) and incidental cam/pos Y.
+ *  - scrollZoomScale    → drives size-affecting transforms only (posZ, scale,
+ *    cameraZ). Set to 0 on phone/tablet so the moon never visually grows or
+ *    shrinks during scroll, while still spinning. */
 const DEFAULT_TIER = {
   offsetX: 0.6,
   dprMax: 1.25,
   sphereSegments: 32,
   antialias: false,
   idleTimeScale: 0.5,
-  scrollMotionScale: 0,
+  scrollMotionScale: 0.4,
+  scrollZoomScale: 0,
 } as const;
 
 type MoonTier = {
@@ -27,6 +30,7 @@ type MoonTier = {
   antialias: boolean;
   idleTimeScale: number;
   scrollMotionScale: number;
+  scrollZoomScale: number;
 };
 
 function useMoonResponsive(): MoonTier {
@@ -43,8 +47,9 @@ function useMoonResponsive(): MoonTier {
           sphereSegments: 32,
           antialias: false,
           idleTimeScale: 0.5,
-          // Lock size on mobile — no scroll-driven scale or camera dolly.
-          scrollMotionScale: 0,
+          // Mobile: keep rotation, lock size.
+          scrollMotionScale: 0.4,
+          scrollZoomScale: 0,
         });
       } else if (!desktopUp.matches) {
         setTier({
@@ -53,8 +58,9 @@ function useMoonResponsive(): MoonTier {
           sphereSegments: 48,
           antialias: true,
           idleTimeScale: 0.75,
-          // Lock size on tablet — no scroll-driven scale or camera dolly.
-          scrollMotionScale: 0,
+          // Tablet: keep rotation, lock size.
+          scrollMotionScale: 0.62,
+          scrollZoomScale: 0,
         });
       } else {
         setTier({
@@ -64,6 +70,7 @@ function useMoonResponsive(): MoonTier {
           antialias: true,
           idleTimeScale: 1,
           scrollMotionScale: 0.88,
+          scrollZoomScale: 0.88,
         });
       }
     };
@@ -91,6 +98,7 @@ export function MoonBackdrop() {
       antialias={tier.antialias}
       idleTimeScale={tier.idleTimeScale}
       scrollMotionScale={tier.scrollMotionScale}
+      scrollZoomScale={tier.scrollZoomScale}
     />
   );
 }
