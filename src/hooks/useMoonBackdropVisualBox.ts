@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type MoonBackdropBox = {
   /** Outer wrapper size before inverse scale (layout px) */
@@ -31,7 +31,10 @@ function readBox(): MoonBackdropBox {
     };
   }
 
-  const scale = typeof vv.scale === "number" && !Number.isNaN(vv.scale) && vv.scale > 0 ? vv.scale : 1;
+  const scale =
+    typeof vv.scale === "number" && !Number.isNaN(vv.scale) && vv.scale > 0
+      ? vv.scale
+      : 1;
 
   return {
     outerW: vv.width * scale,
@@ -45,13 +48,20 @@ function readBox(): MoonBackdropBox {
 }
 
 /**
- * Sizes the moon backdrop so it tracks the **visual viewport** and undoes
- * `visualViewport.scale` on the outer wrapper. Pinch-zoom / dynamic toolbars
- * then do not distort or “detach” the WebGL layer relative to what the user sees.
+ * Sizes the moon backdrop so it tracks the visual viewport.
  *
- * Note: full-page **Ctrl/Cmd +** zoom is applied by the browser to the whole
- * composited page; this hook follows the visual viewport so the backdrop stays
- * aligned with the visible area (no gaps / double-resize jank).
+ * Mobile address-bar collapse during scroll fires `visualViewport.resize`
+ * with a height-only change. Re-rendering the Canvas at the new height
+ * shifts the camera aspect and makes the moon visibly resize while the
+ * user scrolls — which we do not want. We therefore react only to:
+ *   - first mount
+ *   - width changes (orientation flip, real resize, desktop)
+ *   - orientation events
+ *   - visualViewport.scale changes (kept for safety, even though pinch is blocked)
+ *
+ * Height-only changes are intentionally ignored. The canvas keeps the
+ * height it had at first paint; the moon stays a fixed visual size while
+ * the address bar shows/hides.
  */
 export function useMoonBackdropVisualBox() {
   const [box, setBox] = useState<MoonBackdropBox>(() =>
@@ -68,21 +78,41 @@ export function useMoonBackdropVisualBox() {
       : readBox(),
   );
 
+  const lastWidthRef = useRef<number | null>(null);
+  const lastScaleRef = useRef<number | null>(null);
+
   useEffect(() => {
-    const apply = () => setBox(readBox());
+    const apply = () => {
+      const next = readBox();
+      lastWidthRef.current = next.innerW;
+      lastScaleRef.current = next.scale;
+      setBox(next);
+    };
     apply();
 
+    const onMaybeResize = () => {
+      const vv = window.visualViewport;
+      const w = vv ? vv.width : window.innerWidth;
+      const s = vv && typeof vv.scale === "number" && vv.scale > 0 ? vv.scale : 1;
+      if (lastWidthRef.current !== w || lastScaleRef.current !== s) {
+        apply();
+      }
+    };
+
+    const onOrientation = () => {
+      // Wait one frame so the browser settles new dimensions, then snapshot.
+      window.requestAnimationFrame(apply);
+    };
+
     const vv = window.visualViewport;
-    vv?.addEventListener("resize", apply);
-    vv?.addEventListener("scroll", apply);
-    window.addEventListener("resize", apply);
-    window.addEventListener("orientationchange", apply);
+    vv?.addEventListener("resize", onMaybeResize);
+    window.addEventListener("resize", onMaybeResize);
+    window.addEventListener("orientationchange", onOrientation);
 
     return () => {
-      vv?.removeEventListener("resize", apply);
-      vv?.removeEventListener("scroll", apply);
-      window.removeEventListener("resize", apply);
-      window.removeEventListener("orientationchange", apply);
+      vv?.removeEventListener("resize", onMaybeResize);
+      window.removeEventListener("resize", onMaybeResize);
+      window.removeEventListener("orientationchange", onOrientation);
     };
   }, []);
 
