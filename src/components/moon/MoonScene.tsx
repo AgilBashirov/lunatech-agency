@@ -14,6 +14,28 @@ import * as THREE from "three";
 import { useMoonReady } from "@/context/moon-ready";
 import { useMoonBackdropVisualBox } from "@/hooks/useMoonBackdropVisualBox";
 
+/** Cubic ease-in-out on scroll progress — slow start, accelerate through
+ *  the middle of the page, slow at the end. Gives every moon transform a
+ *  "weighted" feel instead of mapping linearly to scroll. */
+const easeInOutCubic = (t: number) =>
+  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+/** Linear interpolation between evenly-spaced keyframes over [0, 1].
+ *  Used to drive wrapper opacity through the page (hero bright → mid sections
+ *  dim → contact bright). */
+function sampleKeyframes(t: number, kf: ReadonlyArray<number>): number {
+  const tt = Math.min(1, Math.max(0, t));
+  const n = kf.length - 1;
+  if (n <= 0) return kf[0];
+  const segIdx = Math.min(n - 1, Math.floor(tt * n));
+  const segT = tt * n - segIdx;
+  return kf[segIdx] + (kf[segIdx + 1] - kf[segIdx]) * segT;
+}
+
+/** Eagerly start downloading the GLTF on module load so the FallbackMoon
+ *  (smooth purple sphere) never visibly pops in before the textured asset. */
+useGLTF.preload("/models/moon.glb");
+
 function MoonLoadGate({ onReady }: { onReady: () => void }) {
   const { active, progress } = useProgress();
   const fired = useRef(false);
@@ -167,24 +189,29 @@ function ScrollAndIdleGroup({
       rafId = null;
       const el = document.documentElement;
       const max = el.scrollHeight - window.innerHeight;
-      const p = max > 0 ? window.scrollY / max : 0;
+      const rawP = max > 0 ? window.scrollY / max : 0;
+      // Eased progress — premium curve, not linear scroll mapping.
+      const p = easeInOutCubic(rawP);
 
       const reduce = reduceMotionRef.current ? 0.1 : 1;
       const blend = scrollMotionScale * reduce;
       const zoomBlend = scrollZoomScale * reduce;
 
-      targetRotY.current = p * Math.PI * 3.85 * blend;
-      targetRotX.current = p * 0.58 * blend;
+      // Rotation reduced from ~600° to ~140° over full scroll — cinematic,
+      // not dizzying. Moon feels weighted/massive instead of spinning.
+      targetRotY.current = p * Math.PI * 0.78 * blend;
+      targetRotX.current = p * 0.22 * blend;
 
-      targetPosY.current = (p - 0.5) * 0.42 * blend;
-      targetPosZ.current = p * 0.34 * zoomBlend;
+      // Subtler vertical drift and depth motion to match the calmer rotation.
+      targetPosY.current = (p - 0.5) * 0.32 * blend;
+      targetPosZ.current = p * 0.28 * zoomBlend;
 
       const scaleTop = 1 + 0.058 * zoomBlend;
       const scaleBottom = 1 - 0.024 * zoomBlend;
       targetScale.current = THREE.MathUtils.lerp(scaleTop, scaleBottom, p);
 
-      targetCamZ.current = BASE_CAMERA_Z - p * 0.52 * zoomBlend;
-      targetCamY.current = (p - 0.5) * 0.16 * blend;
+      targetCamZ.current = BASE_CAMERA_Z - p * 0.42 * zoomBlend;
+      targetCamY.current = (p - 0.5) * 0.12 * blend;
     };
 
     const schedule = () => {
@@ -211,10 +238,12 @@ function ScrollAndIdleGroup({
     idleY.current +=
       delta * ((2 * Math.PI) / 24) * idleTimeScale * idleMul;
 
+    // Tighter damping (was 0.058) — moon catches up to scroll quicker but
+    // still smooth. Premium feel: snappy, not laggy.
     scrollRotY.current = THREE.MathUtils.lerp(
       scrollRotY.current,
       targetRotY.current,
-      0.058,
+      0.10,
     );
 
     if (!group.current) return;
@@ -223,29 +252,29 @@ function ScrollAndIdleGroup({
     group.current.rotation.x = THREE.MathUtils.lerp(
       group.current.rotation.x,
       targetRotX.current,
-      0.048,
+      0.09,
     );
 
     group.current.position.x = THREE.MathUtils.lerp(
       group.current.position.x,
       offsetX,
-      0.085,
+      0.13,
     );
     group.current.position.y = THREE.MathUtils.lerp(
       group.current.position.y,
       targetPosY.current,
-      0.078,
+      0.13,
     );
     group.current.position.z = THREE.MathUtils.lerp(
       group.current.position.z,
       targetPosZ.current,
-      0.072,
+      0.13,
     );
 
     const s = THREE.MathUtils.lerp(
       group.current.scale.x,
       targetScale.current,
-      0.06,
+      0.10,
     );
     group.current.scale.setScalar(s);
 
@@ -254,12 +283,12 @@ function ScrollAndIdleGroup({
       cam.position.z = THREE.MathUtils.lerp(
         cam.position.z,
         targetCamZ.current,
-        0.055,
+        0.08,
       );
       cam.position.y = THREE.MathUtils.lerp(
         cam.position.y,
         targetCamY.current,
-        0.05,
+        0.08,
       );
     }
   });
@@ -313,6 +342,42 @@ function MoonWorld({
   );
 }
 
+/** Fades the wrapper opacity through the page so the moon dims behind
+ *  text-heavy sections and brightens for hero / contact. Imperative DOM
+ *  write — no React state churn during scroll. */
+function useScrollOpacity(ref: React.RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    let rafId: number | null = null;
+
+    const apply = () => {
+      rafId = null;
+      const node = ref.current;
+      if (!node) return;
+      const max =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const rawP = max > 0 ? window.scrollY / max : 0;
+      const p = easeInOutCubic(rawP);
+      // Hero (full) → services/about/portfolio (dimmed) → contact (recover).
+      const opacity = sampleKeyframes(p, [1.0, 0.55, 0.55, 0.85]);
+      node.style.opacity = String(opacity);
+    };
+
+    const schedule = () => {
+      if (rafId != null) return;
+      rafId = window.requestAnimationFrame(apply);
+    };
+
+    apply();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+    };
+  }, [ref]);
+}
+
 export function MoonScene({
   offsetX = 0.9,
   dprMax = 2,
@@ -334,6 +399,8 @@ export function MoonScene({
   const [useFile, setUseFile] = useState(false);
   const [checked, setChecked] = useState(false);
   const backdropBox = useMoonBackdropVisualBox();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  useScrollOpacity(wrapperRef);
 
   useEffect(() => {
     let cancelled = false;
@@ -367,6 +434,7 @@ export function MoonScene({
 
   return (
     <div
+      ref={wrapperRef}
       className="pointer-events-none fixed z-[1] overflow-hidden"
       style={{
         left: backdropBox.offsetLeft,
@@ -375,7 +443,7 @@ export function MoonScene({
         height: Math.max(1, backdropBox.outerH),
         transform: `scale(${invScale})`,
         transformOrigin: "top left",
-        willChange: "transform",
+        willChange: "transform, opacity",
       }}
       aria-hidden
     >
