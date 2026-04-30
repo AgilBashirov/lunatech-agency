@@ -4,7 +4,9 @@
   position: relative;
   isolation: isolate;
   scroll-margin-top: 7.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  /* No own top border — the aboutStrip immediately above already provides the
+     dividing rule (border-y on the strip). Two stacked 1px lines created a
+     faint double-line artefact. */
   background:
     radial-gradient(ellipse 72% 48% at 50% 0%, rgba(124, 58, 237, 0.08), transparent 58%),
     linear-gradient(180deg, rgba(11, 15, 26, 0.4) 0%, transparent 45%);

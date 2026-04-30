@@ -148,7 +148,7 @@ export function Contact() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />
-              <div className="-mt-4 flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center gap-8">
                 <Button type="submit" subtleGlow>
                   {t("formSubmit")}
                 </Button>

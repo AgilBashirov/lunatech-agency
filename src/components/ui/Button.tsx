@@ -43,11 +43,13 @@ export function Button({
       <motion.span
         className={cn(
           // Resting state: just the gradient ring, no glow.
-          // Hover state: soft halo (drop shadow + cyan ambient) + 10% brightness bump on the ring.
+          // Hover state: layered premium shadow — sharp contact, mid depth,
+          // deep purple aura, soft cyan ambient, and an inset top highlight
+          // so the ring catches "light" from above.
           "gradient-border-wrap inline-flex cursor-pointer hover:brightness-110",
           subtleGlow
-            ? "hover:shadow-[0_8px_22px_-10px_rgba(124,58,237,0.35),0_0_24px_rgba(34,211,238,0.10)]"
-            : "hover:shadow-[0_12px_30px_-12px_rgba(124,58,237,0.45),0_0_34px_rgba(34,211,238,0.14)]",
+            ? "hover:shadow-[0_1px_2px_rgba(0,0,0,0.25),0_6px_14px_-4px_rgba(0,0,0,0.32),0_14px_30px_-10px_rgba(124,58,237,0.45),0_0_36px_-2px_rgba(34,211,238,0.18),inset_0_1px_0_rgba(255,255,255,0.08)]"
+            : "hover:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_18px_-4px_rgba(0,0,0,0.4),0_20px_44px_-10px_rgba(124,58,237,0.6),0_0_56px_-2px_rgba(34,211,238,0.26),inset_0_1px_0_rgba(255,255,255,0.12)]",
         )}
         {...motionHoverTap}
       >
@@ -74,9 +76,10 @@ export function Button({
         className={cn(
           base,
           "min-h-[44px] cursor-pointer border border-white/20 bg-white/5 text-white",
-          // Hover: brighter border + slightly fuller bg + a faint white drop
-          // shadow so the lift reads. Stays whisper-quiet — no neon.
-          "hover:border-white/35 hover:bg-white/10 hover:shadow-[0_8px_22px_-12px_rgba(255,255,255,0.18)]",
+          // Hover: brighter border + slightly fuller bg + layered premium
+          // shadow (sharp contact + mid depth + soft white halo + inset
+          // top highlight). Stays whisper-quiet — no neon.
+          "hover:border-white/35 hover:bg-white/10 hover:shadow-[0_1px_2px_rgba(0,0,0,0.25),0_6px_18px_-6px_rgba(0,0,0,0.4),0_0_28px_-4px_rgba(255,255,255,0.22),inset_0_1px_0_rgba(255,255,255,0.1)]",
           className,
         )}
         {...props}
