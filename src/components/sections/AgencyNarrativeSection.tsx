@@ -3,12 +3,11 @@
 import {
   useCallback,
   useId,
-  useLayoutEffect,
   useRef,
   useState,
   type KeyboardEvent,
 } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/cn";
 import styles from "./AgencyNarrativeSection.module.css";
@@ -68,7 +67,6 @@ function ProcessTimeline({
 
 export function AgencyNarrativeSection() {
   const uid = useId();
-  const locale = useLocale();
   const aboutT = useTranslations("about");
   const approachT = useTranslations("approach");
   const processT = useTranslations("process");
@@ -82,11 +80,7 @@ export function AgencyNarrativeSection() {
   const landmarkLabel = `${tabLabels[0]} · ${tabLabels[1]} · ${tabLabels[2]}`;
 
   const [active, setActive] = useState(0);
-  const [panelMinPx, setPanelMinPx] = useState(360);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const panelOuterRef = useRef<HTMLDivElement>(null);
-  const panelMeasureRef = useRef<HTMLDivElement>(null);
-  const measureSlotRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const focusTab = useCallback((index: number) => {
     const i = ((index % TAB_COUNT) + TAB_COUNT) % TAB_COUNT;
@@ -127,37 +121,6 @@ export function AgencyNarrativeSection() {
   }));
 
   const panelTitleId = `${uid}-panel-title`;
-
-  useLayoutEffect(() => {
-    const outer = panelOuterRef.current;
-    const measure = panelMeasureRef.current;
-    if (!outer || !measure) return;
-
-    const mq = window.matchMedia("(min-width: 768px)");
-
-    const syncWidthAndHeight = () => {
-      if (!mq.matches) return;
-      const w = outer.offsetWidth;
-      if (w <= 0) return;
-      measure.style.width = `${w}px`;
-      let maxH = 280;
-      for (const slot of measureSlotRefs.current) {
-        if (slot) maxH = Math.max(maxH, slot.offsetHeight);
-      }
-      if (maxH <= 0) return;
-      setPanelMinPx((prev) => (Math.abs(prev - maxH) <= 1 ? prev : maxH));
-    };
-
-    const ro = new ResizeObserver(syncWidthAndHeight);
-    ro.observe(outer);
-    ro.observe(measure);
-    syncWidthAndHeight();
-    mq.addEventListener("change", syncWidthAndHeight);
-    return () => {
-      ro.disconnect();
-      mq.removeEventListener("change", syncWidthAndHeight);
-    };
-  }, [locale]);
 
   return (
     <section
@@ -245,90 +208,82 @@ export function AgencyNarrativeSection() {
 
           <div className={styles.panelCol}>
             <div
-              ref={panelOuterRef}
               id={`${uid}-panel`}
               role="tabpanel"
               aria-labelledby={`${uid}-tab-${active}`}
               className={styles.panelOuter}
             >
-              <div
-                ref={panelMeasureRef}
-                className={styles.measureHost}
-                aria-hidden
-              >
-                <div className={styles.measureStack}>
+              {/*
+                All three panels live in the same grid cell (panelStack).
+                The cell's row height = the tallest child, so swapping the
+                visible tab never changes the section height — and the
+                "tallest" measurement happens in CSS at first paint, not in
+                a post-mount ResizeObserver.
+              */}
+              <div className={styles.panelStack}>
+                <div
+                  className={cn(
+                    styles.panelCard,
+                    active === 0 ? styles.panelVisible : styles.panelHidden,
+                  )}
+                  aria-hidden={active === 0 ? undefined : "true"}
+                >
                   <div
-                    ref={(el) => {
-                      measureSlotRefs.current[0] = el;
-                    }}
-                    className={styles.measureSlot}
+                    key={active === 0 ? `active-${active}` : "p0"}
+                    className={active === 0 ? styles.panelBody : undefined}
                   >
-                    <div className={cn(styles.panelCard, styles.measurePanel)}>
-                      <h3 className={styles.panelHeading}>{tabLabels[0]}</h3>
-                      <ProseContent paragraphs={aboutParagraphs} />
-                    </div>
-                  </div>
-                  <div
-                    ref={(el) => {
-                      measureSlotRefs.current[1] = el;
-                    }}
-                    className={styles.measureSlot}
-                  >
-                    <div className={cn(styles.panelCard, styles.measurePanel)}>
-                      <h3 className={styles.panelHeading}>{tabLabels[1]}</h3>
-                      <ProseContent paragraphs={approachParagraphs} />
-                    </div>
-                  </div>
-                  <div
-                    ref={(el) => {
-                      measureSlotRefs.current[2] = el;
-                    }}
-                    className={styles.measureSlot}
-                  >
-                    <div className={cn(styles.panelCard, styles.measurePanel)}>
-                      <h3 className={styles.panelHeading}>{tabLabels[2]}</h3>
-                      <ProcessTimeline
-                        steps={processSteps}
-                        footnote={processT("subtitle")}
-                        listLabel={processT("title")}
-                      />
-                    </div>
+                    <h3
+                      className={styles.panelHeading}
+                      id={active === 0 ? panelTitleId : undefined}
+                    >
+                      {tabLabels[0]}
+                    </h3>
+                    <ProseContent paragraphs={aboutParagraphs} />
                   </div>
                 </div>
-              </div>
-              <div
-                className={styles.panelCard}
-                style={{ minHeight: Math.max(panelMinPx, 280) }}
-              >
-                <div key={active} className={styles.panelBody}>
-                  {active === 0 ? (
-                    <>
-                      <h3 className={styles.panelHeading} id={panelTitleId}>
-                        {tabLabels[0]}
-                      </h3>
-                      <ProseContent paragraphs={aboutParagraphs} />
-                    </>
-                  ) : null}
-                  {active === 1 ? (
-                    <>
-                      <h3 className={styles.panelHeading} id={panelTitleId}>
-                        {tabLabels[1]}
-                      </h3>
-                      <ProseContent paragraphs={approachParagraphs} />
-                    </>
-                  ) : null}
-                  {active === 2 ? (
-                    <>
-                      <h3 className={styles.panelHeading} id={panelTitleId}>
-                        {tabLabels[2]}
-                      </h3>
-                      <ProcessTimeline
-                        steps={processSteps}
-                        footnote={processT("subtitle")}
-                        listLabel={processT("title")}
-                      />
-                    </>
-                  ) : null}
+                <div
+                  className={cn(
+                    styles.panelCard,
+                    active === 1 ? styles.panelVisible : styles.panelHidden,
+                  )}
+                  aria-hidden={active === 1 ? undefined : "true"}
+                >
+                  <div
+                    key={active === 1 ? `active-${active}` : "p1"}
+                    className={active === 1 ? styles.panelBody : undefined}
+                  >
+                    <h3
+                      className={styles.panelHeading}
+                      id={active === 1 ? panelTitleId : undefined}
+                    >
+                      {tabLabels[1]}
+                    </h3>
+                    <ProseContent paragraphs={approachParagraphs} />
+                  </div>
+                </div>
+                <div
+                  className={cn(
+                    styles.panelCard,
+                    active === 2 ? styles.panelVisible : styles.panelHidden,
+                  )}
+                  aria-hidden={active === 2 ? undefined : "true"}
+                >
+                  <div
+                    key={active === 2 ? `active-${active}` : "p2"}
+                    className={active === 2 ? styles.panelBody : undefined}
+                  >
+                    <h3
+                      className={styles.panelHeading}
+                      id={active === 2 ? panelTitleId : undefined}
+                    >
+                      {tabLabels[2]}
+                    </h3>
+                    <ProcessTimeline
+                      steps={processSteps}
+                      footnote={processT("subtitle")}
+                      listLabel={processT("title")}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

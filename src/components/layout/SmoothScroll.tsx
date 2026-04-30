@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { LenisContext } from "@/context/lenis-context";
 import { HashScrollOnAnchors } from "@/components/layout/HashScrollOnAnchors";
+import { ResetScrollOnLoad } from "@/components/layout/ResetScrollOnLoad";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -70,6 +71,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
   return (
     <LenisContext.Provider value={lenis}>
+      <ResetScrollOnLoad />
       <HashScrollOnAnchors />
       {children}
     </LenisContext.Provider>

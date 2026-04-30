@@ -148,14 +148,18 @@ export function Contact() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />
-              <div className="flex flex-col items-center gap-3 pt-2">
-                <div className="rounded-full">
-                  <Button type="submit" subtleGlow>
-                    {t("formSubmit")}
-                  </Button>
+              <div className="mt-1 flex flex-col items-center gap-4">
+                <Button type="submit" subtleGlow>
+                  {t("formSubmit")}
+                </Button>
+                <div className="flex flex-col items-center gap-1.5">
+                  <p className="text-balance text-center text-[0.8125rem] leading-relaxed text-zinc-200">
+                    {t("formNote")}
+                  </p>
+                  <p className="text-balance text-center text-xs leading-relaxed text-zinc-400">
+                    {t("mailtoHint")}
+                  </p>
                 </div>
-                <p className="text-center text-xs text-zinc-400">{t("formNote")}</p>
-                <p className="text-center text-xs text-zinc-500">{t("mailtoHint")}</p>
               </div>
             </form>
           </GlassCard>
