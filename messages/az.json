@@ -66,8 +66,9 @@
     "subtitle": "Hər mərhələ planlı və şəffaf şəkildə idarə olunur"
   },
   "portfolio": {
-    "title": "Seçilmiş işlər",
-    "subtitle": "Hər layihə — bir problem, bir yanaşma və ölçülə bilən nəticədir.",
+    "title": "3D vebsayt konseptləri",
+    "subtitle": "Tədqiq etdiyimiz konsept istiqamətlər — hər iş bir hekayə problemi və 3D yönümlü brendlər üçün bir dizayn yanaşmasıdır.",
+    "conceptBadge": "Konsept",
     "coverAlt": "{title} — animasiyalı tünd 3D interfeys önizləməsi",
     "viewCase": "Sayta bax",
     "modalClose": "Bağla",
@@ -123,8 +124,8 @@
     "formEmail": "E-poçt",
     "formMessage": "Mesaj",
     "formSubmit": "Bizimlə əlaqə",
-    "formNote": "Poçt proqramınızı açır — məlumat serverdə saxlanmır.",
-    "mailtoHint": "Mesaj yalnız poçt proqramında «Göndər»ə basdıqdan sonra göndərilir."
+    "formNote": "Bizimlə email vasitəsilə əlaqə saxlamaq üçün düyməyə klikləyin.",
+    "mailtoHint": "Mesaj yalnız email tətbiqinizdə təsdiqlədikdən sonra göndəriləcək."
   },
   "footer": {
     "rights": "Bütün hüquqlar qorunur.",

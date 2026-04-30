@@ -235,44 +235,42 @@
   max-width: 40rem;
 }
 
-/* Off-viewport height probe: three panels share one grid cell → row height = tallest */
-.measureHost {
-  position: fixed;
-  left: -150vw;
-  top: 0;
-  z-index: -999;
-  visibility: hidden;
-  pointer-events: none;
-  box-sizing: border-box;
-  max-width: 42rem;
-}
-
-.measureStack {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.measureSlot {
-  flex: 0 0 auto;
-  min-width: 0;
-}
-
-.measurePanel {
-  margin: 0;
-  box-shadow: none;
-}
-
-@media (max-width: 767.98px) {
-  .measureHost {
-    display: none;
-  }
-}
-
 @media (min-width: 1024px) {
   .panelOuter {
     max-width: 42rem;
   }
+}
+
+/*
+ * Panel stack: all 3 tab panels share one grid cell, so the cell height is
+ * the max of all three content heights — natively, with no JS measurement.
+ * The active panel is visible; the others sit in the same cell with
+ * `visibility: hidden` (preserves layout, removes from a11y tree). This
+ * replaces the previous off-viewport "measureHost" + ResizeObserver, which
+ * caused a layout shift on first paint when the JS-measured height differed
+ * from the 360px starting state.
+ */
+.panelStack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  /* Single row; all children placed in the same cell stack on top. */
+  grid-template-areas: "panel";
+  align-items: start;
+}
+
+.panelStack > .panelCard {
+  grid-area: panel;
+  width: 100%;
+  min-width: 0;
+}
+
+.panelHidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.panelVisible {
+  visibility: visible;
 }
 
 .panelCard {

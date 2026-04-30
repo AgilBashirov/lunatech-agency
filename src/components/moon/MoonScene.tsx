@@ -12,11 +12,10 @@ import {
 } from "react";
 import * as THREE from "three";
 import { useMoonReady } from "@/context/moon-ready";
-import { useMoonBackdropVisualBox } from "@/hooks/useMoonBackdropVisualBox";
 
-/** Cubic ease-in-out on scroll progress — slow start, accelerate through
- *  the middle of the page, slow at the end. Gives every moon transform a
- *  "weighted" feel instead of mapping linearly to scroll. */
+/** Cubic ease-in-out. Used only for the wrapper-opacity keyframe sweep
+ *  (hero → mid → contact); moon transforms map LINEARLY to scroll so the
+ *  velocity feel is preserved (fast scroll → big rotation gap → fast spin). */
 const easeInOutCubic = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
@@ -30,6 +29,18 @@ function sampleKeyframes(t: number, kf: ReadonlyArray<number>): number {
   const segIdx = Math.min(n - 1, Math.floor(tt * n));
   const segT = tt * n - segIdx;
   return kf[segIdx] + (kf[segIdx + 1] - kf[segIdx]) * segT;
+}
+
+/** Read normalized scroll progress [0, 1] directly from the document.
+ *  Sampling on every animation frame (not on scroll events) makes the moon
+ *  deterministic — there is no scroll listener that can be torn down,
+ *  re-bound, or miss events while Lenis is mid-interpolation. */
+function readScrollProgress(): number {
+  const el = document.documentElement;
+  const max = el.scrollHeight - window.innerHeight;
+  if (max <= 0) return 0;
+  const y = window.scrollY || el.scrollTop || 0;
+  return Math.min(1, Math.max(0, y / max));
 }
 
 /** Eagerly start downloading the GLTF on module load so the FallbackMoon
@@ -141,15 +152,35 @@ function GLTFMoon() {
 
 const BASE_CAMERA_Z = 5.4;
 
+/**
+ * Drives moon rotation, position, scale, and camera every animation frame.
+ *
+ * Why no scroll listener: scroll progress is sampled inside `useFrame`
+ * straight from the document each tick. That removes every failure mode tied
+ * to event-driven updates (Lenis smooth scroll fires its own cadence; React
+ * effect re-binds during prop changes briefly leave windows with no
+ * listener; tab-visibility transitions skip ticks). The moon now updates as
+ * long as R3F's render loop runs — which is exactly when the moon is
+ * visible.
+ *
+ * Why props are mirrored to refs: tier changes (mobile→tablet→desktop) flow
+ * in as new prop values, but we never want them to invalidate `useFrame`.
+ * Mirror them once per render via `useLayoutEffect` and read from refs in
+ * the frame loop.
+ */
 function ScrollAndIdleGroup({
   children,
   offsetX,
+  baseScale = 1,
   idleTimeScale = 1,
   scrollMotionScale = 1,
   scrollZoomScale = 1,
 }: {
   children: React.ReactNode;
   offsetX: number;
+  /** Per-tier moon scale baked in at mount; not affected by scroll. Locks the
+   *  visual size on mobile/tablet so the moon never grows or shrinks. */
+  baseScale?: number;
   idleTimeScale?: number;
   scrollMotionScale?: number;
   /** Drives only size-affecting transforms (posZ, scale, cameraZ). Decoupled
@@ -158,17 +189,25 @@ function ScrollAndIdleGroup({
 }) {
   const group = useRef<THREE.Group>(null);
 
-  const targetRotY = useRef(0);
-  const targetRotX = useRef(0);
+  // Param refs — written by useLayoutEffect, read in useFrame. This decouples
+  // tier prop changes from the per-frame loop so no listener is ever rebound.
+  const offsetXRef = useRef(offsetX);
+  const baseScaleRef = useRef(baseScale);
+  const idleTimeScaleRef = useRef(idleTimeScale);
+  const scrollMotionScaleRef = useRef(scrollMotionScale);
+  const scrollZoomScaleRef = useRef(scrollZoomScale);
+
+  useLayoutEffect(() => {
+    offsetXRef.current = offsetX;
+    baseScaleRef.current = baseScale;
+    idleTimeScaleRef.current = idleTimeScale;
+    scrollMotionScaleRef.current = scrollMotionScale;
+    scrollZoomScaleRef.current = scrollZoomScale;
+  }, [offsetX, baseScale, idleTimeScale, scrollMotionScale, scrollZoomScale]);
+
+  // Animated state — updated every frame via lerp toward fresh targets.
   const scrollRotY = useRef(0);
   const idleY = useRef(0);
-
-  const targetPosY = useRef(0);
-  const targetPosZ = useRef(0);
-  const targetScale = useRef(1);
-
-  const targetCamZ = useRef(BASE_CAMERA_Z);
-  const targetCamY = useRef(0);
 
   const reduceMotionRef = useRef(false);
 
@@ -182,114 +221,81 @@ function ScrollAndIdleGroup({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  useEffect(() => {
-    let rafId: number | null = null;
-
-    const commitScrollTargets = () => {
-      rafId = null;
-      const el = document.documentElement;
-      const max = el.scrollHeight - window.innerHeight;
-      const rawP = max > 0 ? window.scrollY / max : 0;
-      // Eased progress — premium curve, not linear scroll mapping.
-      const p = easeInOutCubic(rawP);
-
-      const reduce = reduceMotionRef.current ? 0.1 : 1;
-      const blend = scrollMotionScale * reduce;
-      const zoomBlend = scrollZoomScale * reduce;
-
-      // Rotation reduced from ~600° to ~140° over full scroll — cinematic,
-      // not dizzying. Moon feels weighted/massive instead of spinning.
-      targetRotY.current = p * Math.PI * 0.78 * blend;
-      targetRotX.current = p * 0.22 * blend;
-
-      // Subtler vertical drift and depth motion to match the calmer rotation.
-      targetPosY.current = (p - 0.5) * 0.32 * blend;
-      targetPosZ.current = p * 0.28 * zoomBlend;
-
-      const scaleTop = 1 + 0.058 * zoomBlend;
-      const scaleBottom = 1 - 0.024 * zoomBlend;
-      targetScale.current = THREE.MathUtils.lerp(scaleTop, scaleBottom, p);
-
-      targetCamZ.current = BASE_CAMERA_Z - p * 0.42 * zoomBlend;
-      targetCamY.current = (p - 0.5) * 0.12 * blend;
-    };
-
-    const schedule = () => {
-      if (rafId != null) return;
-      rafId = window.requestAnimationFrame(commitScrollTargets);
-    };
-
-    commitScrollTargets();
-    window.addEventListener("scroll", schedule, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", schedule);
-      if (rafId != null) window.cancelAnimationFrame(rafId);
-    };
-  }, [scrollMotionScale, scrollZoomScale]);
-
+  // Place the group at its baseline position/scale on mount (and when tier
+  // changes) so first paint is correct without waiting on the lerp ramp-up.
   useLayoutEffect(() => {
-    if (group.current) {
-      group.current.position.x = offsetX;
-    }
-  }, [offsetX]);
+    const g = group.current;
+    if (!g) return;
+    g.position.x = offsetX;
+    g.scale.setScalar(baseScale);
+  }, [offsetX, baseScale]);
 
   useFrame((state, delta) => {
-    const idleMul = reduceMotionRef.current ? 0.18 : 1;
-    idleY.current +=
-      delta * ((2 * Math.PI) / 24) * idleTimeScale * idleMul;
+    const g = group.current;
+    if (!g) return;
 
-    // Tighter damping (was 0.058) — moon catches up to scroll quicker but
-    // still smooth. Premium feel: snappy, not laggy.
+    const reduce = reduceMotionRef.current;
+    const reduceMul = reduce ? 0.1 : 1;
+    const idleMul = reduce ? 0.18 : 1;
+
+    // Idle rotation — moon spins on its own continuously. No modulo: the
+    // value is multiplied by 0.2 below, so wrapping would cause a visible
+    // 72° snap once per revolution. Three.js handles big floats fine.
+    idleY.current +=
+      delta * ((2 * Math.PI) / 24) * idleTimeScaleRef.current * idleMul;
+
+    // Linear scroll progress — no easing. The velocity feel comes from the
+    // soft damping below: target moves linearly with scroll, current chases
+    // it; fast scroll creates a big gap → moon spins fast. Reverse scroll
+    // → target reverses → moon spins the other way.
+    const p = readScrollProgress();
+
+    const blend = scrollMotionScaleRef.current * reduceMul;
+    const zoomBlend = scrollZoomScaleRef.current * reduceMul;
+    const base = baseScaleRef.current;
+
+    // Rotation coefficient (~2.5π ≈ 450° over full scroll). The "moon spins
+    // as you scroll" feel is preserved by the soft damping below, just at a
+    // calmer rotation rate. Tune this single number to dial spin speed
+    // up/down without touching damping.
+    const targetRotY = p * Math.PI * 2.5 * blend;
+    const targetRotX = p * 0.42 * blend;
+
+    const targetPosY = (p - 0.5) * 0.42 * blend;
+    const targetPosZ = p * 0.34 * zoomBlend;
+
+    // Scale stays tied to baseScale; zoomBlend is 0 on mobile/tablet so the
+    // moon never grows or shrinks at those breakpoints.
+    const scaleTop = base * (1 + 0.058 * zoomBlend);
+    const scaleBottom = base * (1 - 0.024 * zoomBlend);
+    const targetScale = THREE.MathUtils.lerp(scaleTop, scaleBottom, p);
+
+    const targetCamZ = BASE_CAMERA_Z - p * 0.52 * zoomBlend;
+    const targetCamY = (p - 0.5) * 0.16 * blend;
+
+    // Soft damping. Smaller fraction = bigger trailing gap during fast
+    // scroll = more dramatic catch-up spin. This is the original "premium
+    // motion" feel from the very first moon implementation.
     scrollRotY.current = THREE.MathUtils.lerp(
       scrollRotY.current,
-      targetRotY.current,
-      0.10,
+      targetRotY,
+      0.058,
     );
 
-    if (!group.current) return;
+    g.rotation.y = scrollRotY.current + idleY.current * 0.2;
+    g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, targetRotX, 0.048);
 
-    group.current.rotation.y = scrollRotY.current + idleY.current * 0.2;
-    group.current.rotation.x = THREE.MathUtils.lerp(
-      group.current.rotation.x,
-      targetRotX.current,
-      0.09,
-    );
+    g.position.x = THREE.MathUtils.lerp(g.position.x, offsetXRef.current, 0.085);
+    g.position.y = THREE.MathUtils.lerp(g.position.y, targetPosY, 0.078);
+    g.position.z = THREE.MathUtils.lerp(g.position.z, targetPosZ, 0.072);
 
-    group.current.position.x = THREE.MathUtils.lerp(
-      group.current.position.x,
-      offsetX,
-      0.13,
-    );
-    group.current.position.y = THREE.MathUtils.lerp(
-      group.current.position.y,
-      targetPosY.current,
-      0.13,
-    );
-    group.current.position.z = THREE.MathUtils.lerp(
-      group.current.position.z,
-      targetPosZ.current,
-      0.13,
-    );
-
-    const s = THREE.MathUtils.lerp(
-      group.current.scale.x,
-      targetScale.current,
-      0.10,
-    );
-    group.current.scale.setScalar(s);
+    const s = THREE.MathUtils.lerp(g.scale.x, targetScale, 0.06);
+    g.scale.setScalar(s);
 
     const cam = state.camera;
     if (cam instanceof THREE.PerspectiveCamera) {
-      cam.position.z = THREE.MathUtils.lerp(
-        cam.position.z,
-        targetCamZ.current,
-        0.08,
-      );
-      cam.position.y = THREE.MathUtils.lerp(
-        cam.position.y,
-        targetCamY.current,
-        0.08,
-      );
+      cam.position.z = THREE.MathUtils.lerp(cam.position.z, targetCamZ, 0.055);
+      cam.position.y = THREE.MathUtils.lerp(cam.position.y, targetCamY, 0.05);
     }
   });
 
@@ -299,6 +305,7 @@ function ScrollAndIdleGroup({
 function MoonWorld({
   useFile,
   offsetX,
+  baseScale,
   sphereSegments,
   idleTimeScale,
   scrollMotionScale,
@@ -307,6 +314,7 @@ function MoonWorld({
 }: {
   useFile: boolean;
   offsetX: number;
+  baseScale: number;
   sphereSegments: number;
   idleTimeScale: number;
   scrollMotionScale: number;
@@ -330,6 +338,7 @@ function MoonWorld({
       />
       <ScrollAndIdleGroup
         offsetX={offsetX}
+        baseScale={baseScale}
         idleTimeScale={idleTimeScale}
         scrollMotionScale={scrollMotionScale}
         scrollZoomScale={scrollZoomScale}
@@ -342,44 +351,38 @@ function MoonWorld({
   );
 }
 
-/** Fades the wrapper opacity through the page so the moon dims behind
- *  text-heavy sections and brightens for hero / contact. Imperative DOM
- *  write — no React state churn during scroll. */
+/** Continuous rAF loop that reads scroll directly and writes wrapper opacity.
+ *  No scroll listener — same rationale as the moon transforms: deterministic,
+ *  immune to event-driven gaps, no double-bound listeners. */
 function useScrollOpacity(ref: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
-    let rafId: number | null = null;
+    let rafId = 0;
+    let lastWritten = -1;
 
-    const apply = () => {
-      rafId = null;
+    const tick = () => {
       const node = ref.current;
-      if (!node) return;
-      const max =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const rawP = max > 0 ? window.scrollY / max : 0;
-      const p = easeInOutCubic(rawP);
-      // Hero (full) → services/about/portfolio (dimmed) → contact (recover).
-      const opacity = sampleKeyframes(p, [1.0, 0.55, 0.55, 0.85]);
-      node.style.opacity = String(opacity);
+      if (node) {
+        const p = easeInOutCubic(readScrollProgress());
+        // Hero (full) → services/about/portfolio (dimmed) → contact (recover).
+        const opacity = sampleKeyframes(p, [1.0, 0.55, 0.55, 0.85]);
+        if (Math.abs(opacity - lastWritten) > 0.0015) {
+          node.style.opacity = String(opacity);
+          lastWritten = opacity;
+        }
+      }
+      rafId = window.requestAnimationFrame(tick);
     };
 
-    const schedule = () => {
-      if (rafId != null) return;
-      rafId = window.requestAnimationFrame(apply);
-    };
-
-    apply();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
+    rafId = window.requestAnimationFrame(tick);
     return () => {
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      if (rafId != null) window.cancelAnimationFrame(rafId);
+      window.cancelAnimationFrame(rafId);
     };
   }, [ref]);
 }
 
 export function MoonScene({
   offsetX = 0.9,
+  baseScale = 1,
   dprMax = 2,
   sphereSegments = 64,
   antialias = true,
@@ -388,6 +391,8 @@ export function MoonScene({
   scrollZoomScale = 1,
 }: {
   offsetX?: number;
+  /** Per-tier moon size — locked at this value on mobile/tablet (zoomBlend=0). */
+  baseScale?: number;
   dprMax?: number;
   sphereSegments?: number;
   antialias?: boolean;
@@ -398,7 +403,6 @@ export function MoonScene({
   const { markMoonReady } = useMoonReady();
   const [useFile, setUseFile] = useState(false);
   const [checked, setChecked] = useState(false);
-  const backdropBox = useMoonBackdropVisualBox();
   const wrapperRef = useRef<HTMLDivElement>(null);
   useScrollOpacity(wrapperRef);
 
@@ -428,48 +432,39 @@ export function MoonScene({
     return null;
   }
 
-  const invScale = backdropBox.scale > 0 ? 1 / backdropBox.scale : 1;
-  const innerW = Math.max(1, backdropBox.innerW);
-  const innerH = Math.max(1, backdropBox.innerH);
-
   return (
     <div
       ref={wrapperRef}
-      className="pointer-events-none fixed z-[1] overflow-hidden"
-      style={{
-        left: backdropBox.offsetLeft,
-        top: backdropBox.offsetTop,
-        width: Math.max(1, backdropBox.outerW),
-        height: Math.max(1, backdropBox.outerH),
-        transform: `scale(${invScale})`,
-        transformOrigin: "top left",
-        willChange: "transform, opacity",
-      }}
+      // moon-backdrop applies `height: 100lvh` (with `100vh` fallback) so the
+      // wrapper has a stable size that does NOT change when mobile browser UI
+      // shows/hides. Without this, iOS address-bar collapse would resize the
+      // canvas mid-scroll and the moon would visibly grow/shrink.
+      className="moon-backdrop pointer-events-none fixed inset-x-0 top-0 z-[1] overflow-hidden"
+      style={{ willChange: "opacity" }}
       aria-hidden
     >
-      <div className="overflow-hidden" style={{ width: innerW, height: innerH }}>
-        <Canvas
-          camera={{ position: [0, 0, BASE_CAMERA_Z], fov: 40 }}
-          dpr={[1, dprMax]}
-          resize={{ scroll: false }}
-          gl={{
-            alpha: true,
-            antialias,
-            powerPreference: "high-performance",
-          }}
-          style={{ background: "transparent", width: "100%", height: "100%" }}
-        >
-          <MoonWorld
-            useFile={useFile}
-            offsetX={offsetX}
-            sphereSegments={sphereSegments}
-            idleTimeScale={idleTimeScale}
-            scrollMotionScale={scrollMotionScale}
-            scrollZoomScale={scrollZoomScale}
-            onReady={markMoonReady}
-          />
-        </Canvas>
-      </div>
+      <Canvas
+        camera={{ position: [0, 0, BASE_CAMERA_Z], fov: 40 }}
+        dpr={[1, dprMax]}
+        resize={{ scroll: false }}
+        gl={{
+          alpha: true,
+          antialias,
+          powerPreference: "high-performance",
+        }}
+        style={{ background: "transparent", width: "100%", height: "100%" }}
+      >
+        <MoonWorld
+          useFile={useFile}
+          offsetX={offsetX}
+          baseScale={baseScale}
+          sphereSegments={sphereSegments}
+          idleTimeScale={idleTimeScale}
+          scrollMotionScale={scrollMotionScale}
+          scrollZoomScale={scrollZoomScale}
+          onReady={markMoonReady}
+        />
+      </Canvas>
     </div>
   );
 }

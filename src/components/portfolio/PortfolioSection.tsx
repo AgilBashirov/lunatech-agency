@@ -22,6 +22,11 @@ export function PortfolioSection() {
   const t = useTranslations("portfolio");
   const locale = useLocale();
 
+  // All current portfolio entries are concept work, not delivered client
+  // projects. The badge label flows from i18n so the slider stays
+  // data-driven for the future API-backed source.
+  const conceptBadge = t("conceptBadge");
+
   const cards: CardsSliderCard[] = useMemo(
     () =>
       PROJECT_KEYS.map((key, i) => ({
@@ -29,6 +34,7 @@ export function PortfolioSection() {
         title: t(`${key}.title`),
         description: t(`${key}.summary`),
         href: AURA_DEMO_URLS[key],
+        badge: conceptBadge,
         cover: (
           <PortfolioCoverArt
             projectKey={key}
@@ -37,7 +43,7 @@ export function PortfolioSection() {
           />
         ),
       })),
-    [t],
+    [t, conceptBadge],
   );
 
   return (

@@ -88,6 +88,20 @@ html {
   scroll-padding-top: calc(7.5rem + env(safe-area-inset-top, 0px));
 }
 
+/*
+ * Moon backdrop wrapper — fixed full-viewport box.
+ *
+ * `100lvh` = the *largest* viewport height (browser UI hidden). Unlike
+ * `100vh` it does NOT shrink when iOS Safari's address bar shows / hides
+ * during scroll, so the moon canvas keeps a stable size and the moon
+ * never visibly grows or shrinks. `100vh` is the fallback for older
+ * browsers that don't understand `lvh`.
+ */
+.moon-backdrop {
+  height: 100vh;
+  height: 100lvh;
+}
+
 @media (min-width: 768px) {
   html {
     scroll-padding-top: calc(6rem + env(safe-area-inset-top, 0px));
@@ -346,19 +360,26 @@ h2 {
     radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.04) 0%, transparent 50%);
 }
 
+/*
+ * CTA gradient ring.
+ *
+ * Resting state is intentionally calm — JUST the 1px gradient ring, no
+ * ambient glow, no shadows. The premium signature is the gradient itself,
+ * not a permanent halo. Hover intensity (shadow + brightness bump) is
+ * applied at the component level via Tailwind utilities so primary and
+ * subtleGlow variants can dial it up/down without changing the rest state.
+ *
+ * Transitioning `box-shadow` and `filter` here lets the Tailwind
+ * `hover:` utilities animate smoothly (≈300ms) regardless of the variant.
+ */
 .gradient-border-wrap {
   position: relative;
   border-radius: 9999px;
   padding: 1px;
   background: var(--gradient-accent);
-  box-shadow: var(--glow-purple-strong), var(--glow-cyan-strong);
-}
-
-/* Smaller outer glow — e.g. contact form CTA (avoids huge “aura” behind card) */
-.gradient-border-wrap--subtle {
-  box-shadow:
-    0 0 12px rgba(124, 58, 237, 0.28),
-    0 0 22px rgba(34, 211, 238, 0.12);
+  transition:
+    box-shadow var(--duration-normal, 300ms) ease,
+    filter var(--duration-normal, 300ms) ease;
 }
 
 .gradient-border-inner {
@@ -660,4 +681,70 @@ h2 {
   inset: 0;
   background: radial-gradient(ellipse 75% 70% at 50% 45%, transparent 30%, rgba(2, 2, 5, 0.75) 100%);
   pointer-events: none;
+}
+
+/*
+ * --- Cards slider: CSS-driven layout (no post-mount layout shift) ---
+ *
+ * Rationale: the slider used to compute card widths in JS via ResizeObserver
+ * (state starts at 0 → cards rendered without explicit width on first paint
+ * → reflow when JS measured the viewport). These rules give cards their
+ * final width directly from CSS using container queries, so first paint and
+ * hydrated paint match. JS still tracks the same numbers for drag/snap math
+ * and applies them as an inline override (which equals the CSS value within
+ * ≤1px from Math.floor rounding) — no visible jump.
+ *
+ * `--cs-gap` and `--cs-visible` are kept as CSS custom properties so the
+ * card-width formula stays a single, readable expression that matches the
+ * JS table line-for-line (mobile 1×16, sm 3×20, lg 4×24, 1440 5×28, 1920 6×28).
+ */
+.cs-viewport {
+  /* Establishes a containment context so cards can size relative to this
+     box (the slider's full-bleed inner width) using `cqi` units. */
+  container-type: inline-size;
+}
+
+.cs-rail {
+  --cs-gap: 16px;
+  --cs-visible: 1;
+  display: flex;
+  gap: var(--cs-gap);
+}
+
+@media (min-width: 640px) {
+  .cs-rail {
+    --cs-gap: 20px;
+    --cs-visible: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cs-rail {
+    --cs-gap: 24px;
+    --cs-visible: 4;
+  }
+}
+
+@media (min-width: 1440px) {
+  .cs-rail {
+    --cs-gap: 28px;
+    --cs-visible: 5;
+  }
+}
+
+@media (min-width: 1920px) {
+  .cs-rail {
+    --cs-gap: 28px;
+    --cs-visible: 6;
+  }
+}
+
+.cs-card {
+  flex: 0 0 auto;
+  /* (viewport width – total inter-card gap) / visible-cards. Mirrors the JS
+     formula in cards-slider-shadcnui.tsx exactly. */
+  width: calc(
+    (100cqi - (var(--cs-visible) - 1) * var(--cs-gap)) / var(--cs-visible)
+  );
+  min-width: 160px;
 }

@@ -66,8 +66,9 @@
     "subtitle": "Each phase is planned and transparent."
   },
   "portfolio": {
-    "title": "Selected work",
-    "subtitle": "Every project — one problem, one approach, and a measurable outcome.",
+    "title": "3D website concepts",
+    "subtitle": "Concept directions we’ve explored — each piece is one storytelling problem and one design approach for 3D-driven brands.",
+    "conceptBadge": "Concept",
     "coverAlt": "{title} — animated dark 3D-style interface preview",
     "viewCase": "Visit site",
     "modalClose": "Close",
@@ -123,8 +124,8 @@
     "formEmail": "Email",
     "formMessage": "Message",
     "formSubmit": "Contact us",
-    "formNote": "Opens your email app — we don’t store this on our servers.",
-    "mailtoHint": "Nothing is sent until you press Send in your email client."
+    "formNote": "Click the button to contact us by email.",
+    "mailtoHint": "Your message will be sent only after you confirm it in your email app."
   },
   "footer": {
     "rights": "All rights reserved.",

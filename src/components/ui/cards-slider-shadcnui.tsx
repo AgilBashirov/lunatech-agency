@@ -31,6 +31,9 @@ export type CardsSliderCard = {
   imageUrl?: string;
   /** Custom cover, e.g. `PortfolioCoverArt` */
   cover?: ReactNode;
+  /** Optional small chip rendered over the cover (e.g. "Concept"). Kept on the
+   *  card type so the slider stays data-driven for the future API source. */
+  badge?: string;
 };
 
 const DEMO_CARDS: CardsSliderCard[] = [
@@ -749,7 +752,10 @@ export function CardsSlider({
       <div
         ref={viewportRef}
         className={cn(
-          "relative overflow-hidden py-2",
+          // `cs-viewport` establishes a CSS containment context so cards can
+          // size themselves via `100cqi` from first paint — no JS-driven
+          // ResizeObserver dance, no layout shift on hydration.
+          "cs-viewport relative overflow-hidden py-2",
           "[touch-action:pan-y]",
           showNav
             ? isDragging
@@ -773,10 +779,12 @@ export function CardsSlider({
           dragConstraints={dragConstraints}
           dragElastic={loop ? 0.04 : 0.12}
           dragMomentum
-          style={{ x, gap: `${gap}px` }}
+          // gap is set via the `cs-rail` class media queries — same per-tier
+          // values as the JS table, but applied at first paint by CSS.
+          style={{ x }}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
-          className="flex will-change-transform"
+          className="cs-rail will-change-transform"
         >
           {renderedCards.map((card, i) => {
             const realIdx = loop ? i % count : i;
@@ -792,7 +800,11 @@ export function CardsSlider({
                 aria-label={isClone ? undefined : formatSlideLabel(realIdx + 1)}
                 aria-current={!isClone && isActive ? "true" : undefined}
                 aria-hidden={isClone ? "true" : undefined}
-                className="shrink-0"
+                // `cs-card` gives the card its proper width directly from CSS.
+                // The inline `width` below kicks in once JS has measured the
+                // viewport (≤1px Math.floor delta from the CSS calc) — values
+                // match within human perception, so no visible jump.
+                className="cs-card"
                 style={{
                   width: cardWidth > 0 ? cardWidth : undefined,
                   minWidth: cardWidth > 0 ? cardWidth : undefined,
@@ -889,6 +901,14 @@ function CardContent({
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_100%,rgba(124,58,237,0.12),transparent_55%)]"
           aria-hidden
         />
+        {card.badge ? (
+          <span
+            className="pointer-events-none absolute left-3 top-3 z-[2] inline-flex items-center rounded-full border border-white/15 bg-black/55 px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.22em] text-zinc-100 shadow-[0_2px_10px_rgba(0,0,0,0.45)] backdrop-blur-sm"
+            aria-hidden={isClone ? "true" : undefined}
+          >
+            {card.badge}
+          </span>
+        ) : null}
       </div>
 
       {ctaHref ? (
@@ -901,40 +921,54 @@ function CardContent({
               {card.description}
             </p>
           </div>
-          <span className="gradient-border-wrap gradient-border-wrap--subtle mt-auto inline-flex w-fit max-w-full rounded-full self-start">
-            <motion.a
-              href={ctaHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              draggable={false}
-              tabIndex={isClone ? -1 : undefined}
-              aria-hidden={isClone ? "true" : undefined}
-              onDragStart={(e) => e.preventDefault()}
-              onClickCapture={(e) => {
-                if (suppressClick || isClone) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }
-              }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              className={cn(
-                "group/btn gradient-border-inner inline-flex h-11 max-w-full shrink items-center justify-center gap-1.5 rounded-full px-3.5 sm:gap-2 sm:px-5 md:px-6",
-                "text-[0.8125rem] font-semibold leading-none tracking-wide text-white no-underline outline-none touch-manipulation sm:text-sm",
-                "transition-shadow duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]",
-                "hover:shadow-[0_0_18px_rgba(124,58,237,0.35),0_0_28px_rgba(34,211,238,0.12)]",
-              )}
-              aria-label={`${card.title} — ${viewDetailsLabel}`}
+          {/*
+            Card CTA — minimal ghost-pill, intentionally lighter than the
+            page-level CTA. The card is the primary visual; this button is
+            a "view link" affordance, not a hero button. Cyan accent only on
+            hover/focus keeps the resting state quiet.
+          */}
+          <motion.a
+            href={ctaHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            draggable={false}
+            tabIndex={isClone ? -1 : undefined}
+            aria-hidden={isClone ? "true" : undefined}
+            onDragStart={(e) => e.preventDefault()}
+            onClickCapture={(e) => {
+              if (suppressClick || isClone) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }}
+            whileTap={{ scale: 0.97 }}
+            className={cn(
+              "group/btn mt-auto inline-flex h-9 w-fit max-w-full shrink cursor-pointer items-center gap-1.5 self-start rounded-full",
+              "border border-white/[0.14] bg-white/[0.03] px-3.5 text-[0.75rem] font-medium leading-none tracking-wide text-zinc-200",
+              "no-underline outline-none touch-manipulation",
+              "transition-[border-color,background-color,color,box-shadow] duration-300 ease-out",
+              "hover:border-cyan-300/45 hover:bg-cyan-300/[0.05] hover:text-white hover:shadow-[0_0_14px_rgba(34,211,238,0.16)]",
+              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]",
+            )}
+            aria-label={`${card.title} — ${viewDetailsLabel}`}
+          >
+            {viewDetailsLabel}
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+              className="shrink-0 opacity-75 transition-opacity duration-200 group-hover/btn:opacity-100"
             >
-              {viewDetailsLabel}
-              <span
-                aria-hidden
-                className="inline-block transition-transform duration-200 group-hover/btn:translate-x-0.5"
-              >
-                →
-              </span>
-            </motion.a>
-          </span>
+              <path d="M7 17L17 7" />
+              <path d="M8 7h9v9" />
+            </svg>
+          </motion.a>
         </div>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col gap-2 border-t border-white/[0.06] bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)] px-4 pb-4 pt-3 sm:px-5 sm:pb-5 sm:pt-3.5">
