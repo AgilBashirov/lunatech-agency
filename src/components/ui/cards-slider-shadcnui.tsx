@@ -134,30 +134,13 @@ function useSliderLayout(): SliderLayout {
   }));
 
   useEffect(() => {
-    let rafId = 0;
     const apply = () => setLayout(resolveLayout(window.innerWidth));
-    // orientationchange fires before window.innerWidth settles on iOS/Android,
-    // so defer one frame to let the browser commit the new viewport metrics.
-    const applyDeferred = () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        rafId = 0;
-        apply();
-      });
-    };
     apply();
-    const vv = window.visualViewport;
-    // visualViewport.resize is more reliable than window.resize on mobile —
-    // it ignores address-bar height-only changes that would otherwise re-trigger
-    // layout work without the breakpoint actually changing.
-    if (vv) vv.addEventListener("resize", applyDeferred, { passive: true });
-    else window.addEventListener("resize", applyDeferred, { passive: true });
-    window.addEventListener("orientationchange", applyDeferred);
+    window.addEventListener("resize", apply, { passive: true });
+    window.addEventListener("orientationchange", apply);
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      if (vv) vv.removeEventListener("resize", applyDeferred);
-      else window.removeEventListener("resize", applyDeferred);
-      window.removeEventListener("orientationchange", applyDeferred);
+      window.removeEventListener("resize", apply);
+      window.removeEventListener("orientationchange", apply);
     };
   }, []);
 
