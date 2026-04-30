@@ -58,7 +58,7 @@ function FloatTextarea({
         id={id}
         placeholder=" "
         rows={4}
-        className="peer w-full resize-none border-0 border-b border-white/20 bg-transparent py-3 text-base text-white outline-none transition-[border-color] duration-300 ease-out focus:border-b-cyan-400/55 focus:shadow-none md:text-sm"
+        className="peer block w-full resize-none border-0 border-b border-white/20 bg-transparent py-3 text-base text-white outline-none transition-[border-color] duration-300 ease-out focus:border-b-cyan-400/55 focus:shadow-none md:text-sm"
         {...props}
       />
       <label
@@ -148,7 +148,7 @@ export function Contact() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />
-              <div className="mt-1 flex flex-col items-center gap-4">
+              <div className="-mt-4 flex flex-col items-center gap-4">
                 <Button type="submit" subtleGlow>
                   {t("formSubmit")}
                 </Button>

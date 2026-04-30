@@ -740,6 +740,7 @@ h2 {
 }
 
 .cs-card {
+  position: relative;
   flex: 0 0 auto;
   /* (viewport width – total inter-card gap) / visible-cards. Mirrors the JS
      formula in cards-slider-shadcnui.tsx exactly. */
@@ -747,4 +748,44 @@ h2 {
     (100cqi - (var(--cs-visible) - 1) * var(--cs-gap)) / var(--cs-visible)
   );
   min-width: 160px;
+}
+
+/* Premium soft oval drop-shadow on the floor below each card. The inner
+   <Card> is overflow:hidden + rounded, so its own box-shadow always traces
+   the rounded rectangle. This pseudo-ellipse fakes a real "card sits on a
+   surface" shadow — wider/softer than what box-shadow can produce. */
+.cs-card::after {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: -22px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.32) 35%,
+    rgba(0, 0, 0, 0) 72%
+  );
+  filter: blur(14px);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 0;
+  transition:
+    opacity 500ms ease-out,
+    transform 500ms ease-out,
+    filter 500ms ease-out;
+}
+
+.cs-card:hover::after {
+  opacity: 1;
+  transform: translateY(4px) scaleX(1.04);
+  filter: blur(18px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-card::after {
+    transition: none;
+  }
 }

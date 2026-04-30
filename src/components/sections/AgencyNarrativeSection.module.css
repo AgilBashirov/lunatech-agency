@@ -145,20 +145,6 @@
   padding: 0.55rem 0.5rem 0.65rem 0.6rem;
 }
 
-.indexAccent {
-  flex-shrink: 0;
-  width: 2px;
-  margin: 0.35rem 0.15rem 0.35rem 0;
-  border-radius: 999px;
-  background: linear-gradient(
-    180deg,
-    rgba(124, 58, 237, 0.35),
-    rgba(255, 255, 255, 0.06) 45%,
-    rgba(34, 211, 238, 0.3)
-  );
-  opacity: 0.75;
-}
-
 .tabList {
   flex: 1;
   min-width: 0;

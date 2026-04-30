@@ -1,8 +1,14 @@
 import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/motion/Reveal";
 
-export async function ValueStrip() {
-  const t = await getTranslations("valueStrip");
+export async function ValueStrip({
+  tKey = "valueStrip",
+}: {
+  /** i18n namespace exposing a `line` key. Lets the same strip render with
+   *  different copy at different points on the page. */
+  tKey?: "valueStrip" | "aboutStrip";
+} = {}) {
+  const t = await getTranslations(tKey);
 
   return (
     <div className="relative z-10 border-y border-white/[0.06] bg-[#05060a]/40 py-4 backdrop-blur-sm sm:py-5">

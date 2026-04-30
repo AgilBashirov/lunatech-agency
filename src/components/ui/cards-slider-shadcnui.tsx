@@ -649,6 +649,9 @@ export function CardsSlider({
     if (!autoplay) return;
     if (prefersReducedMotion) return;
     if (count <= 1) return;
+    // Don't auto-advance on mobile (visible: 1) — users expect to control the
+    // single-card-at-a-time rail with their finger; auto-advance fights that.
+    if (visible <= 1) return;
     const id = window.setInterval(() => {
       if (isDraggingRef.current) return;
       if (isHoverRef.current) return;
@@ -671,6 +674,7 @@ export function CardsSlider({
     loop,
     maxVirtualNonLoop,
     prefersReducedMotion,
+    visible,
   ]);
 
   // ————— Render —————
@@ -755,7 +759,9 @@ export function CardsSlider({
           // `cs-viewport` establishes a CSS containment context so cards can
           // size themselves via `100cqi` from first paint — no JS-driven
           // ResizeObserver dance, no layout shift on hydration.
-          "cs-viewport relative overflow-hidden py-2",
+          // Top padding stays small; bottom padding leaves room for the
+          // soft oval shadow that sits below each card (.cs-card::after).
+          "cs-viewport relative overflow-hidden pb-10 pt-2",
           "[touch-action:pan-y]",
           showNav
             ? isDragging
@@ -778,7 +784,11 @@ export function CardsSlider({
           drag={showNav && cardWidth > 0 ? "x" : false}
           dragConstraints={dragConstraints}
           dragElastic={loop ? 0.04 : 0.12}
-          dragMomentum
+          // Disable framer's inertia after release — its glide fights the
+          // spring snap in onDragEnd, leaving cards parked between snap points
+          // on mobile. With momentum off, finger lift → immediate spring snap
+          // to the nearest card.
+          dragMomentum={false}
           // gap is set via the `cs-rail` class media queries — same per-tier
           // values as the JS table, but applied at first paint by CSS.
           style={{ x }}
@@ -872,9 +882,13 @@ function CardContent({
     <Card
       className={cn(
         "group/card relative flex h-full min-h-0 flex-col overflow-hidden rounded-3xl",
-        "border-border bg-card/95 text-card-foreground shadow-[0_14px_44px_-18px_rgba(0,0,0,0.75)]",
+        // Inner card keeps only a tight contact shadow + subtle inner highlight.
+        // The big "card sits on a surface" drop is rendered as an oval pseudo
+        // on .cs-card (see globals.css) — looks softer than any rounded-rect
+        // box-shadow can.
+        "border-border bg-card/95 text-card-foreground shadow-[0_2px_6px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]",
         "backdrop-blur-md transition-[border-color,box-shadow,transform] duration-500 ease-out",
-        "hover:border-primary/35 hover:shadow-[0_20px_50px_-14px_rgba(0,0,0,0.65),0_0_0_1px_var(--glow-purple),0_0_36px_var(--glow-cyan)]",
+        "hover:border-primary/35 hover:shadow-[0_4px_10px_rgba(0,0,0,0.4),0_0_0_1px_var(--glow-purple),0_0_28px_var(--glow-cyan),inset_0_1px_0_rgba(255,255,255,0.06)]",
       )}
     >
       <div className="relative h-40 shrink-0 overflow-hidden bg-surface ring-1 ring-inset ring-white/[0.06] sm:h-44">

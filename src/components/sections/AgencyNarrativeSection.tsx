@@ -124,7 +124,6 @@ export function AgencyNarrativeSection() {
 
   return (
     <section
-      id="about"
       className={styles.section}
       aria-labelledby={`${uid}-landmark`}
     >
@@ -202,7 +201,6 @@ export function AgencyNarrativeSection() {
                   );
                 })}
               </div>
-              <div className={styles.indexAccent} aria-hidden />
             </div>
           </div>
 
