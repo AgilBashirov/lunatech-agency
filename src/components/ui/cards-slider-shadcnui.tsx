@@ -258,10 +258,10 @@ function Dot({
         // Slightly grow the tap target without inflating the visual dot,
         // so mobile users can hit it reliably without overlapping neighbours.
         "before:absolute before:inset-x-0 before:-inset-y-2 before:content-['']",
-        "active:scale-90 motion-reduce:active:scale-100",
+        "active:scale-90 active:brightness-125 motion-reduce:active:scale-100",
         active
-          ? "w-8 bg-[linear-gradient(90deg,#7c3aed,#22d3ee)] shadow-[0_0_10px_rgba(124,58,237,0.45)]"
-          : "w-2 bg-white/20 hover:bg-white/35 motion-reduce:transition-none",
+          ? "w-8 bg-[linear-gradient(90deg,#7c3aed,#22d3ee)] shadow-[0_0_10px_rgba(124,58,237,0.45)] active:shadow-[0_0_16px_rgba(124,58,237,0.7)]"
+          : "w-2 bg-white/20 hover:bg-white/35 active:bg-white/50 motion-reduce:transition-none",
       )}
     />
   );
@@ -938,13 +938,15 @@ function CardContent({
                 }
               }}
               whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.94 }}
               className={cn(
                 "group/btn gradient-border-inner inline-flex h-11 max-w-full shrink cursor-pointer items-center justify-center gap-1.5 rounded-full px-3.5 sm:gap-2 sm:px-5 md:px-6",
                 "text-[0.8125rem] font-semibold leading-none tracking-wide text-white no-underline outline-none touch-manipulation sm:text-sm",
-                "transition-shadow duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]",
+                "transition-[box-shadow,background-color,filter] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]",
                 "hover:shadow-[0_0_18px_rgba(124,58,237,0.35),0_0_28px_rgba(34,211,238,0.12)]",
-                "active:shadow-[0_0_18px_rgba(124,58,237,0.45),0_0_28px_rgba(34,211,238,0.18)]",
+                // Pronounced tap feedback: brighter glow + slight saturation lift
+                // so the button visibly "lights up" under a finger on mobile.
+                "active:shadow-[0_0_24px_rgba(124,58,237,0.65),0_0_40px_rgba(34,211,238,0.32)] active:brightness-110",
               )}
               aria-label={`${card.title} — ${viewDetailsLabel}`}
             >
