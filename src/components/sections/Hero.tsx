@@ -45,12 +45,12 @@ export function Hero() {
         <div className="hero-particles absolute inset-0 opacity-90" aria-hidden />
       </div>
 
-      <div className="relative z-[2] mx-auto flex w-full max-w-7xl flex-1 items-center">
+      <div className="relative z-[2] mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12">
         <motion.div
           initial={reduce ? false : { opacity: 1, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={motionTransition.smooth}
-          className="mx-auto max-w-xl text-center md:mx-0 md:max-w-4xl md:text-left"
+          className="mx-auto max-w-xl text-center md:mx-0 md:max-w-2xl md:text-left"
         >
           <h1 className="text-gradient-hero text-balance break-words text-4xl font-bold leading-[1.05] tracking-tight drop-shadow-[0_4px_28px_rgba(0,0,0,0.55)] sm:text-5xl md:text-6xl lg:text-[3.5rem] xl:text-[4rem]">
             {t("headline")}
@@ -69,6 +69,11 @@ export function Hero() {
             </a>
           </div>
         </motion.div>
+
+        <div
+          className="relative hidden min-h-[min(52vh,520px)] lg:block"
+          aria-hidden
+        />
       </div>
 
       {reduce ? (
