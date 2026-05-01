@@ -27,9 +27,13 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       smoothWheel: true,
     });
 
-    queueMicrotask(() => {
-      setLenis(lenisInstance);
-    });
+    // Publish the freshly-constructed Lenis instance to context immediately.
+    // This is a setState-in-effect call, but it's the accepted pattern for
+    // surfacing externally-created singletons (Lenis, GSAP, IO) to consumers
+    // — the alternative (useSyncExternalStore) is heavier and offers no real
+    // benefit when the source is created exactly once per mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLenis(lenisInstance);
 
     lenisInstance.on("scroll", ScrollTrigger.update);
 
@@ -61,10 +65,11 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
     return () => {
       gsap.ticker.remove(onTick);
+      // Clear the context value BEFORE destroying so consumers never observe
+      // a destroyed instance. Order matters: a consumer reading via context
+      // during the tear-down phase would otherwise call into a dead Lenis.
+      setLenis(null);
       lenisInstance.destroy();
-      queueMicrotask(() => {
-        setLenis(null);
-      });
       ScrollTrigger.refresh();
     };
   }, []);

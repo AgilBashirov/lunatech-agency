@@ -34,7 +34,7 @@ export default async function HomePage({ params }: Props) {
           {/* Anchor wraps the strip + narrative so #about scrolls to land
               on the strip (visual lead-in to the about section). */}
           <div id="about" className="scroll-mt-44 md:scroll-mt-40">
-            <ValueStrip tKey="aboutStrip" />
+            <ValueStrip tKey="aboutStrip" variant="secondary" />
             <AgencyNarrativeSection />
           </div>
           <Contact />

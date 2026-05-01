@@ -25,6 +25,53 @@
   --duration-fast: 180ms;
   --duration-normal: 300ms;
 
+  /*
+   * --- Wave 2 design tokens ---------------------------------------------
+   * Added by Wave 2 (foundation only). Wave 3 will apply these throughout
+   * the codebase. Values were extracted from existing usage patterns —
+   * text colors mirror text-zinc-100/300/400/500 (the dominant choices),
+   * spacing/radius/shadow tokens harmonize the clamp() values currently
+   * scattered across module CSS and inline Tailwind utilities. All text
+   * tokens verified against the dominant `--surface: #0b0f1a` background:
+   * primary ≈ 18:1 (AAA), secondary ≈ 14:1 (AAA), tertiary ≈ 6:1 (AA),
+   * muted ≈ 3.8:1 (AA Large). The previous text-slate-500 body color
+   * (~3.4:1) is replaced by --text-secondary.
+   */
+
+  /* Text colors */
+  --text-primary: #fafafa;
+  --text-secondary: rgba(228, 228, 231, 0.92);
+  --text-tertiary: rgba(161, 161, 170, 0.8);
+  --text-muted: rgba(113, 113, 122, 0.95);
+
+  /* Spacing scale (use as gap/padding/margin; clamp tokens drive section rhythm) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --gutter: clamp(1rem, 3vw, 2rem);
+  --gutter-section: clamp(3rem, 5.5vw, 5rem);
+
+  /* Radius scale */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.85rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: clamp(1rem, 1.6vw, 1.25rem);
+  --radius-pill: 9999px;
+
+  /* Shadow tokens */
+  --shadow-1: 0 4px 14px rgba(0, 0, 0, 0.18);
+  --shadow-2: 0 14px 36px rgba(0, 0, 0, 0.3);
+  --shadow-3: 0 20px 56px rgba(0, 0, 0, 0.35);
+  --shadow-inset-hairline: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --glow-primary: 0 0 32px rgba(34, 211, 238, 0.28);
+  --glow-secondary: 0 0 32px rgba(124, 58, 237, 0.28);
+
   /* shadcn-style tokens (components/ui) */
   --border: var(--card-border);
   --input: var(--glass-border);
@@ -69,6 +116,24 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+
+  /*
+   * Wave 2 token bridge — exposes the new text tokens as Tailwind v4
+   * utilities so Wave 3 can replace `text-zinc-300` etc. with
+   * `text-secondary`, `text-tertiary`, `text-muted`. The "primary" color
+   * slot is already taken by --color-primary (neon-purple, used as
+   * brand/accent for buttons & rings). To avoid colliding with that, the
+   * heading text token is exposed as `text-text-primary` AND we keep the
+   * existing `text-foreground` (which already maps to #f4f4f5) — Wave 3
+   * should prefer `text-foreground` for headings and reserve the new
+   * text-secondary / text-tertiary / text-muted utilities for body copy
+   * and meta text. The semantic palette below is the canonical text
+   * scale; the Tailwind aliases follow it.
+   */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-muted: var(--text-muted);
 }
 
 html {
@@ -135,7 +200,6 @@ html {
   .hero-particles,
   .animate-sweep,
   .animate-scroll-hint,
-  .animate-cta-pulse,
   .pc-orb--a,
   .pc-orb--b,
   .pc-grid-floor,
@@ -187,6 +251,36 @@ body {
   }
 }
 
+/*
+ * Premium focus ring (Wave 3). A layered double-ring: an inner solid ring
+ * matching the page background creates a tight gap, then the cyan ring sits
+ * around it. Per-component focus styles can still override when intentional.
+ *
+ * Selector specificity: previously this rule used `:where(...)` (specificity
+ * 0,0,0), which any Tailwind utility — even a generic `focus-visible:outline-*`
+ * on a child — would override. Listing each tag at the top level gives the
+ * rule specificity 0,1,0 so it wins over single-class utilities, while still
+ * letting deliberately scoped component styles (with class+focus-visible)
+ * take precedence when needed.
+ *
+ * No `border-radius: inherit`: snapping the focus radius to the parent's at
+ * focus time produced visible "shape jumps" on elements whose resting radius
+ * differs from their parent's (e.g. pill buttons inside square containers).
+ * The box-shadow naturally traces whatever radius the focused element
+ * already has.
+ */
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background, #0b0f1a),
+    0 0 0 4px rgba(34, 211, 238, 0.65);
+}
+
 /* Display: Space Grotesk for page-level titles only; body + card titles use Inter (font-sans) */
 h1,
 h2 {
@@ -219,6 +313,17 @@ h2 {
 .border-neon-subtle {
   border: 1px solid var(--glass-border);
   box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.08);
+}
+
+/* Services tile — unified hover glow on the icon chip (Wave 3).
+   The chip's resting state lives on the inline style; this rule layers a
+   single brand glow when the parent GlassCard is hovered. The icon wrap
+   span is the first inline-flex chip inside the tile body. */
+.services-tile:hover .services-icon-wrap {
+  box-shadow:
+    var(--shadow-1),
+    var(--shadow-inset-hairline),
+    var(--glow-primary);
 }
 
 /* Cyber grid backdrop */
@@ -257,24 +362,37 @@ h2 {
   animation: light-sweep 8s ease-in-out infinite;
 }
 
-/* Hero vignette: softer edges so the scene doesn’t read as flat black */
-.hero-vignette {
-  background: radial-gradient(
-    ellipse 88% 78% at 50% 42%,
-    transparent 0%,
-    rgba(5, 6, 10, 0.32) 52%,
-    rgba(5, 6, 10, 0.68) 100%
-  );
-}
-
-/* Hero: brand purple ambient from bottom-right (matches --neon-purple) */
-.hero-purple-glow {
-  background: radial-gradient(
-    ellipse 95% 80% at 94% 96%,
-    rgba(124, 58, 237, 0.45) 0%,
-    rgba(124, 58, 237, 0.16) 42%,
-    transparent 68%
-  );
+/*
+ * Hero static overlays — gradient fallback (replaces missing video), vignette,
+ * noise, and bottom darkening — all merged into ONE layer to keep the hero
+ * compositor cheap. Animated layers (.hero-particles, .hero-moon-placeholder-glow)
+ * stay separate so they can be promoted independently.
+ */
+.hero-static-overlays {
+  background-color: #05060a;
+  background-image:
+    /* vignette (softens edges so the scene doesn't read as flat black) */
+    radial-gradient(
+      ellipse 88% 78% at 50% 42%,
+      transparent 0%,
+      rgba(5, 6, 10, 0.32) 52%,
+      rgba(5, 6, 10, 0.68) 100%
+    ),
+    /* brand purple ambient (was .hero-purple-glow) */
+    radial-gradient(
+      ellipse 95% 80% at 94% 96%,
+      rgba(124, 58, 237, 0.41),
+      rgba(124, 58, 237, 0.14) 42%,
+      transparent 68%
+    ),
+    /* noise tint */
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(124, 58, 237, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.04) 0%, transparent 50%),
+    /* bottom darkening (was a separate gradient bg div) */
+    linear-gradient(to bottom, transparent, rgba(5, 6, 10, 0.22) 50%, rgba(7, 9, 18, 0.78) 100%),
+    /* base gradient fallback (replaces former <video> element) */
+    linear-gradient(to bottom right, rgba(46, 16, 101, 0.8), #05060a 50%, rgba(8, 51, 68, 0.4));
 }
 
 /* Stronger purple until WebGL moon is ready; fades out in Hero via motion */
@@ -330,34 +448,6 @@ h2 {
 
 .animate-scroll-hint {
   animation: scroll-hint 2s ease-in-out infinite;
-}
-
-@keyframes cta-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 20px rgba(124, 58, 237, 0.4),
-      0 0 40px rgba(34, 211, 238, 0.15);
-  }
-  50% {
-    box-shadow:
-      0 0 28px rgba(124, 58, 237, 0.55),
-      0 0 52px rgba(34, 211, 238, 0.25);
-  }
-}
-
-.animate-cta-pulse {
-  animation: cta-pulse 2.5s ease-in-out infinite;
-}
-
-.bg-noise {
-  background-image: radial-gradient(
-      circle at 20% 30%,
-      rgba(255, 255, 255, 0.03) 0%,
-      transparent 40%
-    ),
-    radial-gradient(circle at 80% 70%, rgba(124, 58, 237, 0.05) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.04) 0%, transparent 50%);
 }
 
 /*
@@ -788,4 +878,73 @@ h2 {
   .cs-card::after {
     transition: none;
   }
+}
+
+/* Clones in loop mode are never centered — they exist so swiping past the
+ * end visually wraps without a jump. Pausing CSS animations on their entire
+ * subtree saves continuous GPU work for marquees, sheens, and shimmers that
+ * are mostly off-screen. */
+.cs-card[data-clone="true"],
+.cs-card[data-clone="true"] *,
+.cs-card[data-clone="true"] *::before,
+.cs-card[data-clone="true"] *::after {
+  animation-play-state: paused !important;
+}
+
+/* ---------- Wave 2 typography utilities ----------------------------------
+ * Named role-based type classes. Wave 3 will swap ad-hoc Tailwind text-*
+ * compositions ("font-mono text-[10px] uppercase tracking-[0.32em] text-zinc-400")
+ * for these single-class roles. Values match patterns currently inlined
+ * across components — eyebrow letter-spacing/size mirrors what the
+ * Process tabIndex and aboutStrip eyebrows already use; t-h2/t-h3 mirror
+ * the existing AgencyNarrativeSection panelHeading / stepLabel scales.
+ *
+ * IMPORTANT: these are additive. Existing styles untouched until Wave 3.
+ */
+.t-eyebrow {
+  font-family: var(--font-geist-mono), ui-monospace, "Cascadia Code", monospace;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--text-tertiary);
+}
+
+.t-display {
+  font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.t-h2 {
+  font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(1.85rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+
+.t-h3 {
+  font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.18;
+}
+
+.t-body {
+  /* Inter inherited from <body>; declared explicitly for safety when used
+     inside elements that override font-family (e.g. inside a <code> block). */
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.t-meta {
+  font-family: var(--font-geist-mono), ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
 }

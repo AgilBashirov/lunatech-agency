@@ -3,12 +3,14 @@
 import { Center, useGLTF, useProgress } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
+  Component,
   Suspense,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
+  type ErrorInfo,
+  type ReactNode,
 } from "react";
 import * as THREE from "three";
 import { useMoonReady } from "@/context/moon-ready";
@@ -31,21 +33,41 @@ function sampleKeyframes(t: number, kf: ReadonlyArray<number>): number {
   return kf[segIdx] + (kf[segIdx + 1] - kf[segIdx]) * segT;
 }
 
+/** Cached scrollable range (scrollHeight - innerHeight). Updated on resize and
+ *  on `load` (covers late-mounting images / WebGL canvases that grow the page).
+ *  Reading this each frame previously forced a layout flush — caching it lets
+ *  `useFrame` read only `scrollY`, which the browser tracks for free. */
+let cachedScrollMax = 0;
+let scrollMaxBound = false;
+
+function recomputeScrollMax() {
+  const el = document.documentElement;
+  cachedScrollMax = Math.max(0, el.scrollHeight - window.innerHeight);
+}
+
+function ensureScrollMaxBound() {
+  if (scrollMaxBound || typeof window === "undefined") return;
+  scrollMaxBound = true;
+  recomputeScrollMax();
+  window.addEventListener("resize", recomputeScrollMax, { passive: true });
+  window.addEventListener("load", recomputeScrollMax);
+  if (typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver(recomputeScrollMax);
+    ro.observe(document.documentElement);
+  }
+}
+
 /** Read normalized scroll progress [0, 1] directly from the document.
  *  Sampling on every animation frame (not on scroll events) makes the moon
  *  deterministic — there is no scroll listener that can be torn down,
  *  re-bound, or miss events while Lenis is mid-interpolation. */
 function readScrollProgress(): number {
-  const el = document.documentElement;
-  const max = el.scrollHeight - window.innerHeight;
-  if (max <= 0) return 0;
-  const y = window.scrollY || el.scrollTop || 0;
-  return Math.min(1, Math.max(0, y / max));
+  if (cachedScrollMax <= 0) return 0;
+  const y = window.scrollY || document.documentElement.scrollTop || 0;
+  return Math.min(1, Math.max(0, y / cachedScrollMax));
 }
 
-/** Eagerly start downloading the GLTF on module load so the FallbackMoon
- *  (smooth purple sphere) never visibly pops in before the textured asset. */
-useGLTF.preload("/models/moon.glb");
+const MOON_GLB = "/models/moon.glb";
 
 function MoonLoadGate({ onReady }: { onReady: () => void }) {
   const { active, progress } = useProgress();
@@ -136,7 +158,7 @@ function FallbackMoon({ segments = 64 }: { segments?: number }) {
 }
 
 function GLTFMoon() {
-  const { scene } = useGLTF("/models/moon.glb");
+  const { scene } = useGLTF(MOON_GLB);
   const clone = useMemo(() => {
     const c = scene.clone();
     softenMaterials(c);
@@ -148,6 +170,40 @@ function GLTFMoon() {
       <primitive object={clone} scale={1.15} />
     </Center>
   );
+}
+
+/**
+ * R3F-compatible error boundary for the GLTF subtree.
+ *
+ * Why: drei's `useGLTF` throws synchronously when the asset fetch fails (404,
+ * malformed GLB, network error). `<Suspense>` only catches the loading
+ * promise, not the throw — without this boundary the whole `<Canvas>` would
+ * unmount and the moon would silently disappear.
+ *
+ * The boundary keeps the canvas mounted by swapping in `<FallbackMoon>` (the
+ * same primitive shape used during initial load), and signals readiness to
+ * the page so the loader screen never gets stuck.
+ */
+class GLTFMoonErrorBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode; onError?: () => void },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError(): { hasError: true } {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo): void {
+    if (typeof console !== "undefined") {
+      console.warn("[MoonScene] GLTF load failed, falling back:", error, info);
+    }
+    this.props.onError?.();
+  }
+
+  render(): ReactNode {
+    return this.state.hasError ? this.props.fallback : this.props.children;
+  }
 }
 
 const BASE_CAMERA_Z = 5.4;
@@ -303,7 +359,6 @@ function ScrollAndIdleGroup({
 }
 
 function MoonWorld({
-  useFile,
   offsetX,
   baseScale,
   sphereSegments,
@@ -312,7 +367,6 @@ function MoonWorld({
   scrollZoomScale,
   onReady,
 }: {
-  useFile: boolean;
   offsetX: number;
   baseScale: number;
   sphereSegments: number;
@@ -343,39 +397,86 @@ function MoonWorld({
         scrollMotionScale={scrollMotionScale}
         scrollZoomScale={scrollZoomScale}
       >
-        <Suspense fallback={<FallbackMoon segments={sphereSegments} />}>
-          {useFile ? <GLTFMoon /> : <FallbackMoon segments={sphereSegments} />}
-        </Suspense>
+        {/* FallbackMoon renders immediately while Suspense waits for useGLTF.
+         *  Once GLTFMoon resolves, Suspense settles and the textured asset
+         *  takes over. If GLTF fetch errors, the GLTFMoonErrorBoundary keeps
+         *  the fallback visible (FallbackMoon is the safe shape either way)
+         *  AND signals onReady so the page loader doesn't sit indefinitely
+         *  waiting for an asset that will never resolve. */}
+        <GLTFMoonErrorBoundary
+          fallback={<FallbackMoon segments={sphereSegments} />}
+          onError={onReady}
+        >
+          <Suspense fallback={<FallbackMoon segments={sphereSegments} />}>
+            <GLTFMoon />
+          </Suspense>
+        </GLTFMoonErrorBoundary>
       </ScrollAndIdleGroup>
     </>
   );
 }
 
-/** Continuous rAF loop that reads scroll directly and writes wrapper opacity.
- *  No scroll listener — same rationale as the moon transforms: deterministic,
- *  immune to event-driven gaps, no double-bound listeners. */
+/** rAF loop that reads scroll directly and writes wrapper opacity.
+ *  Suspended via IntersectionObserver when the wrapper is off-screen so the
+ *  loop costs nothing while the moon isn't visible. No scroll listener — same
+ *  rationale as the moon transforms: deterministic, immune to event-driven
+ *  gaps, no double-bound listeners. */
 function useScrollOpacity(ref: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
     let rafId = 0;
     let lastWritten = -1;
+    let intersecting = true;
 
     const tick = () => {
-      const node = ref.current;
-      if (node) {
-        const p = easeInOutCubic(readScrollProgress());
-        // Hero (full) → services/about/portfolio (dimmed) → contact (recover).
-        const opacity = sampleKeyframes(p, [1.0, 0.55, 0.55, 0.85]);
-        if (Math.abs(opacity - lastWritten) > 0.0015) {
-          node.style.opacity = String(opacity);
-          lastWritten = opacity;
-        }
+      const p = easeInOutCubic(readScrollProgress());
+      // Hero (full) → services/about/portfolio (dimmed) → contact (recover).
+      const opacity = sampleKeyframes(p, [1.0, 0.55, 0.55, 0.85]);
+      if (Math.abs(opacity - lastWritten) > 0.0015) {
+        node.style.opacity = String(opacity);
+        lastWritten = opacity;
       }
+      if (intersecting) {
+        rafId = window.requestAnimationFrame(tick);
+      } else {
+        rafId = 0;
+      }
+    };
+
+    const start = () => {
+      if (rafId !== 0) return;
       rafId = window.requestAnimationFrame(tick);
     };
 
-    rafId = window.requestAnimationFrame(tick);
+    const stop = () => {
+      if (rafId !== 0) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    };
+
+    let io: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            intersecting = entry.isIntersecting;
+            if (intersecting) start();
+            else stop();
+          }
+        },
+        { threshold: 0 },
+      );
+      io.observe(node);
+    } else {
+      start();
+    }
+
     return () => {
-      window.cancelAnimationFrame(rafId);
+      stop();
+      io?.disconnect();
     };
   }, [ref]);
 }
@@ -401,36 +502,19 @@ export function MoonScene({
   scrollZoomScale?: number;
 }) {
   const { markMoonReady } = useMoonReady();
-  const [useFile, setUseFile] = useState(false);
-  const [checked, setChecked] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   useScrollOpacity(wrapperRef);
 
+  // Client-side bootstrap: bind cached scroll-max listeners and start the GLTF
+  // download. Both are window-bound; running them at module-load would break
+  // SSR and would also fire before the page has any scrollable content.
   useEffect(() => {
-    let cancelled = false;
-    fetch("/models/moon.glb", { method: "HEAD" })
-      .then((res) => {
-        if (!cancelled && res.ok) setUseFile(true);
-      })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setChecked(true);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!checked) return;
+    ensureScrollMaxBound();
+    useGLTF.preload(MOON_GLB);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       markMoonReady();
     }
-  }, [checked, markMoonReady]);
-
-  if (!checked) {
-    return null;
-  }
+  }, [markMoonReady]);
 
   return (
     <div
@@ -455,7 +539,6 @@ export function MoonScene({
         style={{ background: "transparent", width: "100%", height: "100%" }}
       >
         <MoonWorld
-          useFile={useFile}
           offsetX={offsetX}
           baseScale={baseScale}
           sphereSegments={sphereSegments}

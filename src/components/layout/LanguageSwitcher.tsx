@@ -78,7 +78,7 @@ export function LanguageSwitcher() {
           onClick={() => goLocale(loc)}
           className={cn(
             "relative z-[1] inline-flex min-h-11 min-w-10 flex-1 cursor-pointer items-center justify-center rounded-full px-2 text-xs font-semibold tracking-wide transition-colors duration-300 ease-out sm:min-w-11 sm:px-2.5",
-            loc === locale ? "text-white" : "text-zinc-300 hover:text-white",
+            loc === locale ? "text-white" : "text-text-secondary hover:text-white",
           )}
         >
           {labels[loc] ?? loc.toUpperCase()}

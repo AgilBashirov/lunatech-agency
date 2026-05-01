@@ -19,6 +19,10 @@
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  /* Round the button itself so the global focus-visible ring traces a circle
+     matching the visible round .face below. (The global rule lives in
+     globals.css; this module does not redefine the focus appearance.) */
+  border-radius: 9999px;
 }
 
 .shell[data-visible="false"] {
@@ -45,12 +49,10 @@
   height: 100%;
   border-radius: 9999px;
   border: 1px solid var(--card-border);
-  background: rgba(11, 15, 26, 0.78);
+  background: rgba(11, 15, 26, 0.96);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 2px 12px rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
 }
 
 /* Show / hide: same duration; state flips immediately, motion is purely CSS */
@@ -149,11 +151,15 @@
   place-items: center;
 }
 
+/*
+ * Focus ring is provided by the global premium layered ring in globals.css
+ * (button:focus-visible). The .shell button has border-radius: 9999px so
+ * the box-shadow ring traces the circle that visually matches .face.
+ *
+ * Suppress the native outline on the inner face for safety (only the global
+ * box-shadow ring should ever read as the focus indicator).
+ */
+.shell:focus:not(:focus-visible) .face,
 .shell:focus-visible .face {
-  outline: 2px solid rgba(34, 211, 238, 0.55);
-  outline-offset: 2px;
-}
-
-.shell:focus:not(:focus-visible) .face {
   outline: none;
 }

@@ -28,6 +28,14 @@ function scrollToHashCentered(lenis: Lenis, id: string) {
 export function HashScrollOnAnchors() {
   const lenis = useLenis();
   const initialHashDoneRef = useRef(false);
+  // Mirror the latest Lenis instance into a ref so the document click listener
+  // below can read the freshest value without re-binding when Lenis flips
+  // between null → instance → null. The capture-phase listener is registered
+  // exactly once (on mount) and torn down once (on unmount).
+  const lenisRef = useRef<Lenis | null>(lenis);
+  useEffect(() => {
+    lenisRef.current = lenis;
+  }, [lenis]);
 
   useEffect(() => {
     const onClickCapture = (e: MouseEvent) => {
@@ -49,8 +57,9 @@ export function HashScrollOnAnchors() {
       e.preventDefault();
 
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const currentLenis = lenisRef.current;
 
-      if (!lenis) {
+      if (!currentLenis) {
         targetEl.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
         window.history.replaceState(null, "", `#${id}`);
         return;
@@ -58,7 +67,7 @@ export function HashScrollOnAnchors() {
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          lenis.scrollTo(getScrollYToCenterElement(targetEl), {
+          currentLenis.scrollTo(getScrollYToCenterElement(targetEl), {
             programmatic: true,
             force: true,
           });
@@ -69,7 +78,7 @@ export function HashScrollOnAnchors() {
 
     document.addEventListener("click", onClickCapture, true);
     return () => document.removeEventListener("click", onClickCapture, true);
-  }, [lenis]);
+  }, []);
 
   useEffect(() => {
     const hash = window.location.hash;

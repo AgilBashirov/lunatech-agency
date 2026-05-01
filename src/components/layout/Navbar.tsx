@@ -15,7 +15,7 @@ const links = [
 ];
 
 const navLinkClass =
-  "flex min-h-11 shrink-0 snap-start items-center rounded-full px-3 py-2 text-xs font-medium text-zinc-300 transition-colors duration-300 ease-out hover:bg-white/[0.04] hover:text-white md:min-h-0 md:rounded-none md:bg-transparent md:px-0 md:py-0 md:text-sm";
+  "flex min-h-11 shrink-0 snap-start items-center rounded-full px-3 py-2 text-xs font-medium text-text-secondary transition-colors duration-300 ease-out hover:bg-white/[0.04] hover:text-white md:min-h-0 md:rounded-none md:bg-transparent md:px-0 md:py-0 md:text-sm";
 
 export function Navbar() {
   const t = useTranslations("nav");
@@ -32,7 +32,7 @@ export function Navbar() {
         <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3 md:contents">
           <Link
             href="/"
-            className="flex min-w-0 max-w-[min(152px,48vw)] shrink items-center gap-2 rounded-xl py-1 opacity-95 transition-opacity duration-300 ease-out hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee] sm:max-w-none sm:shrink-0 sm:gap-3"
+            className="flex min-w-0 max-w-[min(152px,48vw)] shrink items-center gap-2 rounded-xl py-1 opacity-95 transition-opacity duration-300 ease-out hover:opacity-100 sm:max-w-none sm:shrink-0 sm:gap-3"
           >
             <Image
               src="/brand/logo.svg"

@@ -51,10 +51,10 @@ export function PortfolioSection() {
       <Container className="max-w-[min(100%,90rem)]">
         <Reveal>
           <div className="text-center">
-            <h2 className="text-gradient-heading text-3xl font-bold tracking-tight md:text-4xl drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)]">
+            <h2 className="text-foreground text-3xl font-bold tracking-tight md:text-4xl drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)]">
               {t("title")}
             </h2>
-            <p className="mx-auto mt-3 max-w-3xl text-slate-400">{t("subtitle")}</p>
+            <p className="mx-auto mt-3 max-w-3xl text-text-tertiary">{t("subtitle")}</p>
           </div>
         </Reveal>
       </Container>

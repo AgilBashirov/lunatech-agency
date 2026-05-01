@@ -28,25 +28,6 @@ export function IconWeb({ className, ...props }: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function IconMobile({ className, ...props }: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={stroke}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={cn(iconClass, className)}
-      aria-hidden
-      {...props}
-    >
-      <path d="M10 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-      <path d="M12 18h.01" />
-    </svg>
-  );
-}
-
 export function IconDesign({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -64,28 +45,6 @@ export function IconDesign({ className, ...props }: SVGProps<SVGSVGElement>) {
       <rect x="9.5" y="11" width="11.5" height="9.5" rx="1.5" />
       <path d="M6 7h5.5M6 9.5h4" />
       <path d="M13 14.5h6M13 17h5" />
-    </svg>
-  );
-}
-
-export function IconAI({ className, ...props }: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={stroke}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={cn(iconClass, className)}
-      aria-hidden
-      {...props}
-    >
-      <path d="M9.5 3L12 7l2.5-4" />
-      <path d="M5 8l2.5 5L5 18" />
-      <path d="M19 8l-2.5 5L19 18" />
-      <path d="M12 7v10" />
-      <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
     </svg>
   );
 }

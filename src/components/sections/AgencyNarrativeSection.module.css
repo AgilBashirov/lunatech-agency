@@ -88,7 +88,7 @@
   display: flex;
   flex-direction: column;
   gap: clamp(0.65rem, 1.5vw, 0.9rem);
-  color: rgba(228, 228, 231, 0.9);
+  color: var(--text-secondary);
   font-size: clamp(0.9375rem, 1.2vw, 1.03rem);
   line-height: 1.65;
 }
@@ -140,10 +140,8 @@
   align-items: stretch;
   border-radius: 0.85rem;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(8, 11, 20, 0.55);
+  background: rgba(11, 15, 26, 0.92);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   padding: 0.55rem 0.5rem 0.65rem 0.6rem;
 }
 
@@ -165,7 +163,7 @@
   border: none;
   border-radius: 0.6rem;
   background: transparent;
-  color: rgba(161, 161, 170, 0.95);
+  color: var(--text-tertiary);
   font: inherit;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -184,8 +182,10 @@
 }
 
 .tab:focus-visible {
-  outline: 2px solid rgba(34, 211, 238, 0.55);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background, #0b0f1a),
+    0 0 0 4px rgba(34, 211, 238, 0.65);
 }
 
 .tabActive {
@@ -200,7 +200,7 @@
   font-size: 0.625rem;
   font-weight: 500;
   letter-spacing: 0.12em;
-  color: rgba(113, 113, 122, 0.95);
+  color: var(--text-muted);
   padding-top: 0.2em;
 }
 
@@ -393,7 +393,7 @@
   font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.12em;
-  color: rgba(161, 161, 170, 0.92);
+  color: var(--text-tertiary);
 }
 
 .stepLabel {
@@ -407,12 +407,12 @@
   margin: 0.45rem 0 0;
   font-size: 0.875rem;
   line-height: 1.58;
-  color: rgba(161, 161, 170, 0.94);
+  color: var(--text-tertiary);
 }
 
 .processFoot {
   margin: clamp(1rem, 2vw, 1.35rem) 0 0;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: rgba(161, 161, 170, 0.9);
+  color: var(--text-tertiary);
 }

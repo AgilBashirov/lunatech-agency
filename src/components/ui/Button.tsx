@@ -25,8 +25,12 @@ export function Button({
 }: Props) {
   const reduce = useReducedMotion();
 
+  // Focus ring: handled by the global premium layered ring in globals.css.
+  // No per-component `focus-visible:outline-*` here — adding utilities at the
+  // class layer would shadow the global rule (Tailwind utilities have higher
+  // specificity than the typed `:focus-visible` selector).
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]";
+    "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 ease-out";
 
   // No hover transform — buttons stay stationary on hover. Visual feedback
   // comes entirely from the box-shadow / brightness / border-color changes

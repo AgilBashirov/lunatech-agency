@@ -15,7 +15,7 @@
     "headline": "Rəqəmsal dünyada fərq yaradan brendlər qururuq",
     "sub": "Dizayn, texnologiya və strategiyanı birləşdirərək biznesinizi güclü rəqəmsal təcrübəyə çeviririk.",
     "cta": "Layihəyə başla",
-    "ctaSecondary": "İşlərə bax",
+    "ctaSecondary": "Seçilmiş işlər",
     "scrollHint": "Aşağı"
   },
   "valueStrip": {
@@ -86,37 +86,37 @@
     "project1": {
       "title": "Nebula Commerce",
       "summary": "Sinematik məhsul hekayəsi və scroll ilə naqillənən headless vitrin.",
-      "body": "İlham / placeholder: konversiyaya yönəlmiş UX, edge performansı, modul dizayn sistemi və mövsümi kampaniyalar üçün motion əsaslı məhsul səhifələri.",
+      "body": "Konversiyaya yönəlmiş UX, edge performansı, modul dizayn sistemi və mövsümi kampaniyalar üçün motion əsaslı məhsul səhifələri.",
       "demoLink": "Aura: Services komponentləri"
     },
     "project2": {
       "title": "Pulse Fintech",
       "summary": "Etibar üçün motion ilə onboarding olan real vaxt portfel təcrübəsi.",
-      "body": "İlham / placeholder: biometrik axınlar, əlçatan data vizualizasiyası və təhlükəsizlik və aydınlığı möhkəmləndirən animasiyalı hallar.",
+      "body": "Biometrik axınlar, əlçatan data vizualizasiyası və təhlükəsizliklə aydınlığı möhkəmləndirən animasiyalı hallar.",
       "demoLink": "Aura: Mobile komponentləri"
     },
     "project3": {
       "title": "Aura Lifestyle",
       "summary": "Vərdiş döngələri, şüşə UI və saxlamaya yönəlik cilalama ilə wellness tətbiqi.",
-      "body": "İlham / placeholder: vərdiş dizaynı, qatlı interfeys dərinliyi və bir neçə bazar üçün lokalizasiya strategiyası.",
+      "body": "Vərdiş dizaynı, qatlı interfeys dərinliyi və bir neçə bazar üçün lokalizasiya strategiyası.",
       "demoLink": "Aura: Features komponentləri"
     },
     "project4": {
       "title": "Vertex AI Console",
       "summary": "ML boru xətləri üçün operator alətləri — sıx UI, motion-da da oxunaqlı.",
-      "body": "İlham / placeholder: terminal üslubu, rollara əsaslanan iş sahələri və gecikməyə həssas canlı qrafiklər.",
+      "body": "Terminal üslubu, rollara əsaslanan iş sahələri və gecikməyə həssas canlı qrafiklər.",
       "demoLink": "Aura: Dashboard komponentləri"
     },
     "project5": {
       "title": "Lunar Rebrendinq",
       "summary": "Kosmos texnoloji startap üçün tam identikator — motion loqo daxil.",
-      "body": "İlham / placeholder: söz işarəsi, animasiyalı identikator və istehsal tərəfdaşları ilə uyğun komponent kitabxanası.",
+      "body": "Söz işarəsi, animasiyalı identikator və istehsal tərəfdaşları ilə uyğun komponent kitabxanası.",
       "demoLink": "Aura: Hero bölmələri"
     },
     "project6": {
       "title": "Signal Launch Film",
       "summary": "Məhsul açılışı və sosial kəsiklər — shader əsaslı hero və modul hekayə.",
-      "body": "İlham / placeholder: real vaxt vizuallar, səs-reaktiv teaserlər və ödənişli media üçün modul hekayəçilik.",
+      "body": "Real vaxt vizuallar, səs-reaktiv teaserlər və ödənişli media üçün modul hekayəçilik.",
       "demoLink": "Aura: CTA komponentləri"
     }
   },

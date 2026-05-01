@@ -28,8 +28,11 @@ export function Section({
     <section
       id={id}
       aria-labelledby={ariaLabelledBy}
+      // Vertical rhythm comes from --gutter-section (clamp(3rem, 5.5vw, 5rem)),
+      // which already covers the responsive range; no per-breakpoint py-* needed.
+      style={{ paddingBlock: "var(--gutter-section)" }}
       className={cn(
-        "relative scroll-mt-28 py-16 sm:scroll-mt-32 sm:py-20 md:scroll-mt-24 md:py-28",
+        "relative scroll-mt-28 sm:scroll-mt-32 md:scroll-mt-24",
         className,
       )}
     >

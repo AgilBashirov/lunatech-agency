@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 
 function SocialIcon({ children }: { children: ReactNode }) {
   return (
-    <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] text-zinc-400 transition-all duration-300 ease-out hover:border-cyan-400/35 hover:text-white hover:shadow-[0_0_22px_rgba(34,211,238,0.35)]">
+    <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] text-text-tertiary transition-all duration-300 ease-out hover:border-cyan-400/35 hover:text-white hover:shadow-[0_0_22px_rgba(34,211,238,0.35)]">
       {children}
     </span>
   );
@@ -21,7 +21,7 @@ export async function Footer() {
         className="h-px w-full bg-gradient-to-r from-transparent via-purple-500/35 to-transparent"
         aria-hidden
       />
-      <div className="border-t border-white/[0.06] bg-[#05060a]/80 pt-12 pb-[calc(3rem+env(safe-area-inset-bottom,0px))] backdrop-blur-md">
+      <div className="border-t border-white/[0.06] bg-[rgba(11,15,26,0.96)] pt-12 pb-[calc(3rem+env(safe-area-inset-bottom,0px))]">
         <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex flex-col gap-4">
@@ -35,13 +35,13 @@ export async function Footer() {
                   unoptimized
                 />
               </Link>
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-text-tertiary">
                 © {new Date().getFullYear()} Lunatech Agency. {t("rights")}
               </p>
             </div>
 
             <div>
-              <p className="font-mono mb-3 text-[10px] uppercase tracking-[0.25em] text-zinc-600">
+              <p className="t-eyebrow mb-3">
                 {t("follow")}
               </p>
               <div className="flex flex-wrap gap-3">
@@ -101,7 +101,7 @@ export async function Footer() {
           </div>
 
           <nav
-            className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-white/[0.06] pt-8 text-sm text-zinc-400 sm:gap-x-6"
+            className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-white/[0.06] pt-8 text-sm text-text-tertiary sm:gap-x-6"
             aria-label="Footer"
           >
             {(
@@ -120,10 +120,10 @@ export async function Footer() {
                 {label}
               </a>
             ))}
-            <span className="inline-flex h-11 shrink-0 items-center text-zinc-400">
+            <span className="inline-flex h-11 shrink-0 cursor-default select-none items-center text-text-muted">
               {t("privacy")}
             </span>
-            <span className="inline-flex h-11 shrink-0 items-center text-zinc-400">
+            <span className="inline-flex h-11 shrink-0 cursor-default select-none items-center text-text-muted">
               {t("terms")}
             </span>
           </nav>

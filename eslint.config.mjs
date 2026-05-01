@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Sandbox worktrees created by the `.claude/` tooling carry their own
+    // nested `.next/` and other generated files. The default `.next/**`
+    // glob is anchored at the repo root, so without this entry the lint
+    // run sweeps in 700+ false errors from `.claude/worktrees/**/.next/**`.
+    ".claude/**",
   ]),
 ]);
 

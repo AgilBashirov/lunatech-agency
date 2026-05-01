@@ -36,7 +36,7 @@ function FloatInput({
       />
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-200 transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-200"
+        className="pointer-events-none absolute left-0 top-5 text-sm text-text-secondary transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-text-secondary"
       >
         {label}
       </label>
@@ -63,7 +63,7 @@ function FloatTextarea({
       />
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-0 top-5 text-sm text-zinc-200 transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-zinc-200"
+        className="pointer-events-none absolute left-0 top-5 text-sm text-text-secondary transition-all duration-300 ease-out peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-text-secondary"
       >
         {label}
       </label>
@@ -93,7 +93,7 @@ export function Contact() {
   return (
     <Section
       id="contact"
-      className="z-10 !scroll-mt-0 pb-20 sm:pb-28"
+      className="z-10 !scroll-mt-0"
     >
       <div className="mx-auto w-full max-w-lg">
         <motion.div
@@ -103,10 +103,11 @@ export function Contact() {
           transition={motionTransition.smooth}
           className="text-center"
         >
-          <h2 className="text-gradient-heading text-3xl font-bold tracking-tight md:text-4xl drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)]">
+          <span className="t-eyebrow">{t("title")}</span>
+          <h2 className="mt-3 text-foreground text-3xl font-bold tracking-tight md:text-4xl drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)]">
             {t("title")}
           </h2>
-          <p className="mt-3 text-balance break-words text-zinc-300">
+          <p className="mt-3 text-balance break-words text-text-secondary">
             {t("subtitle")}
           </p>
         </motion.div>
@@ -153,10 +154,10 @@ export function Contact() {
                   {t("formSubmit")}
                 </Button>
                 <div className="flex flex-col items-center gap-1.5">
-                  <p className="text-balance text-center text-[0.8125rem] leading-relaxed text-zinc-200">
+                  <p className="text-balance text-center text-[0.8125rem] leading-relaxed text-text-secondary">
                     {t("formNote")}
                   </p>
-                  <p className="text-balance text-center text-xs leading-relaxed text-zinc-400">
+                  <p className="text-balance text-center text-xs leading-relaxed text-text-tertiary">
                     {t("mailtoHint")}
                   </p>
                 </div>

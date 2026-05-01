@@ -178,7 +178,7 @@ function BrandArrow({
         // targets are fine at this size.
         "absolute top-1/2 z-40 -translate-y-1/2 touch-manipulation",
         "inline-flex h-9 w-9 items-center justify-center rounded-full",
-        "border border-white/[0.07] bg-[rgba(8,11,20,0.72)] backdrop-blur-sm",
+        "border border-white/[0.07] bg-[rgba(11,15,26,0.96)]",
         "shadow-[0_4px_12px_rgba(0,0,0,0.4)]",
         "transition-[transform,opacity,background-color,border-color,box-shadow] duration-300 ease-out motion-reduce:transition-none",
         disabled
@@ -240,9 +240,10 @@ function Dot({
       onClick={() => onSelect(index)}
       className={cn(
         "relative h-2 rounded-full transition-all duration-300 ease-out touch-manipulation",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#22d3ee]",
+        // Focus ring: global premium layered ring (see globals.css). No
+        // local utility — would otherwise shadow the global selector.
         active
-          ? "w-8 bg-[linear-gradient(90deg,#7c3aed,#22d3ee)] shadow-[0_0_10px_rgba(124,58,237,0.45)]"
+          ? "w-8 bg-[var(--neon-cyan)] shadow-[0_0_10px_rgba(34,211,238,0.45)]"
           : "w-2 bg-white/20 hover:bg-white/35 motion-reduce:transition-none",
       )}
     />
@@ -815,11 +816,17 @@ export function CardsSlider({
                 // viewport (≤1px Math.floor delta from the CSS calc) — values
                 // match within human perception, so no visible jump.
                 className="cs-card"
+                // Loop mode renders cards × 3 copies; only the anchor copy is
+                // ever centered. Off-screen clones still keep CSS animations
+                // running (cover sheen, gradient shimmer, etc.) — pause them
+                // so the GPU doesn't burn cycles on never-visible frames.
+                data-clone={isClone ? "true" : undefined}
                 style={{
                   width: cardWidth > 0 ? cardWidth : undefined,
                   minWidth: cardWidth > 0 ? cardWidth : undefined,
                   maxWidth: cardWidth > 0 ? cardWidth : undefined,
                   height: cardHeight,
+                  animationPlayState: isClone ? "paused" : undefined,
                 }}
                 whileHover={
                   prefersReducedMotion
@@ -917,7 +924,7 @@ function CardContent({
         />
         {card.badge ? (
           <span
-            className="pointer-events-none absolute left-3 top-3 z-[2] inline-flex items-center rounded-full border border-white/15 bg-black/55 px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.22em] text-zinc-100 shadow-[0_2px_10px_rgba(0,0,0,0.45)] backdrop-blur-sm"
+            className="pointer-events-none absolute left-3 top-3 z-[2] inline-flex items-center rounded-full border border-white/15 bg-black/55 px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.22em] text-text-secondary shadow-[0_2px_10px_rgba(0,0,0,0.45)] backdrop-blur-sm"
             aria-hidden={isClone ? "true" : undefined}
           >
             {card.badge}
@@ -931,7 +938,7 @@ function CardContent({
             <h3 className="text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
               {card.title}
             </h3>
-            <p className="line-clamp-2 text-xs leading-snug text-slate-500 sm:text-sm sm:leading-relaxed">
+            <p className="line-clamp-2 text-xs leading-snug text-text-tertiary sm:text-sm sm:leading-relaxed">
               {card.description}
             </p>
           </div>
@@ -958,11 +965,11 @@ function CardContent({
             whileTap={{ scale: 0.97 }}
             className={cn(
               "group/btn mt-auto inline-flex h-9 w-fit max-w-full shrink cursor-pointer items-center gap-1.5 self-start rounded-full",
-              "border border-white/[0.14] bg-white/[0.03] px-3.5 text-[0.75rem] font-medium leading-none tracking-wide text-zinc-200",
+              "border border-white/[0.14] bg-white/[0.03] px-3.5 text-[0.75rem] font-medium leading-none tracking-wide text-text-secondary",
               "no-underline outline-none touch-manipulation",
               "transition-[border-color,background-color,color,box-shadow] duration-300 ease-out",
               "hover:border-cyan-300/45 hover:bg-cyan-300/[0.05] hover:text-white hover:shadow-[0_0_14px_rgba(34,211,238,0.16)]",
-              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22d3ee]",
+              // Focus ring: handled by the global layered ring in globals.css.
             )}
             aria-label={`${card.title} — ${viewDetailsLabel}`}
           >
@@ -990,7 +997,7 @@ function CardContent({
             <h3 className="text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
               {card.title}
             </h3>
-            <p className="line-clamp-2 text-xs leading-snug text-slate-500 sm:text-sm sm:leading-relaxed">
+            <p className="line-clamp-2 text-xs leading-snug text-text-tertiary sm:text-sm sm:leading-relaxed">
               {card.description}
             </p>
           </div>
