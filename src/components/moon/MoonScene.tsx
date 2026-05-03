@@ -310,11 +310,11 @@ function ScrollAndIdleGroup({
     const zoomBlend = scrollZoomScaleRef.current * reduceMul;
     const base = baseScaleRef.current;
 
-    // Rotation coefficient (~2.5π ≈ 450° over full scroll). The "moon spins
+    // Rotation coefficient (~1.5π ≈ 270° over full scroll). The "moon spins
     // as you scroll" feel is preserved by the soft damping below, just at a
     // calmer rotation rate. Tune this single number to dial spin speed
     // up/down without touching damping.
-    const targetRotY = p * Math.PI * 2.5 * blend;
+    const targetRotY = p * Math.PI * 1.5 * blend;
     const targetRotX = p * 0.42 * blend;
 
     const targetPosY = (p - 0.5) * 0.42 * blend;
