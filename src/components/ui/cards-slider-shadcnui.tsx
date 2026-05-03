@@ -173,20 +173,18 @@ function BrandArrow({
       id={id}
       type="button"
       className={cn(
-        // Compact 36×36 chevron pill — refined, less chrome than the previous
-        // 44×44 glass pill. Arrows only render at lg+ (desktop) so mouse
-        // targets are fine at this size.
+        // Bare 56×56 chevron — no pill, no glass. The drop-shadow + cyan
+        // glow on hover are defined by `.cs-arrow` in globals.css.
+        "cs-arrow",
+        isPrev ? "cs-arrow-prev" : "cs-arrow-next",
         "absolute top-1/2 z-40 -translate-y-1/2 touch-manipulation",
-        "inline-flex h-9 w-9 items-center justify-center rounded-full",
-        "border border-white/[0.07] bg-[rgba(11,15,26,0.96)]",
-        "shadow-[0_4px_12px_rgba(0,0,0,0.4)]",
-        "transition-[transform,opacity,background-color,border-color,box-shadow] duration-300 ease-out motion-reduce:transition-none",
+        "transition-opacity duration-300 ease-out motion-reduce:transition-none",
         disabled
           ? "pointer-events-none opacity-0"
-          : "cursor-pointer opacity-80 hover:opacity-100 hover:border-white/20 hover:bg-[rgba(12,15,25,0.85)] hover:shadow-[0_4px_18px_rgba(124,58,237,0.28),0_0_0_1px_rgba(124,58,237,0.18)] active:scale-[0.94] motion-reduce:hover:scale-100",
+          : "opacity-85 hover:opacity-100",
         className,
       )}
-      style={{ [isPrev ? "left" : "right"]: "0.75rem" }}
+      style={{ [isPrev ? "left" : "right"]: "0.25rem" }}
       aria-label={ariaLabel}
       aria-disabled={disabled || undefined}
       disabled={disabled}
@@ -194,8 +192,8 @@ function BrandArrow({
     >
       <svg
         className="block"
-        width="14"
-        height="14"
+        width="56"
+        height="56"
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -210,7 +208,7 @@ function BrandArrow({
         <path
           d={isPrev ? "M14 6l-6 6 6 6" : "M10 6l6 6-6 6"}
           stroke={`url(#${gradId})`}
-          strokeWidth="2.4"
+          strokeWidth="2.0"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -300,6 +298,18 @@ export function CardsSlider({
   const nextBtnId = `selected-work-next-${idBase}`;
 
   const layout = useSliderLayout();
+  // True only on devices with a precise hover input (mouse/trackpad).
+  // `whileHover` engages on pointerover, which iOS WebKit briefly fires during
+  // touch drags — animating a transform on every card the finger crosses.
+  // SSR-safe: starts false and resolves on mount.
+  const [canHover, setCanHover] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const apply = () => setCanHover(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
   const visible = Math.max(1, Math.min(layout.visible, count));
   const gap = layout.gap;
 
@@ -567,6 +577,15 @@ export function CardsSlider({
       // Route through the same safe-wrap path as arrows so a hard flick never
       // leaves x parked outside the rendered range.
       const delta = targetVirtual - virtualIdxRef.current;
+      if (delta === 0) {
+        // User released while still on the current card (e.g. dragged 20%
+        // and let go). `advance(0)` is a no-op, which would leave x parked
+        // mid-drag — the rail visibly stops between two cards. Animate x
+        // back to the canonical position for the unchanged virtualIdx so
+        // the slide always snaps to a card on release.
+        animate(x, -virtualIdxRef.current * slideStep, SPRING_TRANSITION);
+        return;
+      }
       advance(delta);
     },
     [advance, markInteraction, showNav, slideStep, x],
@@ -762,7 +781,13 @@ export function CardsSlider({
           // ResizeObserver dance, no layout shift on hydration.
           // Top padding stays small; bottom padding leaves room for the
           // soft oval shadow that sits below each card (.cs-card::after).
-          "cs-viewport relative overflow-hidden pb-10 pt-2",
+          //
+          // overflow-visible (not -hidden) lets the rail extend visibly
+          // through the slider's left/right padding during a drag — so the
+          // outgoing card doesn't get clipped at the padding boundary while
+          // it slides off, and the incoming card peeks in smoothly. The
+          // body's own `overflow-x: hidden` provides the screen-edge clip.
+          "cs-viewport relative overflow-visible pb-10 pt-2",
           "[touch-action:pan-y]",
           showNav
             ? isDragging
@@ -775,6 +800,7 @@ export function CardsSlider({
         data-loop={loop ? "true" : "false"}
         data-slide-count={count}
         data-visible-count={visible}
+        data-dragging={isDragging ? "true" : undefined}
         tabIndex={showNav ? 0 : undefined}
         role="region"
         aria-roledescription={ariaRoleDescription}
@@ -829,7 +855,7 @@ export function CardsSlider({
                   animationPlayState: isClone ? "paused" : undefined,
                 }}
                 whileHover={
-                  prefersReducedMotion
+                  !canHover || prefersReducedMotion
                     ? undefined
                     : { y: -6, transition: { duration: 0.26, ease: [0.16, 1, 0.3, 1] } }
                 }
@@ -894,7 +920,10 @@ function CardContent({
         // on .cs-card (see globals.css) — looks softer than any rounded-rect
         // box-shadow can.
         "border-border bg-card/95 text-card-foreground shadow-[0_2px_6px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]",
-        "backdrop-blur-md transition-[border-color,box-shadow,transform] duration-500 ease-out",
+        // backdrop-blur-md is the dominant per-frame cost on iOS WebKit during
+        // a swipe (multiplied across loop copies). Gate it to md+ so mobile
+        // sliding stays smooth; tablet/desktop keep the glassy look.
+        "md:backdrop-blur-md transition-[border-color,box-shadow,transform] duration-500 ease-out",
         "hover:border-primary/35 hover:shadow-[0_4px_10px_rgba(0,0,0,0.4),0_0_0_1px_var(--glow-purple),0_0_28px_var(--glow-cyan),inset_0_1px_0_rgba(255,255,255,0.06)]",
       )}
     >

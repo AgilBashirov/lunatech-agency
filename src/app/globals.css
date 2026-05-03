@@ -880,6 +880,27 @@ h2 {
   }
 }
 
+/* Touch devices (iOS Safari/Chrome especially): `filter: blur()` on the
+ * shadow pseudo is rendered every frame the rail translates, even with no
+ * value change. Multiplied across loop copies, this stalls the swipe
+ * gesture on iPhone. Drop the GPU blur and lean on the radial gradient's
+ * own alpha falloff for softness. The card's inline box-shadow continues
+ * to provide depth, so the visual loss is minimal. */
+@media (hover: none) {
+  .cs-card::after {
+    filter: none;
+    transition: none;
+    opacity: 0.7;
+  }
+}
+
+/* While the rail is being dragged, suppress every transition on the card
+ * pseudo so a cross-fade or snap doesn't compete with the swipe transform. */
+.cs-viewport[data-dragging="true"] .cs-card,
+.cs-viewport[data-dragging="true"] .cs-card::after {
+  transition: none !important;
+}
+
 /* Clones in loop mode are never centered — they exist so swiping past the
  * end visually wraps without a jump. Pausing CSS animations on their entire
  * subtree saves continuous GPU work for marquees, sheens, and shimmers that
@@ -889,6 +910,63 @@ h2 {
 .cs-card[data-clone="true"] *::before,
 .cs-card[data-clone="true"] *::after {
   animation-play-state: paused !important;
+}
+
+/* ---------- Slider arrows (bare chevron, XL cinematic) -------------------
+ * Size C from /arrow-preview.html: no pill / circle / glass — just a 56×56
+ * chevron with a soft black drop-shadow for legibility against any cover
+ * image. On hover the shadow widens into a cyan + soft purple glow and the
+ * chevron nudges 3px in its travel direction. Press: 0.92 scale. CSS custom
+ * properties (--cs-tx, --cs-sc) compose the translate and scale into a
+ * single `transform`, so press feedback never wipes out hover translation.
+ */
+.cs-arrow {
+  background: transparent;
+  border: 0;
+  padding: 8px; /* keeps the touch target ≥72×72 around a 56×56 chevron */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  line-height: 0;
+}
+.cs-arrow svg {
+  display: block;
+  --cs-tx: 0px;
+  --cs-sc: 1;
+  transform: translateX(var(--cs-tx)) scale(var(--cs-sc));
+  filter:
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 1px rgba(0, 0, 0, 0.85));
+  transition:
+    transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 280ms ease-out;
+}
+.cs-arrow:hover svg {
+  filter:
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 10px rgba(34, 211, 238, 0.55))
+    drop-shadow(0 0 18px rgba(167, 139, 250, 0.35));
+}
+.cs-arrow-prev:hover svg {
+  --cs-tx: -3px;
+}
+.cs-arrow-next:hover svg {
+  --cs-tx: 3px;
+}
+.cs-arrow:active:not(:disabled) svg {
+  --cs-sc: 0.92;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs-arrow svg {
+    transition: none;
+    --cs-tx: 0px;
+    --cs-sc: 1;
+  }
+  .cs-arrow:active:not(:disabled) svg {
+    --cs-sc: 1;
+  }
 }
 
 /* ---------- Wave 2 typography utilities ----------------------------------
