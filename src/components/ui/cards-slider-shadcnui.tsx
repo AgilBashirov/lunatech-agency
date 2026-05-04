@@ -843,16 +843,18 @@ export function CardsSlider({
                 // match within human perception, so no visible jump.
                 className="cs-card"
                 // Loop mode renders cards × 3 copies; only the anchor copy is
-                // ever centered. Off-screen clones still keep CSS animations
-                // running (cover sheen, gradient shimmer, etc.) — pause them
-                // so the GPU doesn't burn cycles on never-visible frames.
+                // ever centered. `data-clone` keeps the semantic distinction
+                // (a11y suppression, etc.). Animation gating uses `data-active`
+                // below — only the card matching the current canonical index
+                // animates, so the user always sees a "live" card regardless
+                // of which copy ended up on-screen after wrap.
                 data-clone={isClone ? "true" : undefined}
+                data-active={realIdx === activeIndex ? "true" : undefined}
                 style={{
                   width: cardWidth > 0 ? cardWidth : undefined,
                   minWidth: cardWidth > 0 ? cardWidth : undefined,
                   maxWidth: cardWidth > 0 ? cardWidth : undefined,
                   height: cardHeight,
-                  animationPlayState: isClone ? "paused" : undefined,
                 }}
                 whileHover={
                   !canHover || prefersReducedMotion

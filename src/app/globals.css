@@ -901,15 +901,22 @@ h2 {
   transition: none !important;
 }
 
-/* Clones in loop mode are never centered — they exist so swiping past the
- * end visually wraps without a jump. Pausing CSS animations on their entire
- * subtree saves continuous GPU work for marquees, sheens, and shimmers that
- * are mostly off-screen. */
-.cs-card[data-clone="true"],
-.cs-card[data-clone="true"] *,
-.cs-card[data-clone="true"] *::before,
-.cs-card[data-clone="true"] *::after {
-  animation-play-state: paused !important;
+/* Animations only run on the card matching the current canonical index
+ * (across all 3 loop copies). This handles two problems with one rule:
+ *  1. Off-screen cards (anchor or clone) burn no GPU on continuous keyframes
+ *     — especially the painted `pc-screen-flow` which would otherwise repaint
+ *     every frame for every cover at once.
+ *  2. After a forward/backward wrap the user lands on a clone copy. Pausing
+ *     by `data-clone` alone would freeze the visible card mid-animation, so
+ *     the wrapped slide looked dead even though it was fully on-screen.
+ * The active card is marked with `data-active="true"` (see CardsSlider).
+ * Using `:not()` here means the rule "wins" via specificity equal to the
+ * default state — no `!important` needed. */
+.cs-card:not([data-active="true"]),
+.cs-card:not([data-active="true"]) *,
+.cs-card:not([data-active="true"]) *::before,
+.cs-card:not([data-active="true"]) *::after {
+  animation-play-state: paused;
 }
 
 /* ---------- Slider arrows (bare chevron, XL cinematic) -------------------
