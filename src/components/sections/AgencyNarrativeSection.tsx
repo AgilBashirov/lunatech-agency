@@ -10,6 +10,7 @@ import {
 import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/cn";
+import { ProcessTimeline } from "./ProcessTimeline";
 import styles from "./AgencyNarrativeSection.module.css";
 
 const TAB_COUNT = 3;
@@ -27,40 +28,6 @@ function ProseContent({
       {paragraphs.map((text, i) => (
         <p key={i}>{text}</p>
       ))}
-    </div>
-  );
-}
-
-function ProcessTimeline({
-  steps,
-  footnote,
-  listLabel,
-}: {
-  steps: readonly { key: string; label: string; detail: string }[];
-  footnote: string;
-  listLabel: string;
-}) {
-  return (
-    <div className={styles.processWrap}>
-      <ol className={styles.steps} aria-label={listLabel}>
-        {steps.map((step, i) => (
-          <li key={step.key} className={styles.step}>
-            <div className={styles.stepRail} aria-hidden>
-              <span className={styles.stepNode} />
-            </div>
-            <div className={styles.stepBody}>
-              <div className={styles.stepMeta}>
-                <span className={styles.stepIndex}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className={styles.stepLabel}>{step.label}</span>
-              </div>
-              <p className={styles.stepDetail}>{step.detail}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-      <p className={styles.processFoot}>{footnote}</p>
     </div>
   );
 }

@@ -42,6 +42,441 @@
     "performance": {
       "title": "Performans və optimizasiya",
       "desc": "Sürət, stabilik və maksimum effektivlik."
+    },
+    "government": {
+      "title": "Dövlət inteqrasiyaları",
+      "desc": "myGov, SİMA auth və SİMA rəqəmsal imza — məhsulunuza birləşdirilir."
+    },
+    "detail": {
+      "web-experience": {
+        "hero": {
+          "eyebrow": "TODO: hero eyebrow",
+          "title": "TODO: hero title",
+          "lede": "TODO: hero lede",
+          "ctaLabel": "TODO: hero CTA label",
+          "ctaHref": "/#contact",
+          "ctaSecondaryLabel": "TODO: hero secondary CTA label",
+          "ctaSecondaryHref": "#how-it-works"
+        },
+        "problem": {
+          "eyebrow": "TODO: problem eyebrow",
+          "title": "TODO: problem title",
+          "p1": "TODO: problem paragraph 1",
+          "p2": "TODO: problem paragraph 2"
+        },
+        "solution": {
+          "eyebrow": "TODO: solution eyebrow",
+          "title": "TODO: solution title",
+          "p1": "TODO: solution paragraph 1",
+          "p2": "TODO: solution paragraph 2",
+          "bullets": {
+            "b1": "TODO: solution bullet 1",
+            "b2": "TODO: solution bullet 2",
+            "b3": "TODO: solution bullet 3",
+            "b4": "TODO: solution bullet 4"
+          },
+          "visualAlt": "TODO: solution visual alt text"
+        },
+        "useCases": {
+          "uc1": { "title": "TODO: use case 1 title", "description": "TODO: use case 1 description" },
+          "uc2": { "title": "TODO: use case 2 title", "description": "TODO: use case 2 description" },
+          "uc3": { "title": "TODO: use case 3 title", "description": "TODO: use case 3 description" }
+        },
+        "howItWorks": {
+          "eyebrow": "TODO: how it works eyebrow",
+          "title": "TODO: how it works title",
+          "footnote": "TODO: how it works footnote",
+          "steps": {
+            "s1": { "label": "TODO: step 1 label", "detail": "TODO: step 1 detail" },
+            "s2": { "label": "TODO: step 2 label", "detail": "TODO: step 2 detail" },
+            "s3": { "label": "TODO: step 3 label", "detail": "TODO: step 3 detail" },
+            "s4": { "label": "TODO: step 4 label", "detail": "TODO: step 4 detail" }
+          }
+        },
+        "benefits": {
+          "eyebrow": "TODO: benefits eyebrow",
+          "title": "TODO: benefits title",
+          "items": {
+            "i1": { "title": "TODO: benefit 1 title", "description": "TODO: benefit 1 description" },
+            "i2": { "title": "TODO: benefit 2 title", "description": "TODO: benefit 2 description" },
+            "i3": { "title": "TODO: benefit 3 title", "description": "TODO: benefit 3 description" },
+            "i4": { "title": "TODO: benefit 4 title", "description": "TODO: benefit 4 description" }
+          }
+        },
+        "faq": {
+          "eyebrow": "TODO: faq eyebrow",
+          "title": "TODO: faq title",
+          "items": {
+            "q1": { "q": "TODO: faq question 1", "a": "TODO: faq answer 1" },
+            "q2": { "q": "TODO: faq question 2", "a": "TODO: faq answer 2" },
+            "q3": { "q": "TODO: faq question 3", "a": "TODO: faq answer 3" },
+            "q4": { "q": "TODO: faq question 4", "a": "TODO: faq answer 4" },
+            "q5": { "q": "TODO: faq question 5", "a": "TODO: faq answer 5" },
+            "q6": { "q": "TODO: faq question 6", "a": "TODO: faq answer 6" }
+          }
+        },
+        "cta": {
+          "eyebrow": "TODO: cta eyebrow",
+          "title": "TODO: cta title",
+          "lede": "TODO: cta lede",
+          "ctaLabel": "TODO: cta label",
+          "ctaHref": "/#contact"
+        }
+      },
+      "uiux": {
+        "hero": {
+          "eyebrow": "TODO: hero eyebrow",
+          "title": "TODO: hero title",
+          "lede": "TODO: hero lede",
+          "ctaLabel": "TODO: hero CTA label",
+          "ctaHref": "/#contact",
+          "ctaSecondaryLabel": "TODO: hero secondary CTA label",
+          "ctaSecondaryHref": "#how-it-works"
+        },
+        "problem": {
+          "eyebrow": "TODO: problem eyebrow",
+          "title": "TODO: problem title",
+          "p1": "TODO: problem paragraph 1",
+          "p2": "TODO: problem paragraph 2"
+        },
+        "solution": {
+          "eyebrow": "TODO: solution eyebrow",
+          "title": "TODO: solution title",
+          "p1": "TODO: solution paragraph 1",
+          "p2": "TODO: solution paragraph 2",
+          "bullets": {
+            "b1": "TODO: solution bullet 1",
+            "b2": "TODO: solution bullet 2",
+            "b3": "TODO: solution bullet 3",
+            "b4": "TODO: solution bullet 4"
+          },
+          "visualAlt": "TODO: solution visual alt text"
+        },
+        "useCases": {
+          "uc1": { "title": "TODO: use case 1 title", "description": "TODO: use case 1 description" },
+          "uc2": { "title": "TODO: use case 2 title", "description": "TODO: use case 2 description" },
+          "uc3": { "title": "TODO: use case 3 title", "description": "TODO: use case 3 description" }
+        },
+        "howItWorks": {
+          "eyebrow": "TODO: how it works eyebrow",
+          "title": "TODO: how it works title",
+          "footnote": "TODO: how it works footnote",
+          "steps": {
+            "s1": { "label": "TODO: step 1 label", "detail": "TODO: step 1 detail" },
+            "s2": { "label": "TODO: step 2 label", "detail": "TODO: step 2 detail" },
+            "s3": { "label": "TODO: step 3 label", "detail": "TODO: step 3 detail" },
+            "s4": { "label": "TODO: step 4 label", "detail": "TODO: step 4 detail" }
+          }
+        },
+        "benefits": {
+          "eyebrow": "TODO: benefits eyebrow",
+          "title": "TODO: benefits title",
+          "items": {
+            "i1": { "title": "TODO: benefit 1 title", "description": "TODO: benefit 1 description" },
+            "i2": { "title": "TODO: benefit 2 title", "description": "TODO: benefit 2 description" },
+            "i3": { "title": "TODO: benefit 3 title", "description": "TODO: benefit 3 description" },
+            "i4": { "title": "TODO: benefit 4 title", "description": "TODO: benefit 4 description" }
+          }
+        },
+        "faq": {
+          "eyebrow": "TODO: faq eyebrow",
+          "title": "TODO: faq title",
+          "items": {
+            "q1": { "q": "TODO: faq question 1", "a": "TODO: faq answer 1" },
+            "q2": { "q": "TODO: faq question 2", "a": "TODO: faq answer 2" },
+            "q3": { "q": "TODO: faq question 3", "a": "TODO: faq answer 3" },
+            "q4": { "q": "TODO: faq question 4", "a": "TODO: faq answer 4" },
+            "q5": { "q": "TODO: faq question 5", "a": "TODO: faq answer 5" },
+            "q6": { "q": "TODO: faq question 6", "a": "TODO: faq answer 6" }
+          }
+        },
+        "cta": {
+          "eyebrow": "TODO: cta eyebrow",
+          "title": "TODO: cta title",
+          "lede": "TODO: cta lede",
+          "ctaLabel": "TODO: cta label",
+          "ctaHref": "/#contact"
+        }
+      },
+      "strategy": {
+        "hero": {
+          "eyebrow": "TODO: hero eyebrow",
+          "title": "TODO: hero title",
+          "lede": "TODO: hero lede",
+          "ctaLabel": "TODO: hero CTA label",
+          "ctaHref": "/#contact",
+          "ctaSecondaryLabel": "TODO: hero secondary CTA label",
+          "ctaSecondaryHref": "#how-it-works"
+        },
+        "problem": {
+          "eyebrow": "TODO: problem eyebrow",
+          "title": "TODO: problem title",
+          "p1": "TODO: problem paragraph 1",
+          "p2": "TODO: problem paragraph 2"
+        },
+        "solution": {
+          "eyebrow": "TODO: solution eyebrow",
+          "title": "TODO: solution title",
+          "p1": "TODO: solution paragraph 1",
+          "p2": "TODO: solution paragraph 2",
+          "bullets": {
+            "b1": "TODO: solution bullet 1",
+            "b2": "TODO: solution bullet 2",
+            "b3": "TODO: solution bullet 3",
+            "b4": "TODO: solution bullet 4"
+          },
+          "visualAlt": "TODO: solution visual alt text"
+        },
+        "useCases": {
+          "uc1": { "title": "TODO: use case 1 title", "description": "TODO: use case 1 description" },
+          "uc2": { "title": "TODO: use case 2 title", "description": "TODO: use case 2 description" },
+          "uc3": { "title": "TODO: use case 3 title", "description": "TODO: use case 3 description" }
+        },
+        "howItWorks": {
+          "eyebrow": "TODO: how it works eyebrow",
+          "title": "TODO: how it works title",
+          "footnote": "TODO: how it works footnote",
+          "steps": {
+            "s1": { "label": "TODO: step 1 label", "detail": "TODO: step 1 detail" },
+            "s2": { "label": "TODO: step 2 label", "detail": "TODO: step 2 detail" },
+            "s3": { "label": "TODO: step 3 label", "detail": "TODO: step 3 detail" },
+            "s4": { "label": "TODO: step 4 label", "detail": "TODO: step 4 detail" }
+          }
+        },
+        "benefits": {
+          "eyebrow": "TODO: benefits eyebrow",
+          "title": "TODO: benefits title",
+          "items": {
+            "i1": { "title": "TODO: benefit 1 title", "description": "TODO: benefit 1 description" },
+            "i2": { "title": "TODO: benefit 2 title", "description": "TODO: benefit 2 description" },
+            "i3": { "title": "TODO: benefit 3 title", "description": "TODO: benefit 3 description" },
+            "i4": { "title": "TODO: benefit 4 title", "description": "TODO: benefit 4 description" }
+          }
+        },
+        "faq": {
+          "eyebrow": "TODO: faq eyebrow",
+          "title": "TODO: faq title",
+          "items": {
+            "q1": { "q": "TODO: faq question 1", "a": "TODO: faq answer 1" },
+            "q2": { "q": "TODO: faq question 2", "a": "TODO: faq answer 2" },
+            "q3": { "q": "TODO: faq question 3", "a": "TODO: faq answer 3" },
+            "q4": { "q": "TODO: faq question 4", "a": "TODO: faq answer 4" },
+            "q5": { "q": "TODO: faq question 5", "a": "TODO: faq answer 5" },
+            "q6": { "q": "TODO: faq question 6", "a": "TODO: faq answer 6" }
+          }
+        },
+        "cta": {
+          "eyebrow": "TODO: cta eyebrow",
+          "title": "TODO: cta title",
+          "lede": "TODO: cta lede",
+          "ctaLabel": "TODO: cta label",
+          "ctaHref": "/#contact"
+        }
+      },
+      "performance": {
+        "hero": {
+          "eyebrow": "TODO: hero eyebrow",
+          "title": "TODO: hero title",
+          "lede": "TODO: hero lede",
+          "ctaLabel": "TODO: hero CTA label",
+          "ctaHref": "/#contact",
+          "ctaSecondaryLabel": "TODO: hero secondary CTA label",
+          "ctaSecondaryHref": "#how-it-works"
+        },
+        "problem": {
+          "eyebrow": "TODO: problem eyebrow",
+          "title": "TODO: problem title",
+          "p1": "TODO: problem paragraph 1",
+          "p2": "TODO: problem paragraph 2"
+        },
+        "solution": {
+          "eyebrow": "TODO: solution eyebrow",
+          "title": "TODO: solution title",
+          "p1": "TODO: solution paragraph 1",
+          "p2": "TODO: solution paragraph 2",
+          "bullets": {
+            "b1": "TODO: solution bullet 1",
+            "b2": "TODO: solution bullet 2",
+            "b3": "TODO: solution bullet 3",
+            "b4": "TODO: solution bullet 4"
+          },
+          "visualAlt": "TODO: solution visual alt text"
+        },
+        "useCases": {
+          "uc1": { "title": "TODO: use case 1 title", "description": "TODO: use case 1 description" },
+          "uc2": { "title": "TODO: use case 2 title", "description": "TODO: use case 2 description" },
+          "uc3": { "title": "TODO: use case 3 title", "description": "TODO: use case 3 description" }
+        },
+        "howItWorks": {
+          "eyebrow": "TODO: how it works eyebrow",
+          "title": "TODO: how it works title",
+          "footnote": "TODO: how it works footnote",
+          "steps": {
+            "s1": { "label": "TODO: step 1 label", "detail": "TODO: step 1 detail" },
+            "s2": { "label": "TODO: step 2 label", "detail": "TODO: step 2 detail" },
+            "s3": { "label": "TODO: step 3 label", "detail": "TODO: step 3 detail" },
+            "s4": { "label": "TODO: step 4 label", "detail": "TODO: step 4 detail" }
+          }
+        },
+        "benefits": {
+          "eyebrow": "TODO: benefits eyebrow",
+          "title": "TODO: benefits title",
+          "items": {
+            "i1": { "title": "TODO: benefit 1 title", "description": "TODO: benefit 1 description" },
+            "i2": { "title": "TODO: benefit 2 title", "description": "TODO: benefit 2 description" },
+            "i3": { "title": "TODO: benefit 3 title", "description": "TODO: benefit 3 description" },
+            "i4": { "title": "TODO: benefit 4 title", "description": "TODO: benefit 4 description" }
+          }
+        },
+        "faq": {
+          "eyebrow": "TODO: faq eyebrow",
+          "title": "TODO: faq title",
+          "items": {
+            "q1": { "q": "TODO: faq question 1", "a": "TODO: faq answer 1" },
+            "q2": { "q": "TODO: faq question 2", "a": "TODO: faq answer 2" },
+            "q3": { "q": "TODO: faq question 3", "a": "TODO: faq answer 3" },
+            "q4": { "q": "TODO: faq question 4", "a": "TODO: faq answer 4" },
+            "q5": { "q": "TODO: faq question 5", "a": "TODO: faq answer 5" },
+            "q6": { "q": "TODO: faq question 6", "a": "TODO: faq answer 6" }
+          }
+        },
+        "cta": {
+          "eyebrow": "TODO: cta eyebrow",
+          "title": "TODO: cta title",
+          "lede": "TODO: cta lede",
+          "ctaLabel": "TODO: cta label",
+          "ctaHref": "/#contact"
+        }
+      },
+      "government": {
+        "hero": {
+          "eyebrow": "Dövlət inteqrasiyaları",
+          "title": "myGov, SİMA auth və SİMA imza — məhsulunuzun içində",
+          "lede": "Platformanızı Azərbaycanın kimlik və e-imza infrastrukturuna bağlayırıq. Təsdiqlənmiş istifadəçilər, hüquqi qüvvəli imzalar, onboardingdə daha az itki.",
+          "ctaLabel": "Layihəyə başla",
+          "ctaHref": "/#contact",
+          "ctaSecondaryLabel": "Necə işləyir",
+          "ctaSecondaryHref": "#how-it-works"
+        },
+        "problem": {
+          "eyebrow": "Problem",
+          "title": "Dövlət inteqrasiyaları məhsulların səssizcə qırıldığı yerdir",
+          "p1": "Sandbox sənədləri natamam olur. Sertifikatlar buraxılışın ortasında bitir. Vətəndaş datasının uc halları yalnız miqyasda — uyğunluq artıq imzalandıqdan sonra ortaya çıxır.",
+          "p2": "Komandaların əksəriyyəti işləyən demo təhvil verir, sonra divara dəyir: kövrək sessiyalar, istifadəçini bağlayan imza axınları, tənzimləyicinin qəbul etmədiyi audit jurnalları.",
+          "p3": "Bunun bahası yalnız mühəndislik vaxtı deyil. Bu, onboardinqdə itki, uğursuz imzalar və auditdən keçməyən məhsuldur."
+        },
+        "solution": {
+          "eyebrow": "Yanaşmamız",
+          "title": "Demo deyil, istehsalda sınanmış inteqrasiyalar",
+          "p1": "myGov, SİMA auth və SİMA rəqəmsal imzanı istehsalda davranmalı olduğu kimi qururuq: təkrar cəhdlər, ehtiyat axınlar, istifadəçinin başa düşəcəyi xəta halları və tənzimləyicinin qəbul etdiyi audit izi.",
+          "p2": "Hər axın əvvəlcə lokal və mobil prioritetli qurulur, real sandboxda sınanır — yalnız bundan sonra istehsal sertifikatına yaxınlaşırıq.",
+          "bullets": {
+            "b1": "Token bitməsi və şəbəkə kəsilməsindən sağ çıxan myGov SSO sessiyası",
+            "b2": "Yalnız təcrübəli istifadəçilər üçün deyil, ilk dəfə girənlər üçün də qurulmuş SİMA auth axınları",
+            "b3": "Yoxlanıla bilən audit jurnalı ilə hüquqi qüvvəli SİMA imza",
+            "b4": "Azərbaycan, ingilis və rus dillərində lokal UX",
+            "b5": "Təmiz təhvil: sertifikatlar, runbook və sizin nəzarətinizdə monitorinq"
+          },
+          "visualAlt": "Məhsul və Azərbaycan dövlət xidmətləri arasında kimlik və imza axınını göstərən diaqram"
+        },
+        "useCases": {
+          "uc1": {
+            "title": "Fintech KYC onboarding",
+            "description": "myGov və ya SİMA ilə vətəndaşları saniyələr içində təsdiq edin, manual sənəd yoxlamasını əvəz edin və qeydiyyatda itkini azaldın.",
+            "badge": "Ən çox tələb olunan"
+          },
+          "uc2": {
+            "title": "Rəqəmsal müqavilə imzalanması",
+            "description": "Yaş mürəkkəbi SİMA rəqəmsal imza ilə əvəz edin — hüquqi qüvvəli, audit-hazır, tənzimləyici tərəfindən qəbul edilən."
+          },
+          "uc3": {
+            "title": "Vətəndaş portalı üçün SSO",
+            "description": "İstifadəçilər mövcud myGov kimliyi ilə daxil olsun. Yeni hesab yoxdur, unudulmuş şifrə yoxdur."
+          },
+          "uc4": {
+            "title": "Sənəd axınının avtomatlaşdırılması",
+            "description": "Tənzimlənən sənədləri başdan sona yönləndirin, imzalayın və arxivləyin — yoxlanıla bilən imza və dəyişməz tarixçə ilə."
+          }
+        },
+        "howItWorks": {
+          "eyebrow": "Necə işləyir",
+          "title": "Tədqiqdən təsdiqlənmiş istehsal keçidinə qədər",
+          "footnote": "Tipik müddət: əhatə dairəsi və sertifikat qrafikindən asılı olaraq istehsala 4–8 həftə.",
+          "steps": {
+            "s1": {
+              "label": "Tədqiq və təhdid modeli",
+              "detail": "Axınlarınızı, data rezidentliyini və tələb olunan dövlət xidmətlərini xəritələyirik — sonra təhdid modelini yazırıq."
+            },
+            "s2": {
+              "label": "Sandbox inteqrasiyası",
+              "detail": "Rəsmi sandboxda qururuq, uc halları əhatə edirik və hər vəziyyəti komandanızla doğrulayırıq."
+            },
+            "s3": {
+              "label": "İstehsal keçidi",
+              "detail": "Sertifikat təminatı, mərhələli buraxılış və ilk gündən tam audit izi."
+            },
+            "s4": {
+              "label": "Monitorinq və SLA",
+              "detail": "Canlı panellər, on-call dəstək və inteqrasiyanı güncəl saxlayan baxım planı."
+            }
+          }
+        },
+        "benefits": {
+          "eyebrow": "Nə qazanırsınız",
+          "title": "Nəticədə əldə etdikləriniz",
+          "items": {
+            "i1": {
+              "title": "Hüquqi qüvvəli imzalar",
+              "description": "SİMA imzaları məhkəmədə qəbul olunur və tənzimləyici yoxlamasından keçir."
+            },
+            "i2": {
+              "title": "Azərbaycan səviyyəsində uyğunluq",
+              "description": "Lokal data rezidentliyi, KVDB və sektor qaydaları nəzərə alınaraq qurulur."
+            },
+            "i3": {
+              "title": "Yüksək onboardinq konversiyası",
+              "description": "Vətəndaşlar artıq malik olduqları kimliklə daxil olurlar. Daha az addım, daha az itki."
+            },
+            "i4": {
+              "title": "Vendor asılılığı yoxdur",
+              "description": "Sertifikatlar, runbook və kod sizin nəzarətinizdədir. Təhvili təmiz veririk."
+            }
+          }
+        },
+        "faq": {
+          "eyebrow": "FAQ",
+          "title": "Tez-tez verilən suallar",
+          "items": {
+            "q1": {
+              "q": "Hansı dövlət xidmətləri ilə inteqrasiya edirsiniz?",
+              "a": "myGov (e-gov.az) single sign-on, SİMA autentifikasiyası və SİMA rəqəmsal imza. Məhsulunuza başqa bir dövlət endpointi lazımdırsa, tədqiq mərhələsində dəyərləndirək."
+            },
+            "q2": {
+              "q": "Sandboxdan istehsala keçid necə baş verir?",
+              "a": "Əvvəlcə rəsmi sandboxda qurub test edirik, sonra istehsal sertifikatlarını komandanızla təmin edirik. Keçid mərhələli, izlənilən və geri qaytarıla biləndir. Hər addımı əhatə edən runbook təhvil verilir."
+            },
+            "q3": {
+              "q": "Data rezidentliyi və KVDB uyğunluğu necədir?",
+              "a": "Şəxsi datanın ölkədə qalması standart yanaşmadır. Saxlama, jurnal və saxlama müddətini KVDB tələblərinə və sektor qaydalarınıza — bank, sığorta, səhiyyə, govtech — uyğun dizayn edirik. Audit izi buna uyğun qurulur."
+            },
+            "q4": {
+              "q": "Buraxılışdan sonra inteqrasiyanı saxlayırsınız?",
+              "a": "Bəli. Sertifikatların müddəti bitir, sandbox endpointləri dəyişir, uc hallar miqyasda ortaya çıxır. SLA əsaslı baxım təklif edirik: monitorinq, on-call dəstək və rüblük baxış."
+            },
+            "q5": {
+              "q": "Mövcud sistemlərimizə inteqrasiya etmək olar?",
+              "a": "Bəli. Backend, identity provayder və sənəd dəstəyiniz ilə yan-yana işləyirik — REST, SOAP, queue, hansını işlədirsinizsə. Dövlət qatı məhsulunuza qoşulur, əksinə deyil."
+            }
+          }
+        },
+        "cta": {
+          "eyebrow": "Başlayaq",
+          "title": "Gəlin inteqrasiyanızı dəyərləndirək",
+          "lede": "Hansı dövlət xidmətlərinə ehtiyacınız olduğunu və hazırkı vəziyyətinizi yazın. İki iş günü ərzində planla qayıdırıq.",
+          "ctaLabel": "Layihəyə başla",
+          "ctaHref": "/#contact"
+        }
+      }
     }
   },
   "about": {

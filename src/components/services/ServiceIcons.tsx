@@ -90,3 +90,29 @@ export function IconMotion({ className, ...props }: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function IconGovernment({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={stroke}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={cn(iconClass, className)}
+      aria-hidden
+      {...props}
+    >
+      {/* Classical pillared building — pediment, four columns, base, steps. */}
+      <path d="M3.5 8.25L12 3.5l8.5 4.75" />
+      <path d="M4.5 8.25h15" />
+      <path d="M6.5 10.5v7M10 10.5v7M14 10.5v7M17.5 10.5v7" />
+      <path d="M3.5 17.5h17" />
+      <path d="M2.75 20.25h18.5" />
+    </svg>
+  );
+}
