@@ -50,301 +50,517 @@
     "detail": {
       "web-experience": {
         "hero": {
-          "eyebrow": "TODO: hero eyebrow",
-          "title": "TODO: hero title",
-          "lede": "TODO: hero lede",
-          "ctaLabel": "TODO: hero CTA label",
+          "eyebrow": "Veb təcrübə",
+          "title": "Sürətli yüklənən, aydın oxunan və konversiya yaradan saytlar",
+          "lede": "Diqqəti tutan, axtarışda görünən və trafikdən real müştəri yaradan marketinq saytları və veb platformalar dizayn edib qururuq.",
+          "ctaLabel": "Layihəyə başla",
           "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "TODO: hero secondary CTA label",
+          "ctaSecondaryLabel": "Necə işləyir",
           "ctaSecondaryHref": "#how-it-works"
         },
         "problem": {
-          "eyebrow": "TODO: problem eyebrow",
-          "title": "TODO: problem title",
-          "p1": "TODO: problem paragraph 1",
-          "p2": "TODO: problem paragraph 2"
+          "eyebrow": "Problem",
+          "title": "Saytların əksəriyyəti yaxşı görünür və səssizcə zəif işləyir",
+          "p1": "Hero üç saniyəyə yüklənir, CMS redaktoru ilə davamlı mübarizədədir, ikinci həftəyə metriklər donur. Sayt təqdimatdakı kimi görünür — funel kimi davranmır.",
+          "p2": "Hazır şablonlar sizi başqasının strukturuna bağlayır. Performans intizamı olmadan qurulan custom layihələr 4 MB-lıq ana səhifə və SEO-ya zərər vuran Lighthouse balı verir.",
+          "p3": "Bu, sıçrayan trafik, komandanın dəyişə bilmədiyi kontent və illər deyil aylar ərzində köhnələn flaqman bir aktiv deməkdir."
         },
         "solution": {
-          "eyebrow": "TODO: solution eyebrow",
-          "title": "TODO: solution title",
-          "p1": "TODO: solution paragraph 1",
-          "p2": "TODO: solution paragraph 2",
+          "eyebrow": "Yanaşmamız",
+          "title": "Konversiya yönümlü, kontent prioritetli, defolta sürətli",
+          "p1": "Səhifəni vəzifəsinə görə dizayn edirik — diqqəti çək, iddianı sübut et, ziyarətçini hərəkətə keçir. Layout, motion və mətn bu vəzifəyə xidmət edir. Dekorativ və ya ləng heç nə.",
+          "p2": "Mühəndislik dizaynı olduğu kimi çatdırır: edge-də render, əlçatan və orta səviyyəli Android-də sürətli. Kontent sahibləri öz iş axınına uyğunlaşan CMS alır, əksinə deyil.",
           "bullets": {
-            "b1": "TODO: solution bullet 1",
-            "b2": "TODO: solution bullet 2",
-            "b3": "TODO: solution bullet 3",
-            "b4": "TODO: solution bullet 4"
+            "b1": "Komandanın həqiqətən istifadə edə biləcəyi headless CMS-də redaktor səviyyəli kontent modelləri",
+            "b2": "Edge performansı: yalnız fiber deyil, real cihazlarda saniyəaltı yükləmə",
+            "b3": "İçəridən qurulan SEO əsasları — schema, sitemap, semantik HTML, təmiz URL-lər",
+            "b4": "İlk gündən WCAG AA əlçatanlığı, sonradan əlavə edilən deyil",
+            "b5": "Yalnız aydınlığa və ya diqqətə dəyər qatdığı yerdə motion"
           },
-          "visualAlt": "TODO: solution visual alt text"
+          "visualAlt": "Wireframe və dizayn sistemi qatlarının tamamlanmış marketinq saytına çevrildiyini göstərən diaqram"
         },
         "useCases": {
-          "uc1": { "title": "TODO: use case 1 title", "description": "TODO: use case 1 description" },
-          "uc2": { "title": "TODO: use case 2 title", "description": "TODO: use case 2 description" },
-          "uc3": { "title": "TODO: use case 3 title", "description": "TODO: use case 3 description" }
+          "uc1": {
+            "title": "Flaqman marketinq saytı",
+            "description": "Axtarışda görünən, konversiya yaradan və marketoloqlara həftəlik buraxılış imkanı verən CMS ilə brend saytı.",
+            "badge": "Ən çox tələb olunan"
+          },
+          "uc2": {
+            "title": "SaaS və ya fintech landing təcrübəsi",
+            "description": "Ödənişli trafik üçün tənzimlənmiş, eksperiment yuvaları və təmiz analitikası olan məhsul yönümlü səhifələr."
+          },
+          "uc3": {
+            "title": "Premium e-commerce front-end",
+            "description": "Redaktor hekayəsini konversiyanı qoruyan checkout ilə birləşdirən headless vitrin."
+          },
+          "uc4": {
+            "title": "Kontent platforması və ya nəşr",
+            "description": "Sürətli naviqasiya, axtarış və təmiz redaktor iş axını ilə uzun forma oxu təcrübəsi."
+          }
         },
         "howItWorks": {
-          "eyebrow": "TODO: how it works eyebrow",
-          "title": "TODO: how it works title",
-          "footnote": "TODO: how it works footnote",
+          "eyebrow": "Necə işləyir",
+          "title": "Brifdən buraxılışa qədər tək axında",
+          "footnote": "Tipik müddət: əhatə dairəsindən asılı olaraq buraxılışa 6–12 həftə.",
           "steps": {
-            "s1": { "label": "TODO: step 1 label", "detail": "TODO: step 1 detail" },
-            "s2": { "label": "TODO: step 2 label", "detail": "TODO: step 2 detail" },
-            "s3": { "label": "TODO: step 3 label", "detail": "TODO: step 3 detail" },
-            "s4": { "label": "TODO: step 4 label", "detail": "TODO: step 4 detail" }
+            "s1": {
+              "label": "Tədqiq və IA",
+              "detail": "Auditoriyaları, onlara lazım olan səhifələri və saytın işlədiyini sübut edən metrikləri xəritələyirik."
+            },
+            "s2": {
+              "label": "Dizayn və prototip",
+              "detail": "Əsas şablonları Figma-da dizayn edir, axınları prototipləyir və real kontentə qarşı yoxlayırıq."
+            },
+            "s3": {
+              "label": "Build və inteqrasiya",
+              "detail": "Dizayna uyğun qururuq, CMS-i bağlayırıq və analitika, SEO və marketinq stekinə qoşuruq."
+            },
+            "s4": {
+              "label": "Buraxılış və iterasiya",
+              "detail": "Feature flag arxasında buraxırıq, istehsalda Core Web Vitals-ı təsdiq edir və runbook təhvil veririk."
+            }
           }
         },
         "benefits": {
-          "eyebrow": "TODO: benefits eyebrow",
-          "title": "TODO: benefits title",
+          "eyebrow": "Nə qazanırsınız",
+          "title": "Nəticədə əldə etdikləriniz",
           "items": {
-            "i1": { "title": "TODO: benefit 1 title", "description": "TODO: benefit 1 description" },
-            "i2": { "title": "TODO: benefit 2 title", "description": "TODO: benefit 2 description" },
-            "i3": { "title": "TODO: benefit 3 title", "description": "TODO: benefit 3 description" },
-            "i4": { "title": "TODO: benefit 4 title", "description": "TODO: benefit 4 description" }
+            "i1": {
+              "title": "Real cihazlarda daha sürətli",
+              "description": "Lab yox, istehsalda ölçülən orta səviyyəli avadanlıqda saniyəaltı yükləmə."
+            },
+            "i2": {
+              "title": "Defolta axtarışa hazır",
+              "description": "Axtarış sistemlərinin problemsiz oxuduğu təmiz semantik HTML, struktur data və sitemap."
+            },
+            "i3": {
+              "title": "Komandanın işlədəcəyi CMS",
+              "description": "Redaktorlar developer iştirakı olmadan səhifə buraxır. Kontent yenilənməsi tikit deyil, dəqiqələr çəkir."
+            },
+            "i4": {
+              "title": "Davamlı qurulmuş",
+              "description": "Bir buraxılış dövrünü deyil, iki redizaynı keçirə bilən dizayn sistemi və kod bazası."
+            }
           }
         },
         "faq": {
-          "eyebrow": "TODO: faq eyebrow",
-          "title": "TODO: faq title",
+          "eyebrow": "FAQ",
+          "title": "Tez-tez verilən suallar",
           "items": {
-            "q1": { "q": "TODO: faq question 1", "a": "TODO: faq answer 1" },
-            "q2": { "q": "TODO: faq question 2", "a": "TODO: faq answer 2" },
-            "q3": { "q": "TODO: faq question 3", "a": "TODO: faq answer 3" },
-            "q4": { "q": "TODO: faq question 4", "a": "TODO: faq answer 4" },
-            "q5": { "q": "TODO: faq question 5", "a": "TODO: faq answer 5" },
-            "q6": { "q": "TODO: faq question 6", "a": "TODO: faq answer 6" }
+            "q1": {
+              "q": "Tipik bir layihə nə qədər çəkir?",
+              "a": "Marketinq saytlarının əksəriyyəti üçün altı-on iki həftə — əhatə, kontent hazırlığı və inteqrasiya sayından asılı olaraq. Daha böyük platformalar daha uzun çəkir. Birinci həftə milestone planını sizə təqdim edirik."
+            },
+            "q2": {
+              "q": "Hansı CMS-dən istifadə edirsiniz?",
+              "a": "İş axınınıza uyğun CMS seçirik — kontent kanallar üzrə miqyaslananda headless, redaktor sürəti vacib olanda monolit. Qərar tədqiq mərhələsində verilir, əvvəldən deyil."
+            },
+            "q3": {
+              "q": "Mövcud brend və dizayn sistemimizlə işləyə bilərsinizmi?",
+              "a": "Bəli. Sisteminiz varsa, onu genişləndiririk. Yoxdursa, sayta lazım olan hissələri qurub sənədləşdiririk ki, növbəti komanda dayandığımız yerdən davam etsin."
+            },
+            "q4": {
+              "q": "Buraxılışdan sonra nə olur?",
+              "a": "Kod bazasını, CMS-i və komandanızın ilk gündən oxuya biləcəyi runbook-u təhvil veririk. Opsional retainer performans monitorinqi, SEO yoxlamaları və kiçik iterasiyaları əhatə edir."
+            },
+            "q5": {
+              "q": "SEO və analitika quraşdırmasını öhdənizə götürürsünüzmü?",
+              "a": "Texniki SEO və analitika qoşulması build-in bir hissəsidir — schema, sitemap, redirect, GA4 və ya seçdiyiniz stek. Davam edən kontent SEO istəsəniz, ayrı bir layihədir."
+            }
           }
         },
         "cta": {
-          "eyebrow": "TODO: cta eyebrow",
-          "title": "TODO: cta title",
-          "lede": "TODO: cta lede",
-          "ctaLabel": "TODO: cta label",
+          "eyebrow": "Başlayaq",
+          "title": "Saytınızı dəyərləndirək",
+          "lede": "Hazırkı vəziyyətinizi və saytın nə etməli olduğunu yazın. İki iş günü ərzində planla qayıdırıq.",
+          "ctaLabel": "Layihəyə başla",
           "ctaHref": "/#contact"
         }
       },
       "uiux": {
         "hero": {
-          "eyebrow": "TODO: hero eyebrow",
-          "title": "TODO: hero title",
-          "lede": "TODO: hero lede",
-          "ctaLabel": "TODO: hero CTA label",
+          "eyebrow": "UI/UX dizayn",
+          "title": "Buraxılışa hazır və miqyaslanan məhsul dizaynı",
+          "lede": "Böyümə təzyiqi altında olan proqram komandaları üçün tədqiq, axın və interfeys. Komandanın həqiqətən qura biləcəyini dizayn edirik.",
+          "ctaLabel": "Layihəyə başla",
           "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "TODO: hero secondary CTA label",
+          "ctaSecondaryLabel": "Necə işləyir",
           "ctaSecondaryHref": "#how-it-works"
         },
         "problem": {
-          "eyebrow": "TODO: problem eyebrow",
-          "title": "TODO: problem title",
-          "p1": "TODO: problem paragraph 1",
-          "p2": "TODO: problem paragraph 2"
+          "eyebrow": "Problem",
+          "title": "Figma-da yaxşı görünən, kod-da dağılan dizayn",
+          "p1": "Maketlər mükəmməl data vəziyyətini güman edir, yükləmə və boş halları nəzərdən qaçırır və boşluqları təxminlə dolduran mühəndislərə təhvil verilir. İki sprint sonra məhsul fayldan tam fərqli görünür.",
+          "p2": "Dizayn sistemləri başlanır, heç vaxt bitmir. Komponentlər ayrılır, rəng və məsafələr yayılır, yeni işə götürülənlər hər rüb qaydaları yenidən öyrənir.",
+          "p3": "Bunun bahası məhsul sürətidir: hər ekran müzakirəyə çevrilir və komanda böyüdükcə daha yavaş buraxır."
         },
         "solution": {
-          "eyebrow": "TODO: solution eyebrow",
-          "title": "TODO: solution title",
-          "p1": "TODO: solution paragraph 1",
-          "p2": "TODO: solution paragraph 2",
+          "eyebrow": "Yanaşmamız",
+          "title": "Mühəndislik təhvilində dağılmayan dizayn",
+          "p1": "İşə ekrandan deyil, istifadəçi tədqiqi və axınlardan başlayırıq. İnformasiya arxitekturası piksellərdən əvvəl gəlir, uc hallar prototipdə ortaya çıxır, istehsalda yox.",
+          "p2": "Real koda uyğunlaşan komponentlər dizayn edirik, qaydaları sənədləşdiririk və mühəndisliklə implementasiya boyu əməkdaşlıq edirik. Təhvil söhbətdir, atıb getmək deyil.",
           "bullets": {
-            "b1": "TODO: solution bullet 1",
-            "b2": "TODO: solution bullet 2",
-            "b3": "TODO: solution bullet 3",
-            "b4": "TODO: solution bullet 4"
+            "b1": "Slaydlar deyil, qərarları aparan istifadəçi tədqiqi",
+            "b2": "Mühəndislik təması ilə qarşılaşıb sağ qalan IA və axınlar",
+            "b3": "Dizayn sistemi əsasının qurulması — token, komponent, sənədləşdirmə",
+            "b4": "Komandanın adətən unutduğu hallar üçün interaksiya və motion dizaynı",
+            "b5": "Komponent çərçivənizə təmiz uyğunlaşan Figma kitabxanaları"
           },
-          "visualAlt": "TODO: solution visual alt text"
+          "visualAlt": "Axınları, komponentləri və istifadədə olan dizayn sistemini göstərən qatlı Figma framelər"
         },
         "useCases": {
-          "uc1": { "title": "TODO: use case 1 title", "description": "TODO: use case 1 description" },
-          "uc2": { "title": "TODO: use case 2 title", "description": "TODO: use case 2 description" },
-          "uc3": { "title": "TODO: use case 3 title", "description": "TODO: use case 3 description" }
+          "uc1": {
+            "title": "Trafik təzyiqi altında məhsul redizaynı",
+            "description": "Məhsulu yenidən qurmadan interfeysi yenidən nəzərdən keçirin. İşləyəni saxlayın, böyüməyə mane olanı düzəldin.",
+            "badge": "Ən çox tələb olunan"
+          },
+          "uc2": {
+            "title": "Dizayn sistemi əsasının qurulması",
+            "description": "Token, əsas komponentlər, sənədləşdirmə və mühəndislərinizin koda uyğunlaşdıra biləcəyi Figma kitabxanası."
+          },
+          "uc3": {
+            "title": "Dashboard və ya admin alət",
+            "description": "Data və istifadəçi bazası böyüsə də oxunaqlı qalan informasiya sıx interfeyslər."
+          },
+          "uc4": {
+            "title": "Mobil tətbiq interfeysi",
+            "description": "Platforma konvensiyalarına uyğun dizayn edilmiş iOS və Android axınları, istifadə testinə hazır prototiplərlə."
+          }
         },
         "howItWorks": {
-          "eyebrow": "TODO: how it works eyebrow",
-          "title": "TODO: how it works title",
-          "footnote": "TODO: how it works footnote",
+          "eyebrow": "Necə işləyir",
+          "title": "Tədqiqdən komandanın irəli aparacağı sistemə",
+          "footnote": "Tipik müddət: sistem əhatəsindən asılı olaraq 8–14 həftə.",
           "steps": {
-            "s1": { "label": "TODO: step 1 label", "detail": "TODO: step 1 detail" },
-            "s2": { "label": "TODO: step 2 label", "detail": "TODO: step 2 detail" },
-            "s3": { "label": "TODO: step 3 label", "detail": "TODO: step 3 detail" },
-            "s4": { "label": "TODO: step 4 label", "detail": "TODO: step 4 detail" }
+            "s1": {
+              "label": "Tədqiq və audit",
+              "detail": "İstifadəçilərlə danışırıq, mövcud məhsulu auditdən keçiririk və əvvəlcə həll edilməyə dəyər problemləri xəritələyirik."
+            },
+            "s2": {
+              "label": "IA və axınlar",
+              "detail": "Strukturu və yolları dizayn edir, low-fi-də doğrulayır və piksellərdən əvvəl mühəndisliklə uyğunlaşırıq."
+            },
+            "s3": {
+              "label": "İnterfeys və sistem",
+              "detail": "İnterfeysi dizayn edir, komponent kitabxanasını qurur və qaydaları Figma və mətndə sənədləşdiririk."
+            },
+            "s4": {
+              "label": "Təhvil və əməkdaşlıq",
+              "detail": "Build boyunca mühəndisliklə əməkdaşlıq edir, kodda cilalayır və komandanın genişləndirə biləcəyi sistem təhvil veririk."
+            }
           }
         },
         "benefits": {
-          "eyebrow": "TODO: benefits eyebrow",
-          "title": "TODO: benefits title",
+          "eyebrow": "Nə qazanırsınız",
+          "title": "Nəticədə əldə etdikləriniz",
           "items": {
-            "i1": { "title": "TODO: benefit 1 title", "description": "TODO: benefit 1 description" },
-            "i2": { "title": "TODO: benefit 2 title", "description": "TODO: benefit 2 description" },
-            "i3": { "title": "TODO: benefit 3 title", "description": "TODO: benefit 3 description" },
-            "i4": { "title": "TODO: benefit 4 title", "description": "TODO: benefit 4 description" }
+            "i1": {
+              "title": "Daha sürətli məhsul tempi",
+              "description": "Mühəndislər təxmin etməyi dayandırır. Yeni ekranlar günlərdə deyil, saatlarda komponentlərdən yığılır."
+            },
+            "i2": {
+              "title": "Davamlı uyğunluq",
+              "description": "Sənədləşdirilmiş sistem onuncu dizaynerin də birinci ilə eyni qərarı verməsi deməkdir."
+            },
+            "i3": {
+              "title": "Real istifadəçi sübutu",
+              "description": "Müzakirə otağındakı fikirlərlə deyil, tədqiq və prototip testləri ilə dəstəklənən qərarlar."
+            },
+            "i4": {
+              "title": "Olduğu kimi çatdırılan dizayn",
+              "description": "Figma-da olan istehsala çatır — yükləmə, boş və xəta halları daxil."
+            }
           }
         },
         "faq": {
-          "eyebrow": "TODO: faq eyebrow",
-          "title": "TODO: faq title",
+          "eyebrow": "FAQ",
+          "title": "Tez-tez verilən suallar",
           "items": {
-            "q1": { "q": "TODO: faq question 1", "a": "TODO: faq answer 1" },
-            "q2": { "q": "TODO: faq question 2", "a": "TODO: faq answer 2" },
-            "q3": { "q": "TODO: faq question 3", "a": "TODO: faq answer 3" },
-            "q4": { "q": "TODO: faq question 4", "a": "TODO: faq answer 4" },
-            "q5": { "q": "TODO: faq question 5", "a": "TODO: faq answer 5" },
-            "q6": { "q": "TODO: faq question 6", "a": "TODO: faq answer 6" }
+            "q1": {
+              "q": "İstifadəçi tədqiqi edirsiniz, yoxsa yalnız dizayn?",
+              "a": "İkisi də — və onlar bir-birinə bağlıdır. Tədqiq dizayn brifini formalaşdırır, prototiplər tədqiqə geri qayıdır. Dərinlik büdcə ilə miqyaslanır; nəyə investisiya etməyə dəyər olduğunu məsləhət görürük."
+            },
+            "q2": {
+              "q": "Daxili dizaynerlərimizlə birgə işləyə bilərsinizmi?",
+              "a": "Bəli. Tez-tez konkret səth, sistem və ya redizayn üzrə zərbə qrupu olaraq mövcud komandalara qoşuluruq — kimisə əvəz etmək üçün deyil, növbədə qalan işi buraxmaq üçün."
+            },
+            "q3": {
+              "q": "Dizayn sistemini qurursunuz, yoxsa yalnız komponent dizayn edirsiniz?",
+              "a": "Sistemi dizayn edirik, qaydaları sənədləşdiririk və implementasiyada mühəndisliklə əməkdaşlıq edirik. Kitabxana sizin alətlərinizdə və kod bazanızda yaşayır."
+            },
+            "q4": {
+              "q": "Mühəndisliyə təhvil necə olur?",
+              "a": "Mühəndislik təhvildə deyil, birinci həftədən prosesdədir. Build boyunca əməkdaşlıq edir, kodu dizayna qarşı yoxlayır və uyğunsuzluqları birlikdə düzəldirik."
+            },
+            "q5": {
+              "q": "Mövcud Figma quruluşumuzda işləyə bilərsinizmi?",
+              "a": "Bəli. Fayl strukturunuzda, adlandırmanızda və branch modelinizdə işləyirik. Hələ yoxdursa, sonradan yenidən qurmadan miqyaslanan quruluş təklif edirik."
+            }
           }
         },
         "cta": {
-          "eyebrow": "TODO: cta eyebrow",
-          "title": "TODO: cta title",
-          "lede": "TODO: cta lede",
-          "ctaLabel": "TODO: cta label",
+          "eyebrow": "Başlayaq",
+          "title": "İşi dəyərləndirək",
+          "lede": "Məhsulun nə olduğunu və harada ilişdiyini yazın. İki iş günü ərzində planla qayıdırıq.",
+          "ctaLabel": "Layihəyə başla",
           "ctaHref": "/#contact"
         }
       },
       "strategy": {
         "hero": {
-          "eyebrow": "TODO: hero eyebrow",
-          "title": "TODO: hero title",
-          "lede": "TODO: hero lede",
-          "ctaLabel": "TODO: hero CTA label",
+          "eyebrow": "Rəqəmsal strategiya",
+          "title": "Aydın plan və onu sübut edən metriklər",
+          "lede": "Founder və brendlərə növbəti rübün prioritetini təyin etməyə, ona qarşı buraxılış etməyə və nəyin dəyişdiyini ölçməyə kömək edirik. Slayd-yığını yox.",
+          "ctaLabel": "Layihəyə başla",
           "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "TODO: hero secondary CTA label",
+          "ctaSecondaryLabel": "Necə işləyir",
           "ctaSecondaryHref": "#how-it-works"
         },
         "problem": {
-          "eyebrow": "TODO: problem eyebrow",
-          "title": "TODO: problem title",
-          "p1": "TODO: problem paragraph 1",
-          "p2": "TODO: problem paragraph 2"
+          "eyebrow": "Problem",
+          "title": "Slayd kimi strategiya, planlaşdırılmış icra deyil",
+          "p1": "Strategiya işlərinin əksəriyyəti heç kimin iki dəfə oxumadığı 60 səhifəlik təqdimatla bitir. Real suallar — növbəti rübdə nəyi buraxmalı, hansı kanala investisiya etməli, mərcin işlədiyini nə sübut edəcək — cavabsız qalır.",
+          "p2": "Founderlar mövqeyi instinktlə seçir. Böyümə komandaları miras qalan kanallarla işləyir. Brend komandaları heç kimin istəmədiyi kontent yazır. Səy gedir, siqnal gəlmir.",
+          "p3": "Bunun bahası boş ötürülən rüblərdir: bir-birini gücləndirməyən kampaniyalar, səhv yerə yönəlmiş işə qəbullar və sonuncu danışana doğru sürüşən yol xəritəsi."
         },
         "solution": {
-          "eyebrow": "TODO: solution eyebrow",
-          "title": "TODO: solution title",
-          "p1": "TODO: solution paragraph 1",
-          "p2": "TODO: solution paragraph 2",
+          "eyebrow": "Yanaşmamız",
+          "title": "Növbəti rübün prioriteti və onun necə ölçüləcəyi olaraq strategiya",
+          "p1": "Sizin olduğunuz yerdən başlayırıq: məhsul, auditoriya, bu gün mövcud rəqəmlər. Bu rübdə etməyə dəyən bir-iki mərci və onların işlədiyini göstərəcək metrikləri adlandırırıq.",
+          "p2": "Sonra işi həmin mərclərin ətrafında formalaşdırırıq — mövqe, kontent, kanal qarışığı, yol xəritəsi — və komanda icra edərkən otaqda qalırıq. Təqdimatla bitən strategiya işin yarısıdır.",
           "bullets": {
-            "b1": "TODO: solution bullet 1",
-            "b2": "TODO: solution bullet 2",
-            "b3": "TODO: solution bullet 3",
-            "b4": "TODO: solution bullet 4"
+            "b1": "Daxili jarqona deyil, müştəri dilinə əsaslanan mövqe və mesajlaşma",
+            "b2": "Oxuya biləcəyiniz ölçü çərçivəsinə bağlı kanal və kontent qarışığı",
+            "b3": "Yol xəritəsinin formalaşdırılması — nəyi buraxmalı, nəyi kəsməli, nəyi təxirə salmalı",
+            "b4": "Komandanın etibar etdiyi həftəlik nəticələrlə həqiqi məna daşıyan OKR və ya KPI",
+            "b5": "Buraxılışlar, mövqe dəyişikliyi və kateqoriya keçidləri üçün go-to-market planları"
           },
-          "visualAlt": "TODO: solution visual alt text"
+          "visualAlt": "Mövqeyi, kanalları və ölçməni rüblük yol xəritəsinə bağlayan strategiya çərçivəsi"
         },
         "useCases": {
-          "uc1": { "title": "TODO: use case 1 title", "description": "TODO: use case 1 description" },
-          "uc2": { "title": "TODO: use case 2 title", "description": "TODO: use case 2 description" },
-          "uc3": { "title": "TODO: use case 3 title", "description": "TODO: use case 3 description" }
+          "uc1": {
+            "title": "Buraxılışdan əvvəl mövqe",
+            "description": "Bazara çıxmadan əvvəl narrativi, kanalları və birinci rüb hədəflərini formalaşdıran founderlər.",
+            "badge": "Ən çox tələb olunan"
+          },
+          "uc2": {
+            "title": "Brendin yenidən mövqelənməsi",
+            "description": "Yuxarı seqmentə, yeni kateqoriyaya və ya ödəməyi dayandırmış mövqedən uzaqlaşan formalaşmış brendlər."
+          },
+          "uc3": {
+            "title": "Strateqi olmayan böyümə komandası",
+            "description": "Güclü icra, eksik istiqamət. Mərcləri və ölçməni təyin edirik, sonra sükanı geri veririk."
+          },
+          "uc4": {
+            "title": "Kontent və kanalın yenidən qurulması",
+            "description": "Heç kimin oxumadığı təqvimi pipeline-a, paylanmaya və ölçülə bilən tezisə bağlı planla əvəz edin."
+          }
         },
         "howItWorks": {
-          "eyebrow": "TODO: how it works eyebrow",
-          "title": "TODO: how it works title",
-          "footnote": "TODO: how it works footnote",
+          "eyebrow": "Necə işləyir",
+          "title": "Auditdən komandanın icra edəcəyi planda",
+          "footnote": "Tipik müddət: plan üçün 4–8 həftə, icra üçün opsional davamlı tərəfdaşlıq.",
           "steps": {
-            "s1": { "label": "TODO: step 1 label", "detail": "TODO: step 1 detail" },
-            "s2": { "label": "TODO: step 2 label", "detail": "TODO: step 2 detail" },
-            "s3": { "label": "TODO: step 3 label", "detail": "TODO: step 3 detail" },
-            "s4": { "label": "TODO: step 4 label", "detail": "TODO: step 4 detail" }
+            "s1": {
+              "label": "Audit və müsahibələr",
+              "detail": "Məhsulu, rəqəmləri və bazarı nəzərdən keçirir, müştərilər, komanda və liderlərlə danışırıq."
+            },
+            "s2": {
+              "label": "Mövqe və mərclər",
+              "detail": "Mövqeyi, auditoriyanı və bu rübdə investisiya etməyə dəyən bir-iki mərci adlandırırıq."
+            },
+            "s3": {
+              "label": "Plan və ölçü",
+              "detail": "Mərclərin ətrafında kanalları, kontenti və yol xəritəsini formalaşdırırıq, komandanın həftəlik oxuya biləcəyi metriklərlə."
+            },
+            "s4": {
+              "label": "İcra və yenidən baxış",
+              "detail": "Otaqda qalırıq — həftəlik müsahibə, rüb ortası baxış, rüb bitməzdən əvvəl kursun düzəldilməsi."
+            }
           }
         },
         "benefits": {
-          "eyebrow": "TODO: benefits eyebrow",
-          "title": "TODO: benefits title",
+          "eyebrow": "Nə qazanırsınız",
+          "title": "Nəticədə əldə etdikləriniz",
           "items": {
-            "i1": { "title": "TODO: benefit 1 title", "description": "TODO: benefit 1 description" },
-            "i2": { "title": "TODO: benefit 2 title", "description": "TODO: benefit 2 description" },
-            "i3": { "title": "TODO: benefit 3 title", "description": "TODO: benefit 3 description" },
-            "i4": { "title": "TODO: benefit 4 title", "description": "TODO: benefit 4 description" }
+            "i1": {
+              "title": "Plan, təqdimat yox",
+              "description": "Çıxış paylaşılan diskdə köhnələn PDF deyil, komandanın hər həftə istifadə etdiyi işlək sənəddir."
+            },
+            "i2": {
+              "title": "Məna daşıyan metriklər",
+              "description": "Hər mərcə bir rəqəm bağlanır. Bir rüb içində işlədiyini biləcəksiniz — və növbədə nə edəcəyinizi."
+            },
+            "i3": {
+              "title": "Daha sürətli qərarlar",
+              "description": "Mövqe, auditoriya və prioritetlər yazılı şəkildədir. Yeni işə qəbullar, agentliklər və tərəfdaşlar brifi bir oxumada anlayır."
+            },
+            "i4": {
+              "title": "Toplama, yox tükəndirmə",
+              "description": "Rübdən rübə iş sıfırdan başlamaq əvəzinə özü-özünün üzərinə qurulur."
+            }
           }
         },
         "faq": {
-          "eyebrow": "TODO: faq eyebrow",
-          "title": "TODO: faq title",
+          "eyebrow": "FAQ",
+          "title": "Tez-tez verilən suallar",
           "items": {
-            "q1": { "q": "TODO: faq question 1", "a": "TODO: faq answer 1" },
-            "q2": { "q": "TODO: faq question 2", "a": "TODO: faq answer 2" },
-            "q3": { "q": "TODO: faq question 3", "a": "TODO: faq answer 3" },
-            "q4": { "q": "TODO: faq question 4", "a": "TODO: faq answer 4" },
-            "q5": { "q": "TODO: faq question 5", "a": "TODO: faq answer 5" },
-            "q6": { "q": "TODO: faq question 6", "a": "TODO: faq answer 6" }
+            "q1": {
+              "q": "Bu konsaltinqdir, yoxsa icra?",
+              "a": "İkisi də, və sərhədi aydındır. Planı formalaşdırır, sonra ya komandanıza təhvil verir, ya da rüb boyunca tərəfdaş kimi qalırıq. Heç vaxt icra edilməyən strategiya qurmuruq."
+            },
+            "q2": {
+              "q": "Bu brend və ya böyümə agentliyindən necə fərqlənir?",
+              "a": "Brend və böyümə agentlikləri öz xəttlərində yaxşı icra edir. Biz hər ikisinin yuxarısındayıq — nəyin, hansı sıra ilə, hansı büdcə ilə edilməli olduğunu adlandırırıq. Sonra icra üçün uyğun tərəfdaşları seçirik — daxili komanda və ya kənar."
+            },
+            "q3": {
+              "q": "Gəliri olmayan founderlərlə işləyirsinizmi?",
+              "a": "Bəli, tez-tez. İş daha yığcam olur — mövqe, auditoriya, ilk kanal, ilk metrik — və məqsəd ilk versiyanı mükəmməl deyil, doğru formada buraxmaqdır."
+            },
+            "q4": {
+              "q": "Praktikada ölçü necə görünür?",
+              "a": "Komandanın həftəlik oxuduğu kiçik dashboard, hər mərc üçün iki-üç rəqəm və hər iki həftədən bir yazılı nəticə. 40 KPI deyil, BI quruluşu deyil."
+            },
+            "q5": {
+              "q": "Agentliklərimiz və frilanserlərlə işləyə bilərsinizmi?",
+              "a": "Bəli. Strategiya mövcud tərəfdaşlar daha aydın brif aldıqda ən faydalıdır. Brifi yazır, kickoff-da iştirak edir və nəticəni planla qarşılaşdıraraq yoxlayırıq."
+            }
           }
         },
         "cta": {
-          "eyebrow": "TODO: cta eyebrow",
-          "title": "TODO: cta title",
-          "lede": "TODO: cta lede",
-          "ctaLabel": "TODO: cta label",
+          "eyebrow": "Başlayaq",
+          "title": "Növbəti mərci adlandıraq",
+          "lede": "Biznesin harada olduğunu və nəyin ilişdiyini yazın. İki iş günü ərzində dəyərləndirmə planı ilə qayıdırıq.",
+          "ctaLabel": "Layihəyə başla",
           "ctaHref": "/#contact"
         }
       },
       "performance": {
         "hero": {
-          "eyebrow": "TODO: hero eyebrow",
-          "title": "TODO: hero title",
-          "lede": "TODO: hero lede",
-          "ctaLabel": "TODO: hero CTA label",
+          "eyebrow": "Performans və mühəndislik",
+          "title": "Dizaynın söz verdiyi məhsulu çatdırın",
+          "lede": "Yavaş məhsulları sürətli, kövrək kod bazalarını sabit edir və auditləri ilk cəhddə keçiririk. Dizayn və strategiyanın planlaşdırdığını çatdıran mühəndislik tərəfi.",
+          "ctaLabel": "Layihəyə başla",
           "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "TODO: hero secondary CTA label",
+          "ctaSecondaryLabel": "Necə işləyir",
           "ctaSecondaryHref": "#how-it-works"
         },
         "problem": {
-          "eyebrow": "TODO: problem eyebrow",
-          "title": "TODO: problem title",
-          "p1": "TODO: problem paragraph 1",
-          "p2": "TODO: problem paragraph 2"
+          "eyebrow": "Problem",
+          "title": "Məhsulların heç kimin görmədiyi şəkildə istifadəçi itirdiyi yer",
+          "p1": "Sayt bitmiş görünür, analitika dashboardı qaydasında. Bu vaxt real istifadəçilər real şəbəkələrdə sıçrayır — səhifə dörd saniyə çəkdi, forma kövrək bağlantıda göndərilmədi, ekran oxuyucu çıxılmaz nöqtəyə dəydi.",
+          "p2": "Əvvəlki komandalardan miras qalan kod bazaları öz dəyərini gizlədir: hər buraxılış nəyisə pozur, test dəsti dekorativdir və bir mühəndis deploy-u başında saxlayır.",
+          "p3": "Bu, gəlirdə görünənə qədər buraxılan məhsul ilə söz verilən arasındakı boşluq aylarla yenidən işləməyə çevrilir."
         },
         "solution": {
-          "eyebrow": "TODO: solution eyebrow",
-          "title": "TODO: solution title",
-          "p1": "TODO: solution paragraph 1",
-          "p2": "TODO: solution paragraph 2",
+          "eyebrow": "Yanaşmamız",
+          "title": "Əvvəl ölç, vacib olanı düzəlt, dəyişdiyini sübut et",
+          "p1": "Sintetik lab testləri ilə deyil, real cihazlar və real şəbəkələrdə ölçü ilə başlayırıq. Core Web Vitals, əlçatanlıq auditləri, error budget və komandanın vaxtını səssizcə alan kod hissələri.",
+          "p2": "Sonra prioritet sırası ilə düzəldirik: metrikani hərəkət etdirən məsələləri, uzun quyruğu deyil. Hər dəyişiklik monitorinq arxasında buraxılır, əvvəl-sonra qeyd edilir ki, komanda nəyin işlədiyini görsün.",
           "bullets": {
-            "b1": "TODO: solution bullet 1",
-            "b2": "TODO: solution bullet 2",
-            "b3": "TODO: solution bullet 3",
-            "b4": "TODO: solution bullet 4"
+            "b1": "Yalnız Lighthouse deyil, real istifadəçi datasında tənzimlənmiş Core Web Vitals",
+            "b2": "Yalnız çek alət deyil, assistive texnologiya ilə doğrulanmış WCAG AA əlçatanlığı",
+            "b3": "Komandanın gündəlik işinə bağlanmış observability — log, trace, error budget",
+            "b4": "Buraxılışdan sonra deyil, əvvəl regressiyaları tutan CI/CD pipeline-ları",
+            "b5": "Tənzimlənən sənayelər üçün uyğunluq səviyyəsində ops — audit izi, runbook, on-call"
           },
-          "visualAlt": "TODO: solution visual alt text"
+          "visualAlt": "Real istifadəçilər daha sürətli səhifələr gördükcə Core Web Vitals göstəricilərinin azaldığını göstərən performans dashboardı"
         },
         "useCases": {
-          "uc1": { "title": "TODO: use case 1 title", "description": "TODO: use case 1 description" },
-          "uc2": { "title": "TODO: use case 2 title", "description": "TODO: use case 2 description" },
-          "uc3": { "title": "TODO: use case 3 title", "description": "TODO: use case 3 description" }
+          "uc1": {
+            "title": "Yavaş məhsul və ya keçməyən auditlər",
+            "description": "Diaqnoz, prioritetli düzəliş siyahısı və onu reallaşdıran mühəndislik işi — əvvəl və sonra ölçülmüş.",
+            "badge": "Ən çox tələb olunan"
+          },
+          "uc2": {
+            "title": "Miras qalmış kövrək kod bazası",
+            "description": "Uçuş zamanı kod bazasını sabitləşdirin: testlər, CI, observability və bir rüb içində geri qayıdan refaktorlar."
+          },
+          "uc3": {
+            "title": "Tənzimlənən sənaye çatdırılması",
+            "description": "Bankçılıq, səhiyyə, govtech: uyğunluq səviyyəsində ops, audit izi və tənzimləyicinin qəbul etdiyi buraxılış prosesləri."
+          },
+          "uc4": {
+            "title": "Əlçatanlığın bərpası",
+            "description": "Keçməyən auditlərdən WCAG AA uyğunluğuna keçid — yalnız avtomatik alət deyil, ekran oxuyucu və klaviatura testi ilə doğrulanmış."
+          }
         },
         "howItWorks": {
-          "eyebrow": "TODO: how it works eyebrow",
-          "title": "TODO: how it works title",
-          "footnote": "TODO: how it works footnote",
+          "eyebrow": "Necə işləyir",
+          "title": "Auditdən ölçülə bilən təkmilləşməyə",
+          "footnote": "Tipik müddət: kod bazası ölçüsündən və metrik fərqindən asılı olaraq 4–10 həftə.",
           "steps": {
-            "s1": { "label": "TODO: step 1 label", "detail": "TODO: step 1 detail" },
-            "s2": { "label": "TODO: step 2 label", "detail": "TODO: step 2 detail" },
-            "s3": { "label": "TODO: step 3 label", "detail": "TODO: step 3 detail" },
-            "s4": { "label": "TODO: step 4 label", "detail": "TODO: step 4 detail" }
+            "s1": {
+              "label": "Audit və başlanğıc nöqtəsi",
+              "detail": "Performansı, əlçatanlığı və kod sağlamlığını real cihazlarda ölçür, sonra müqayisə edə biləcəyiniz başlanğıc nöqtəsi yazırıq."
+            },
+            "s2": {
+              "label": "Prioritetləşdirmə",
+              "detail": "Düzəlişləri təsir və səy üzrə sıralayır, metrikani hərəkət etdirənləri adlandırır və hərəkət etdirməyənləri təxirə salırıq."
+            },
+            "s3": {
+              "label": "Buraxılış və monitorinq",
+              "detail": "Dəyişiklikləri feature flag arxasında buraxır, real istifadəçi metriklərini izləyir və hər hansı geri qayıtma olarsa rollback edirik."
+            },
+            "s4": {
+              "label": "Təhvil",
+              "detail": "Sistemi sənədləşdirir, dashboardları qurur və komandanın metriki qoyduğumuz yerdə saxlaya biləcəyi şəkildə tərk edirik."
+            }
           }
         },
         "benefits": {
-          "eyebrow": "TODO: benefits eyebrow",
-          "title": "TODO: benefits title",
+          "eyebrow": "Nə qazanırsınız",
+          "title": "Nəticədə əldə etdikləriniz",
           "items": {
-            "i1": { "title": "TODO: benefit 1 title", "description": "TODO: benefit 1 description" },
-            "i2": { "title": "TODO: benefit 2 title", "description": "TODO: benefit 2 description" },
-            "i3": { "title": "TODO: benefit 3 title", "description": "TODO: benefit 3 description" },
-            "i4": { "title": "TODO: benefit 4 title", "description": "TODO: benefit 4 description" }
+            "i1": {
+              "title": "Ölçülə bilən sürət qazancları",
+              "description": "Sintetik bal yox, real istifadəçilərdə əvvəl və sonra hesabatlanan Core Web Vitals."
+            },
+            "i2": {
+              "title": "Keçən auditlər",
+              "description": "İlk tənzimləyici və ya satınalma yoxlamasında WCAG AA uyğunluğu və təmiz Lighthouse."
+            },
+            "i3": {
+              "title": "Geri qayıdıb dirəşməyən kod",
+              "description": "Deploy-u hadisədən rutinə çevirən CI/CD, testlər və observability."
+            },
+            "i4": {
+              "title": "Sahibi olan komanda",
+              "description": "Dashboard, runbook və sənədləşdirmə — biz çıxan həftə işin geri açılmaması üçün."
+            }
           }
         },
         "faq": {
-          "eyebrow": "TODO: faq eyebrow",
-          "title": "TODO: faq title",
+          "eyebrow": "FAQ",
+          "title": "Tez-tez verilən suallar",
           "items": {
-            "q1": { "q": "TODO: faq question 1", "a": "TODO: faq answer 1" },
-            "q2": { "q": "TODO: faq question 2", "a": "TODO: faq answer 2" },
-            "q3": { "q": "TODO: faq question 3", "a": "TODO: faq answer 3" },
-            "q4": { "q": "TODO: faq question 4", "a": "TODO: faq answer 4" },
-            "q5": { "q": "TODO: faq question 5", "a": "TODO: faq answer 5" },
-            "q6": { "q": "TODO: faq question 6", "a": "TODO: faq answer 6" }
+            "q1": {
+              "q": "Performansı necə ölçürsünüz — Lighthouse?",
+              "a": "Lighthouse başlanğıc nöqtəsidir. Real istifadəçi metriklərinə qarşı tənzimləyirik — gerçək trafikinizdən gələn Core Web Vitals — çünki lab balları çox vaxt real istifadəçinin hiss etdiyini qaçırır. Hər iki rəqəm hesabata düşür."
+            },
+            "q2": {
+              "q": "Kod bazasını yenidən yazırsınız, yoxsa mövcudla işləyirsiniz?",
+              "a": "Mövcudla işləyirik. Yenidən yazma yavaşdır, bahalıdır və kök problemi nadir hallarda həll edir. Yerində refaktor edirik, testlərlə, metrik hərəkət edənə qədər."
+            },
+            "q3": {
+              "q": "Əlçatanlıq işi nəyi əhatə edir?",
+              "a": "WCAG AA uyğunluğu, ekran oxuyucularla (NVDA, VoiceOver), klaviatura testi və rəng kontrastı yoxlamaları ilə doğrulanmış. Avtomatik alətlər təxminən 30%-i tutur; qalanını biz əhatə edirik."
+            },
+            "q4": {
+              "q": "On-call və hadisəyə cavabı öhdənizə götürürsünüzmü?",
+              "a": "Sistemləri qururuq — dashboard, alert, runbook — və hadisə dəstəyi üçün retainer-də qala bilərik. Uzun müddətli on-call adətən komandanıza məxsusdur; bu təhvili təmiz edirik."
+            },
+            "q5": {
+              "q": "Mövcud CI/CD və observability stekimizlə işləyə bilərsinizmi?",
+              "a": "Bəli. Hansını işlədirsinizsə onunla işləyirik — GitHub Actions, GitLab, Jenkins; Datadog, Grafana, Sentry. Məqsəd stekinizi dəyişmək yox, daha yaxşı işlətməkdir."
+            }
           }
         },
         "cta": {
-          "eyebrow": "TODO: cta eyebrow",
-          "title": "TODO: cta title",
-          "lede": "TODO: cta lede",
-          "ctaLabel": "TODO: cta label",
+          "eyebrow": "Başlayaq",
+          "title": "Sizi ləngidəni ölçək",
+          "lede": "Məhsulun nə olduğunu və harada incidiyini yazın. İki iş günü ərzində başlanğıc planı ilə qayıdırıq.",
+          "ctaLabel": "Layihəyə başla",
           "ctaHref": "/#contact"
         }
       },
