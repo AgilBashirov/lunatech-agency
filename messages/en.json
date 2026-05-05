@@ -9,7 +9,8 @@
     "portfolio": "Portfolio",
     "contact": "Contact",
     "tagline": "Creative technology",
-    "scrollToTop": "Back to top"
+    "scrollToTop": "Back to top",
+    "backToHome": "Back to home"
   },
   "hero": {
     "headline": "We build brands that stand out in the digital world",
@@ -27,6 +28,7 @@
   "services": {
     "title": "Our services",
     "subtitle": "We don’t just ship products — we design digital experiences.",
+    "learnMore": "Learn more",
     "webExperience": {
       "title": "Web experiences",
       "desc": "Modern, fast, user-centred web platforms crafted for your brand."
@@ -692,6 +694,9 @@
           "ctaLabel": "Start a project",
           "ctaHref": "/#contact"
         }
+      },
+      "shared": {
+        "whereItFits": "Where It Fits"
       }
     }
   },

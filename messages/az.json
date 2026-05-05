@@ -9,7 +9,8 @@
     "portfolio": "Portfolio",
     "contact": "Əlaqə",
     "tagline": "Kreativ texnologiya",
-    "scrollToTop": "Yuxarı"
+    "scrollToTop": "Yuxarı",
+    "backToHome": "Ana səhifəyə qayıt"
   },
   "hero": {
     "headline": "Rəqəmsal dünyada fərq yaradan brendlər qururuq",
@@ -27,6 +28,7 @@
   "services": {
     "title": "Xidmətlərimiz",
     "subtitle": "Biz sadəcə məhsul yaratmırıq — biz rəqəmsal təcrübə dizayn edirik.",
+    "learnMore": "Ətraflı",
     "webExperience": {
       "title": "Veb təcrübələrinin qurulması",
       "desc": "Brendiniz üçün müasir, performanslı və istifadəçi yönümlü veb platformalar hazırlayırıq."
@@ -692,6 +694,9 @@
           "ctaLabel": "Layihəyə başla",
           "ctaHref": "/#contact"
         }
+      },
+      "shared": {
+        "whereItFits": "Harada uyğundur"
       }
     }
   },

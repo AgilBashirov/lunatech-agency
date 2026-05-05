@@ -9,7 +9,8 @@
     "portfolio": "Портфолио",
     "contact": "Контакты",
     "tagline": "Creative technology",
-    "scrollToTop": "Наверх"
+    "scrollToTop": "Наверх",
+    "backToHome": "На главную"
   },
   "hero": {
     "headline": "Создаём бренды, которые выделяются в цифровом мире",
@@ -27,6 +28,7 @@
   "services": {
     "title": "Наши услуги",
     "subtitle": "Мы не просто делаем продукт — мы проектируем цифровой опыт.",
+    "learnMore": "Подробнее",
     "webExperience": {
       "title": "Веб-опыт",
       "desc": "Современные, быстрые и удобные веб-платформы под ваш бренд."
@@ -692,6 +694,9 @@
           "ctaLabel": "Начать проект",
           "ctaHref": "/#contact"
         }
+      },
+      "shared": {
+        "whereItFits": "Где применимо"
       }
     }
   },
