@@ -568,130 +568,106 @@
       },
       "government": {
         "hero": {
-          "eyebrow": "Government Integrations",
-          "title": "myGov, SİMA auth, and SİMA digital signing — built into your product",
-          "lede": "We connect your platform to Azerbaijan’s identity and e-signature infrastructure. Verified citizens, legally binding signatures, fewer dropouts at onboarding.",
-          "ctaLabel": "Start a project",
-          "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "How it works",
-          "ctaSecondaryHref": "#how-it-works"
+          "eyebrow": "Government identity",
+          "title": "Government identity system integration",
+          "lede": "We connect SİMA signing and Digital Login to your product. No in-house developers needed — we own the technical side end to end."
         },
-        "problem": {
-          "eyebrow": "The problem",
-          "title": "Government integrations are where products quietly break",
-          "p1": "Sandbox docs are partial. Production certificates expire mid-launch. Edge cases in citizen data show up only at scale, after compliance has already signed off.",
-          "p2": "Most teams ship a working demo and hit walls later: brittle session handling, signature flows that lock users out, audit trails regulators don’t accept.",
-          "p3": "The cost is not just engineering time. It’s onboarding drop-off, failed signings, and a product that can’t pass an audit."
+        "ctas": {
+          "primary": "Order integration",
+          "secondary": "Contact us",
+          "primaryHref": "/#contact",
+          "secondaryHref": "/#contact"
         },
-        "solution": {
-          "eyebrow": "Our approach",
-          "title": "Production-tested integrations, not demos",
-          "p1": "We integrate myGov, SİMA authentication, and SİMA digital signing the way they need to behave in production: with retries, fallbacks, error states users can act on, and audit trails regulators accept.",
-          "p2": "Every flow is built locale-first, mobile-first, and tested against the real sandbox before we go near a production certificate.",
-          "bullets": {
-            "b1": "myGov SSO with session handling that survives token expiry and network hiccups",
-            "b2": "SİMA auth flows tuned for first-time users, not just power users",
-            "b3": "Legally binding SİMA digital signing with verifiable audit logs",
-            "b4": "Locale-aware UX in Azerbaijani, English, and Russian",
-            "b5": "Clean handover: certificates, runbooks, and monitoring you actually own"
-          },
-          "visualAlt": "Diagram showing identity and signature flow between a product and Azerbaijani government services"
-        },
-        "useCases": {
-          "uc1": {
-            "title": "Fintech KYC onboarding",
-            "description": "Verify citizens in seconds with myGov or SİMA, replace manual document checks, and cut drop-off at sign-up.",
-            "badge": "Most common"
-          },
-          "uc2": {
-            "title": "Digital contract signing",
-            "description": "Replace wet ink with SİMA digital signatures — legally binding, audit-ready, accepted by regulators."
-          },
-          "uc3": {
-            "title": "Citizen portal SSO",
-            "description": "Let residents sign in with their existing myGov identity. No new accounts, no forgotten passwords."
-          },
-          "uc4": {
-            "title": "Document workflow automation",
-            "description": "Route, sign, and archive regulated documents end-to-end with verifiable signatures and immutable history."
-          }
-        },
-        "howItWorks": {
+        "intro": {
           "eyebrow": "How it works",
-          "title": "From scoping to a signed-off production cutover",
-          "footnote": "Typical engagement: 4–8 weeks to production, depending on the scope and certificate timeline.",
-          "steps": {
-            "s1": {
-              "label": "Discovery and threat model",
-              "detail": "We map your flows, data residency, and the exact gov services you need — then write the threat model."
+          "title": "Fully managed integration",
+          "lede": "We add SİMA signing and Digital Login to your website or app without your team writing the code. Backend, API, test, production cutover — all on us.",
+          "cards": {
+            "sima": {
+              "title": "SİMA signing",
+              "description": "Legally binding digital signature. Sign contracts, documents, and transactions inside your product."
             },
-            "s2": {
-              "label": "Sandbox integration",
-              "detail": "We build against the official sandbox, cover edge cases, and validate every state with your team."
-            },
-            "s3": {
-              "label": "Production cutover",
-              "detail": "Certificate provisioning, staged rollout, and a full audit trail from day one."
-            },
-            "s4": {
-              "label": "Monitoring and SLA",
-              "detail": "Live dashboards, on-call coverage, and a maintenance plan that keeps the integration current."
+            "digital": {
+              "title": "Digital Login",
+              "description": "myGov SSO and SİMA authentication. Citizens sign in with the identity they already have, in seconds."
             }
           }
         },
-        "benefits": {
-          "eyebrow": "Why it matters",
-          "title": "What you get",
+        "whatWeDo": {
+          "eyebrow": "What we do",
+          "title": "The full technical package",
           "items": {
             "i1": {
-              "title": "Legally binding signatures",
-              "description": "SİMA signatures hold up in court and pass regulator review."
+              "title": "SİMA signing integration",
+              "description": "Document signing flow built into your product — certificates, audit trail, legal validity included."
             },
             "i2": {
-              "title": "Azerbaijan-grade compliance",
-              "description": "Built around local data residency, KVDB, and sector-specific rules from day one."
+              "title": "Digital Login integration",
+              "description": "myGov SSO and SİMA auth — citizens sign in with their existing identity."
             },
             "i3": {
-              "title": "Higher onboarding conversion",
-              "description": "Citizens sign in with an identity they already have. Fewer steps, fewer dropouts."
+              "title": "Backend and API setup",
+              "description": "Endpoints, session handling, error handling — from scratch or layered onto your existing system."
             },
             "i4": {
-              "title": "No vendor lock-in",
-              "description": "You own the certificates, the runbooks, and the code. We hand it over clean."
+              "title": "Test and production cutover",
+              "description": "We build in sandbox, validate every state, then move to production safely."
+            },
+            "i5": {
+              "title": "Government compliance",
+              "description": "Local data residency, KVDB, audit logs — built to the rules."
             }
           }
         },
-        "faq": {
-          "eyebrow": "FAQ",
-          "title": "Common questions",
+        "whoFor": {
+          "eyebrow": "Who it’s for",
+          "title": "This service is for you if",
           "items": {
-            "q1": {
-              "q": "Which government services do you integrate?",
-              "a": "myGov (e-gov.az) single sign-on, SİMA authentication, and SİMA digital signing. If your product needs another Azerbaijani gov endpoint, we’ll scope it during discovery."
+            "i1": {
+              "title": "Startups",
+              "description": "You need to ship fast and don’t want to lose weeks on government integration."
             },
-            "q2": {
-              "q": "How does the sandbox-to-production handoff work?",
-              "a": "We build and test in the official sandbox first, then provision production certificates with your team. Cutover is staged, monitored, and reversible. You get a runbook covering every step."
+            "i2": {
+              "title": "SaaS platforms",
+              "description": "Offer your customers legally binding signing and verified login."
             },
-            "q3": {
-              "q": "What about data residency and KVDB compliance?",
-              "a": "Personal data stays in-country by default. We design storage, logging, and retention against KVDB requirements and your sector’s rules — banking, insurance, health, govtech. Audit trails are built to match."
+            "i3": {
+              "title": "Companies without a dev team",
+              "description": "No engineers in-house? We deliver the full package — set up and running."
             },
-            "q4": {
-              "q": "Do you maintain the integration after launch?",
-              "a": "Yes. Certificates expire, sandbox endpoints change, and edge cases surface at scale. We offer SLA-backed maintenance with monitoring, on-call coverage, and quarterly reviews."
+            "i4": {
+              "title": "Teams extending an existing system",
+              "description": "We add government identity alongside your current product, not on top of it."
+            }
+          }
+        },
+        "whyUs": {
+          "eyebrow": "Why us",
+          "title": "Why our team",
+          "items": {
+            "i1": {
+              "title": "Fast integration",
+              "description": "Sandbox to production in a typical 4–6 weeks."
             },
-            "q5": {
-              "q": "Can you integrate with our existing systems?",
-              "a": "Yes. We work alongside your backend, identity provider, and document stack — REST, SOAP, message queues, whatever you run. The gov layer plugs into your product, not the other way around."
+            "i2": {
+              "title": "Real project experience",
+              "description": "myGov, SİMA auth, SİMA signing — running in production."
+            },
+            "i3": {
+              "title": "Compliant with state standards",
+              "description": "Built around local data, KVDB, and audit requirements."
+            },
+            "i4": {
+              "title": "Full technical support",
+              "description": "Post-launch monitoring, certificate renewal, on-call."
             }
           }
         },
         "cta": {
           "eyebrow": "Get started",
           "title": "Let’s scope your integration",
-          "lede": "Tell us which gov services you need and where you are today. We’ll come back with a plan within two business days.",
-          "ctaLabel": "Start a project",
+          "lede": "Tell us which government service you need. We’ll come back with a plan within two business days.",
+          "ctaLabel": "Order integration",
           "ctaHref": "/#contact"
         }
       },

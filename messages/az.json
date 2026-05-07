@@ -568,130 +568,106 @@
       },
       "government": {
         "hero": {
-          "eyebrow": "Dövlət inteqrasiyaları",
-          "title": "myGov, SİMA auth və SİMA imza — məhsulunuzun içində",
-          "lede": "Platformanızı Azərbaycanın kimlik və e-imza infrastrukturuna bağlayırıq. Təsdiqlənmiş istifadəçilər, hüquqi qüvvəli imzalar, onboardingdə daha az itki.",
-          "ctaLabel": "Layihəyə başla",
-          "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "Necə işləyir",
-          "ctaSecondaryHref": "#how-it-works"
+          "eyebrow": "Dövlət identifikasiyası",
+          "title": "Dövlət identifikasiya sistemləri inteqrasiyası",
+          "lede": "SİMA İmza və Digital Login-i məhsulunuza biz qoşuruq. Developer komandası lazım deyil — texniki tərəfini başdan sona həll edirik."
         },
-        "problem": {
-          "eyebrow": "Problem",
-          "title": "Dövlət inteqrasiyaları məhsulların səssizcə qırıldığı yerdir",
-          "p1": "Sandbox sənədləri natamam olur. Sertifikatlar buraxılışın ortasında bitir. Vətəndaş datasının uc halları yalnız miqyasda — uyğunluq artıq imzalandıqdan sonra ortaya çıxır.",
-          "p2": "Komandaların əksəriyyəti işləyən demo təhvil verir, sonra divara dəyir: kövrək sessiyalar, istifadəçini bağlayan imza axınları, tənzimləyicinin qəbul etmədiyi audit jurnalları.",
-          "p3": "Bunun bahası yalnız mühəndislik vaxtı deyil. Bu, onboardinqdə itki, uğursuz imzalar və auditdən keçməyən məhsuldur."
+        "ctas": {
+          "primary": "İnteqrasiya sifariş et",
+          "secondary": "Əlaqə",
+          "primaryHref": "/#contact",
+          "secondaryHref": "/#contact"
         },
-        "solution": {
-          "eyebrow": "Yanaşmamız",
-          "title": "Demo deyil, istehsalda sınanmış inteqrasiyalar",
-          "p1": "myGov, SİMA auth və SİMA rəqəmsal imzanı istehsalda davranmalı olduğu kimi qururuq: təkrar cəhdlər, ehtiyat axınlar, istifadəçinin başa düşəcəyi xəta halları və tənzimləyicinin qəbul etdiyi audit izi.",
-          "p2": "Hər axın əvvəlcə lokal və mobil prioritetli qurulur, real sandboxda sınanır — yalnız bundan sonra istehsal sertifikatına yaxınlaşırıq.",
-          "bullets": {
-            "b1": "Token bitməsi və şəbəkə kəsilməsindən sağ çıxan myGov SSO sessiyası",
-            "b2": "Yalnız təcrübəli istifadəçilər üçün deyil, ilk dəfə girənlər üçün də qurulmuş SİMA auth axınları",
-            "b3": "Yoxlanıla bilən audit jurnalı ilə hüquqi qüvvəli SİMA imza",
-            "b4": "Azərbaycan, ingilis və rus dillərində lokal UX",
-            "b5": "Təmiz təhvil: sertifikatlar, runbook və sizin nəzarətinizdə monitorinq"
-          },
-          "visualAlt": "Məhsul və Azərbaycan dövlət xidmətləri arasında kimlik və imza axınını göstərən diaqram"
-        },
-        "useCases": {
-          "uc1": {
-            "title": "Fintech KYC onboarding",
-            "description": "myGov və ya SİMA ilə vətəndaşları saniyələr içində təsdiq edin, manual sənəd yoxlamasını əvəz edin və qeydiyyatda itkini azaldın.",
-            "badge": "Ən çox tələb olunan"
-          },
-          "uc2": {
-            "title": "Rəqəmsal müqavilə imzalanması",
-            "description": "Yaş mürəkkəbi SİMA rəqəmsal imza ilə əvəz edin — hüquqi qüvvəli, audit-hazır, tənzimləyici tərəfindən qəbul edilən."
-          },
-          "uc3": {
-            "title": "Vətəndaş portalı üçün SSO",
-            "description": "İstifadəçilər mövcud myGov kimliyi ilə daxil olsun. Yeni hesab yoxdur, unudulmuş şifrə yoxdur."
-          },
-          "uc4": {
-            "title": "Sənəd axınının avtomatlaşdırılması",
-            "description": "Tənzimlənən sənədləri başdan sona yönləndirin, imzalayın və arxivləyin — yoxlanıla bilən imza və dəyişməz tarixçə ilə."
-          }
-        },
-        "howItWorks": {
+        "intro": {
           "eyebrow": "Necə işləyir",
-          "title": "Tədqiqdən təsdiqlənmiş istehsal keçidinə qədər",
-          "footnote": "Tipik müddət: əhatə dairəsi və sertifikat qrafikindən asılı olaraq istehsala 4–8 həftə.",
-          "steps": {
-            "s1": {
-              "label": "Tədqiq və təhdid modeli",
-              "detail": "Axınlarınızı, data rezidentliyini və tələb olunan dövlət xidmətlərini xəritələyirik — sonra təhdid modelini yazırıq."
+          "title": "Tam idarə olunan inteqrasiya",
+          "lede": "Vebsaytınıza və ya tətbiqinizə SİMA İmza və Digital Login-i öz developerlərinizə ehtiyac olmadan qururuq. Backend, API, test mühiti və produksiya keçidi — hamısı bizim üzərimizdədir.",
+          "cards": {
+            "sima": {
+              "title": "SİMA İmza",
+              "description": "Hüquqi qüvvəli rəqəmsal imza. Müqavilə, sənəd və əməliyyatları məhsulunuzun içində imzalayın."
             },
-            "s2": {
-              "label": "Sandbox inteqrasiyası",
-              "detail": "Rəsmi sandboxda qururuq, uc halları əhatə edirik və hər vəziyyəti komandanızla doğrulayırıq."
-            },
-            "s3": {
-              "label": "İstehsal keçidi",
-              "detail": "Sertifikat təminatı, mərhələli buraxılış və ilk gündən tam audit izi."
-            },
-            "s4": {
-              "label": "Monitorinq və SLA",
-              "detail": "Canlı panellər, on-call dəstək və inteqrasiyanı güncəl saxlayan baxım planı."
+            "digital": {
+              "title": "Digital Login",
+              "description": "myGov SSO və SİMA autentifikasiyası. Vətəndaşlar mövcud kimliyi ilə saniyələr içində daxil olur."
             }
           }
         },
-        "benefits": {
-          "eyebrow": "Nə qazanırsınız",
-          "title": "Nəticədə əldə etdikləriniz",
+        "whatWeDo": {
+          "eyebrow": "Görülən işlər",
+          "title": "Tam texniki paket",
           "items": {
             "i1": {
-              "title": "Hüquqi qüvvəli imzalar",
-              "description": "SİMA imzaları məhkəmədə qəbul olunur və tənzimləyici yoxlamasından keçir."
+              "title": "SİMA İmza inteqrasiyası",
+              "description": "Sənəd imzalama axını məhsulunuza qurulur — sertifikat, audit izi və hüquqi qüvvə daxil."
             },
             "i2": {
-              "title": "Azərbaycan səviyyəsində uyğunluq",
-              "description": "Lokal data rezidentliyi, KVDB və sektor qaydaları nəzərə alınaraq qurulur."
+              "title": "Digital Login inteqrasiyası",
+              "description": "myGov SSO və SİMA autentifikasiyası — vətəndaşlar mövcud kimliyi ilə girir."
             },
             "i3": {
-              "title": "Yüksək onboardinq konversiyası",
-              "description": "Vətəndaşlar artıq malik olduqları kimliklə daxil olurlar. Daha az addım, daha az itki."
+              "title": "Backend və API qurulması",
+              "description": "Endpoint, sessiya idarəsi, error handling — sıfırdan və ya hazır sisteminizin üstünə."
             },
             "i4": {
-              "title": "Vendor asılılığı yoxdur",
-              "description": "Sertifikatlar, runbook və kod sizin nəzarətinizdədir. Təhvili təmiz veririk."
+              "title": "Test və produksiya mühitə keçid",
+              "description": "Sandbox-da qururuq, sınadığımızı təsdiqləyirik, sonra produksiyaya təhlükəsiz keçirik."
+            },
+            "i5": {
+              "title": "Dövlət sistemlərinə uyğunluq",
+              "description": "Lokal data tələbləri, KVDB, audit jurnalları — qaydalara uyğun."
             }
           }
         },
-        "faq": {
-          "eyebrow": "FAQ",
-          "title": "Tez-tez verilən suallar",
+        "whoFor": {
+          "eyebrow": "Kimə uyğundur",
+          "title": "Bu xidmət sizin üçündür",
           "items": {
-            "q1": {
-              "q": "Hansı dövlət xidmətləri ilə inteqrasiya edirsiniz?",
-              "a": "myGov (e-gov.az) single sign-on, SİMA autentifikasiyası və SİMA rəqəmsal imza. Məhsulunuza başqa bir dövlət endpointi lazımdırsa, tədqiq mərhələsində dəyərləndirək."
+            "i1": {
+              "title": "Startuplar",
+              "description": "Sürətli buraxılış lazımdır, dövlət inteqrasiyası ilə vaxt itirmək istəmirsiniz."
             },
-            "q2": {
-              "q": "Sandboxdan istehsala keçid necə baş verir?",
-              "a": "Əvvəlcə rəsmi sandboxda qurub test edirik, sonra istehsal sertifikatlarını komandanızla təmin edirik. Keçid mərhələli, izlənilən və geri qaytarıla biləndir. Hər addımı əhatə edən runbook təhvil verilir."
+            "i2": {
+              "title": "SaaS platformalar",
+              "description": "Müştərilərinizə hüquqi qüvvəli imza və təsdiqlənmiş giriş təklif edin."
             },
-            "q3": {
-              "q": "Data rezidentliyi və KVDB uyğunluğu necədir?",
-              "a": "Şəxsi datanın ölkədə qalması standart yanaşmadır. Saxlama, jurnal və saxlama müddətini KVDB tələblərinə və sektor qaydalarınıza — bank, sığorta, səhiyyə, govtech — uyğun dizayn edirik. Audit izi buna uyğun qurulur."
+            "i3": {
+              "title": "Developer komandası olmayan şirkətlər",
+              "description": "Texniki komanda yoxdur? Tam paketdə təhvil veririk — başlayıb işə salırıq."
             },
-            "q4": {
-              "q": "Buraxılışdan sonra inteqrasiyanı saxlayırsınız?",
-              "a": "Bəli. Sertifikatların müddəti bitir, sandbox endpointləri dəyişir, uc hallar miqyasda ortaya çıxır. SLA əsaslı baxım təklif edirik: monitorinq, on-call dəstək və rüblük baxış."
+            "i4": {
+              "title": "Mövcud sistemini genişləndirənlər",
+              "description": "Hazır məhsulunuza dövlət identifikasiyasını yan-yana qoşuruq."
+            }
+          }
+        },
+        "whyUs": {
+          "eyebrow": "Niyə biz",
+          "title": "Niyə bizim komandamız",
+          "items": {
+            "i1": {
+              "title": "Sürətli inteqrasiya",
+              "description": "Sandbox-dan produksiyaya tipik 4–6 həftə."
             },
-            "q5": {
-              "q": "Mövcud sistemlərimizə inteqrasiya etmək olar?",
-              "a": "Bəli. Backend, identity provayder və sənəd dəstəyiniz ilə yan-yana işləyirik — REST, SOAP, queue, hansını işlədirsinizsə. Dövlət qatı məhsulunuza qoşulur, əksinə deyil."
+            "i2": {
+              "title": "Real layihə təcrübəsi",
+              "description": "myGov, SİMA auth və SİMA İmza üzrə produksiyada işləyən inteqrasiyalar."
+            },
+            "i3": {
+              "title": "Dövlət standartlarına uyğunluq",
+              "description": "Lokal data, KVDB və audit tələblərinə görə qurulur."
+            },
+            "i4": {
+              "title": "Tam texniki dəstək",
+              "description": "Buraxılışdan sonra monitorinq, sertifikat yenilənməsi və on-call."
             }
           }
         },
         "cta": {
           "eyebrow": "Başlayaq",
-          "title": "Gəlin inteqrasiyanızı dəyərləndirək",
-          "lede": "Hansı dövlət xidmətlərinə ehtiyacınız olduğunu və hazırkı vəziyyətinizi yazın. İki iş günü ərzində planla qayıdırıq.",
-          "ctaLabel": "Layihəyə başla",
+          "title": "Layihənizi qiymətləndirək",
+          "lede": "Hansı dövlət xidməti lazımdır — qısa yazın. İki iş günü ərzində planla qayıdırıq.",
+          "ctaLabel": "İnteqrasiya sifariş et",
           "ctaHref": "/#contact"
         }
       },

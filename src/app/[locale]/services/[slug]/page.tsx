@@ -11,6 +11,7 @@ import { ServicePageHeader } from "@/components/services/detail/ServicePageHeade
 import { WhatWeDoSection } from "@/components/services/detail/WhatWeDoSection";
 import { WhereItFitsSection } from "@/components/services/detail/WhereItFitsSection";
 import { WhyChooseUsSection } from "@/components/services/detail/WhyChooseUsSection";
+import { GovernmentDetail } from "@/components/services/government/GovernmentDetail";
 import { routing } from "@/i18n/routing";
 import {
   buildServiceJsonLd,
@@ -78,18 +79,30 @@ export default async function ServiceDetailPage({ params }: Props) {
 
   const jsonLd = await buildServiceJsonLd(slug, locale);
 
+  // The `government` slug renders a bespoke layout (cards + flow diagram +
+  // subtle SVG backdrop) rather than the shared editorial template. The
+  // chrome (Navbar / BackToHome × 2 / Footer / ScrollToTopButton) is
+  // identical so the e2e contracts on those landmarks still pass.
+  const isGovernment = slug === "government";
+
   return (
     <>
       <div className="relative flex min-h-full min-w-0 max-w-full flex-col">
         <Navbar />
         <main className="min-w-0 flex-1">
           <BackToHomeButton placement="top" />
-          <ServicePageHeader slug={slug} />
-          <WhatWeDoSection slug={slug} />
-          <WhereItFitsSection slug={slug} />
-          <OurProcessSection slug={slug} />
-          <WhyChooseUsSection slug={slug} />
-          <ServiceCTASection slug={slug} />
+          {isGovernment ? (
+            <GovernmentDetail />
+          ) : (
+            <>
+              <ServicePageHeader slug={slug} />
+              <WhatWeDoSection slug={slug} />
+              <WhereItFitsSection slug={slug} />
+              <OurProcessSection slug={slug} />
+              <WhyChooseUsSection slug={slug} />
+              <ServiceCTASection slug={slug} />
+            </>
+          )}
           <BackToHomeButton placement="bottom" />
         </main>
         <Footer />
