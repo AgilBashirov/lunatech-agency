@@ -207,7 +207,8 @@ html {
   .pc-device,
   .pc-screen,
   .pc-scanline,
-  .pc-bar {
+  .pc-bar,
+  .gov-bg-glyph {
     animation: none !important;
   }
 
@@ -448,6 +449,29 @@ h2 {
 
 .animate-scroll-hint {
   animation: scroll-hint 2s ease-in-out infinite;
+}
+
+/*
+ * Government detail page — decorative backdrop glyph "breath".
+ *
+ * Used by GovernmentDetail.tsx on the single large fingerprint behind the
+ * content area. Scale stays inside ±2.5% so motion is barely perceptible —
+ * the goal is "depth, not animation". Disabled under prefers-reduced-motion
+ * via the rule above (gov-bg-glyph is listed there).
+ */
+@keyframes gov-bg-breath {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.025);
+  }
+}
+
+.gov-bg-glyph {
+  transform-origin: center;
+  animation: gov-bg-breath 9s ease-in-out infinite;
 }
 
 /*

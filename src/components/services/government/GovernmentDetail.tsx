@@ -71,7 +71,10 @@ export async function GovernmentDetail() {
           <span className="t-eyebrow">{t("hero.eyebrow")}</span>
           <h1
             id="svc-hero-heading"
-            className="t-h2 mt-3 text-balance text-foreground"
+            // `text-gradient-hero` paints the heading with the brand
+            // purple→cyan gradient (per-page override of the post-R2 plain
+            // detail-page heading rule).
+            className="t-h2 mt-3 text-balance text-gradient-hero"
           >
             {t("hero.title")}
           </h1>
@@ -240,8 +243,17 @@ function SimaCard({
 }
 
 // -----------------------------------------------------------------------------
-// Subtle SVG backdrop: shield, fingerprint, signature scribble — all at very
-// low opacity, behind everything, pointer-events disabled.
+// Decorative backdrop for the content area.
+//
+// One large fingerprint glyph in the cyan brand accent, anchored to the right
+// edge and vertically centred BELOW the hero (top: 60%), so the hero zone is
+// untouched. A soft radial glow sits behind the glyph for depth. Both layers
+// are heavily blurred and very low-opacity so the page reads as "premium dark
+// surface with a subtle identity motif" rather than a feature illustration.
+// `pointer-events: none` and `aria-hidden` keep it out of input + a11y trees.
+//
+// Mobile: smaller size + lighter blur so the glyph stays readable at low DPRs
+// and we don't blow the GPU on a 32px blur over a 70vh layer.
 // -----------------------------------------------------------------------------
 
 function GovernmentBackdrop() {
@@ -250,47 +262,35 @@ function GovernmentBackdrop() {
       aria-hidden
       className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
     >
-      {/* Shield — top-right */}
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="0.6"
-        aria-hidden
-        className="absolute -right-12 -top-8 h-72 w-72 text-cyan-400/[0.06] blur-[1px] md:h-[420px] md:w-[420px]"
-      >
-        <path d="M12 2 L20 5 V12 C20 17 16 21 12 22 C8 21 4 17 4 12 V5 Z" />
-        <path d="M9 12 L11 14 L15 10" />
-      </svg>
+      {/* Soft cyan radial glow behind the glyph — adds depth without an icon */}
+      <div
+        className="absolute right-[-15%] top-[60%] h-[60vh] w-[60vh] -translate-y-1/2 rounded-full md:h-[80vh] md:w-[80vh]"
+        style={{
+          background:
+            "radial-gradient(circle at center, rgba(34,211,238,0.10) 0%, rgba(34,211,238,0.04) 38%, transparent 70%)",
+        }}
+      />
 
-      {/* Fingerprint — mid-left */}
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="0.6"
-        aria-hidden
-        className="absolute -left-16 top-1/2 h-72 w-72 -translate-y-1/2 text-purple-400/[0.05] blur-[1px] md:h-[480px] md:w-[480px]"
-      >
-        <path d="M5 13 C5 9 8 4 12 4 C16 4 19 9 19 13" />
-        <path d="M8 11 C8 8 10 6 12 6 C14 6 16 8 16 11 V14" />
-        <path d="M11 11 C11 10 11.5 9 12 9 C12.5 9 13 10 13 11 V15 C13 17 12.5 18 12 19" />
-        <path d="M9 21 C8 20 7 17 7 14" />
-        <path d="M17 14 C17 16 16.5 18 15 20" />
-      </svg>
-
-      {/* Signature scribble — bottom-right */}
-      <svg
-        viewBox="0 0 200 60"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeLinecap="round"
-        aria-hidden
-        className="absolute -bottom-10 right-[12%] h-56 w-[28rem] text-cyan-400/[0.05] blur-[1px] md:h-80 md:w-[40rem]"
-      >
-        <path d="M5 38 Q15 12 30 32 T55 30 Q70 50 85 25 T120 30 Q140 8 160 30 Q180 46 195 24" />
-      </svg>
+      {/* Single large fingerprint glyph — outline, blurred, breathing */}
+      <div className="absolute right-[-18%] top-[60%] h-[60vh] w-[60vh] -translate-y-1/2 md:h-[80vh] md:w-[80vh]">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="0.45"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+          className="gov-bg-glyph h-full w-full text-[color:var(--neon-cyan)] opacity-[0.07] blur-[20px] md:blur-[34px]"
+        >
+          <path d="M5 13 C5 7.5 8 3 12 3 C16 3 19 7.5 19 13" />
+          <path d="M7 13 C7 8.5 9.2 5 12 5 C14.8 5 17 8.5 17 13 V15" />
+          <path d="M9 13 C9 9.5 10.5 7 12 7 C13.5 7 15 9.5 15 13 V15.5" />
+          <path d="M11 13 C11 11.5 11.5 10 12 10 C12.5 10 13 11.5 13 13 V16 C13 17 12.5 18 12 19" />
+          <path d="M8 21 C7 20 6.5 18.5 6 16" />
+          <path d="M17.5 14 C17.5 16.5 16.8 18.5 15.5 20.5" />
+        </svg>
+      </div>
     </div>
   );
 }
