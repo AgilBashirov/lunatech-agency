@@ -25,16 +25,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    icons: {
-      icon: [
-        { url: "/favicon.svg", type: "image/svg+xml" },
-        { url: "/favicon.ico", sizes: "any" },
-        { url: "/icon-48.png", type: "image/png", sizes: "48x48" },
-        { url: "/icon-96.png", type: "image/png", sizes: "96x96" },
-        { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
-      ],
-      apple: "/apple-icon.png",
-    },
     openGraph: {
       title,
       description,
