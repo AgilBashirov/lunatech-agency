@@ -28,9 +28,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     icons: {
       icon: [
         { url: "/favicon.svg", type: "image/svg+xml" },
-        { url: "/32x32_black.png", type: "image/png", sizes: "32x32" },
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/icon-48.png", type: "image/png", sizes: "48x48" },
+        { url: "/icon-96.png", type: "image/png", sizes: "96x96" },
+        { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
       ],
-      apple: "/64x64_black.png",
+      apple: "/apple-icon.png",
     },
     openGraph: {
       title,
