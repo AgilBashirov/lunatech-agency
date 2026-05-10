@@ -27,28 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     icons: {
       icon: [
-        {
-          url: "/32x32_black.svg",
-          media: "(prefers-color-scheme: light)",
-          type: "image/svg+xml",
-        },
-        {
-          url: "/32x32_white.svg",
-          media: "(prefers-color-scheme: dark)",
-          type: "image/svg+xml",
-        },
-        {
-          url: "/32x32_black.png",
-          media: "(prefers-color-scheme: light)",
-          type: "image/png",
-          sizes: "32x32",
-        },
-        {
-          url: "/32x32_white.png",
-          media: "(prefers-color-scheme: dark)",
-          type: "image/png",
-          sizes: "32x32",
-        },
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/32x32_black.png", type: "image/png", sizes: "32x32" },
       ],
       apple: "/64x64_black.png",
     },
