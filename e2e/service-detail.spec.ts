@@ -1,26 +1,22 @@
 import { test, expect, type Page } from "@playwright/test";
 
 /**
- * Service detail pages (`/[locale]/services/[slug]`) — SIMPLIFIED layout.
+ * Service detail pages (`/[locale]/services/[slug]`).
  *
- * Page composition (post-refactor):
- *   1. Navbar
- *   2. BackToHomeButton (top)
- *   3. ServicePageHeader     → svc-hero-heading
- *   4. WhatWeDoSection       → svc-what-we-do-heading      (NEW; merges old Problem + Solution)
- *   5. WhereItFitsSection    → svc-usecases-heading        (renamed UseCases; plain list, no chip)
- *   6. OurProcessSection     → svc-howitworks-heading      (renamed HowItWorks)
- *   7. WhyChooseUsSection    → svc-benefits-heading        (renamed Benefits)
- *   8. ServiceCTASection     → svc-cta-heading
- *   9. BackToHomeButton (bottom)
- *  10. Footer
+ * Two page shapes exist:
  *
- * Removed: MoonBackdrop / MoonReadyProvider, standalone Problem section,
- * standalone Solution section, FAQ section. The home page is intentionally
- * untouched and still mounts the Moon.
+ * 1. Editorial template — used by `web-experience`, `uiux`, `strategy`,
+ *    `performance`. Heading ids: hero / what-we-do / usecases / howitworks
+ *    / benefits / cta.
+ *
+ * 2. Government bespoke (`GovernmentDetail`) — conversion-first layout with
+ *    a single compact "overview" block replacing the three list sections.
+ *    Heading ids: hero / what-we-do / overview / cta. The usecases /
+ *    howitworks / benefits ids do NOT appear on the government page.
  *
  * Coverage:
- *  - Section presence (6 ids) and intentional absence of FAQ id
+ *  - Government section set (4 ids) and intentional absence of FAQ /
+ *    problem / solution / usecases / howitworks / benefits ids
  *  - BackToHomeButton at top AND bottom on every detail page; locale-aware
  *  - Locale-specific BackToHome label (en / az / ru)
  *  - No <canvas> (= no MoonBackdrop) on detail pages
@@ -44,21 +40,25 @@ const SLUGS = [
 
 const LOCALES = ["az", "en", "ru"] as const;
 
-/** New simplified set of section heading ids (FAQ intentionally omitted). */
-const SECTION_HEADING_IDS = [
+/** Government bespoke section set (4 ids). The previous three list sections
+ *  collapsed into a single "overview" block. */
+const GOVERNMENT_HEADING_IDS = [
   "svc-hero-heading",
   "svc-what-we-do-heading",
-  "svc-usecases-heading",
-  "svc-howitworks-heading",
-  "svc-benefits-heading",
+  "svc-overview-heading",
   "svc-cta-heading",
 ] as const;
 
-/** Heading ids that USED to render and must NOT come back. */
-const REMOVED_HEADING_IDS = [
+/** Heading ids that must NOT appear on the government page. The first three
+ *  are pre-simplification leftovers; the last three are the editorial-template
+ *  ids that the new government overview consolidates away. */
+const GOVERNMENT_REMOVED_HEADING_IDS = [
   "svc-problem-heading",
   "svc-solution-heading",
   "svc-faq-heading",
+  "svc-usecases-heading",
+  "svc-howitworks-heading",
+  "svc-benefits-heading",
 ] as const;
 
 const BACK_TO_HOME_LABEL = {
@@ -134,13 +134,13 @@ test.describe("Service detail — heading hierarchy", () => {
   });
 });
 
-test.describe("Service detail — simplified section set (government)", () => {
-  test("only the 6 simplified section headings render; FAQ/Problem/Solution are gone", async ({
+test.describe("Service detail — government section set", () => {
+  test("only the 4 bespoke government headings render; legacy ids are gone", async ({
     page,
   }) => {
     await gotoDetail(page, "en", "government");
 
-    for (const id of SECTION_HEADING_IDS) {
+    for (const id of GOVERNMENT_HEADING_IDS) {
       const heading = page.locator(`#${id}`);
       await expect(
         heading,
@@ -153,39 +153,37 @@ test.describe("Service detail — simplified section set (government)", () => {
       ).toHaveCount(1);
     }
 
-    // The pre-refactor heading ids must not reappear.
-    for (const removedId of REMOVED_HEADING_IDS) {
+    // Neither the pre-simplification ids nor the editorial-template ids that
+    // the new overview block consolidates away may appear.
+    for (const removedId of GOVERNMENT_REMOVED_HEADING_IDS) {
       await expect(
         page.locator(`#${removedId}`),
-        `removed heading #${removedId} must not be in the simplified DOM`,
+        `removed heading #${removedId} must not be in the government DOM`,
       ).toHaveCount(0);
       await expect(
         page.locator(`section[aria-labelledby="${removedId}"]`),
-        `removed section[aria-labelledby="${removedId}"] must not be in the simplified DOM`,
+        `removed section[aria-labelledby="${removedId}"] must not be in the government DOM`,
       ).toHaveCount(0);
     }
   });
 
-  test("Where It Fits is rendered as a plain list — no icon chip / badge chrome", async ({
+  test("overview block renders three card titles (desktop + accordion shape)", async ({
     page,
   }) => {
     await gotoDetail(page, "en", "government");
-    const section = page.locator(
-      'section[aria-labelledby="svc-usecases-heading"]',
+    const overview = page.locator(
+      'section[aria-labelledby="svc-overview-heading"]',
     );
-    await expect(section).toBeVisible();
+    await expect(overview).toBeVisible();
 
-    // Plain title/description rows — at least one <h3> per use case, and no
-    // GlassCard / icon chip wrapper inside this section. The icon chip class
-    // names are owned by `iconChip.ts`; the simplified list must not use them.
-    await expect(section.locator("h3").first()).toBeVisible();
-    expect(await section.locator("h3").count()).toBeGreaterThanOrEqual(1);
-
-    // No GlassCard chrome inside the simplified list.
+    // The three cards each render an <h3> with the localized card title.
+    // Both desktop columns and mobile <details> render — the responsive
+    // toggle is purely CSS — so we expect six <h3>s total in the section.
+    const cardHeadings = overview.locator("h3");
     expect(
-      await section.locator(".services-tile, [data-glass-card]").count(),
-      "simplified Where It Fits must not wrap rows in GlassCard chrome",
-    ).toBe(0);
+      await cardHeadings.count(),
+      "overview should expose three card titles per viewport (desktop + accordion)",
+    ).toBe(6);
   });
 });
 

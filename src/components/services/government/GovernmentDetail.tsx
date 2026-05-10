@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/motion/Reveal";
-import { ServiceContent } from "@/components/services/detail/ServiceContent";
 import { ServiceSection } from "@/components/services/detail/ServiceSection";
+import { OverviewPackageSection } from "@/components/services/government/OverviewPackageSection";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -11,24 +11,20 @@ import { Link } from "@/i18n/navigation";
 /**
  * Bespoke detail page for the `government` service.
  *
- * Why bespoke: the brief asks for a conversion-first layout with product
- * cards, a flow diagram and a subtle SVG backdrop — a deliberate divergence
- * from the shared editorial template the other four services use. The
- * other services still mount via `[slug]/page.tsx`'s default branch.
+ * Why bespoke: conversion-first layout with product cards, a single compact
+ * "overview" block, and a subtle SVG backdrop — a deliberate divergence from
+ * the shared editorial template the other four services use. The other
+ * services still mount via `[slug]/page.tsx`'s default branch.
  *
- * The six section heading ids the e2e contract pins
- * (`svc-{hero,what-we-do,usecases,howitworks,benefits,cta}-heading`) are
- * preserved, and the hero `<section>` deliberately carries no `<a>` — the
- * primary/secondary CTAs sit in their own `<div>` band BELOW the hero so the
- * link-free invariant still holds for every detail page.
+ * The four section heading ids the e2e contract pins
+ * (`svc-{hero,what-we-do,overview,cta}-heading`) are preserved, and the
+ * hero `<section>` deliberately carries no `<a>` — the primary/secondary
+ * CTAs sit in their own `<div>` band BELOW the hero so the link-free
+ * invariant still holds for every detail page.
  *
  * Server component only — no client hooks. The `<Reveal>` wrappers are
  * client components that receive server-rendered children.
  */
-
-const WHAT_WE_DO_KEYS = ["i1", "i2", "i3", "i4", "i5"] as const;
-const WHO_FOR_KEYS = ["i1", "i2", "i3", "i4"] as const;
-const WHY_US_KEYS = ["i1", "i2", "i3", "i4"] as const;
 
 /** Split a translated href like "/#contact" so the locale-aware <Link>
  *  rewrites the pathname (-> "/az/#contact") instead of treating the whole
@@ -40,19 +36,6 @@ function splitHref(raw: string): { pathname: string; hash?: string } {
 
 export async function GovernmentDetail() {
   const t = await getTranslations("services.detail.government");
-
-  const whatWeDoItems = WHAT_WE_DO_KEYS.map((k) => ({
-    title: t(`whatWeDo.items.${k}.title`),
-    description: t(`whatWeDo.items.${k}.description`),
-  }));
-  const whoForItems = WHO_FOR_KEYS.map((k) => ({
-    title: t(`whoFor.items.${k}.title`),
-    description: t(`whoFor.items.${k}.description`),
-  }));
-  const whyUsItems = WHY_US_KEYS.map((k) => ({
-    title: t(`whyUs.items.${k}.title`),
-    description: t(`whyUs.items.${k}.description`),
-  }));
 
   const ctaPrimaryHref = splitHref(t("ctas.primaryHref"));
   const ctaSecondaryHref = splitHref(t("ctas.secondaryHref"));
@@ -122,45 +105,10 @@ export async function GovernmentDetail() {
         </Reveal>
       </ServiceSection>
 
-      {/* Görülən işlər — repurposes svc-usecases-heading. Plain h3 + p rows;
-          NO GlassCard / icon-tile chrome (e2e contract). */}
-      <ServiceSection
-        id="what-we-do-list"
-        headingId="usecases"
-        eyebrow={t("whatWeDo.eyebrow")}
-        title={t("whatWeDo.title")}
-        width="wide"
-      >
-        <Reveal>
-          <ServiceContent.List items={whatWeDoItems} />
-        </Reveal>
-      </ServiceSection>
-
-      {/* Kimə uyğundur — repurposes svc-howitworks-heading. */}
-      <ServiceSection
-        id="who-for"
-        headingId="howitworks"
-        eyebrow={t("whoFor.eyebrow")}
-        title={t("whoFor.title")}
-        width="wide"
-      >
-        <Reveal>
-          <ServiceContent.List items={whoForItems} />
-        </Reveal>
-      </ServiceSection>
-
-      {/* Niyə biz — keeps svc-benefits-heading. */}
-      <ServiceSection
-        id="why-us"
-        headingId="benefits"
-        eyebrow={t("whyUs.eyebrow")}
-        title={t("whyUs.title")}
-        width="wide"
-      >
-        <Reveal>
-          <ServiceContent.List items={whyUsItems} />
-        </Reveal>
-      </ServiceSection>
+      {/* Compact overview — replaces the previous three list sections
+          (whatWeDo / whoFor / whyUs). Three GlassCard columns on md+, native
+          <details> accordion on mobile. */}
+      <OverviewPackageSection />
 
       {/* CTA — keeps svc-cta-heading. Anchor must be present (e2e). */}
       <ServiceSection

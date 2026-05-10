@@ -593,81 +593,45 @@
             }
           }
         },
-        "whatWeDo": {
-          "eyebrow": "What we do",
-          "title": "The full technical package",
-          "items": {
-            "i1": {
-              "title": "SİMA signing integration",
-              "description": "Document signing flow built into your product — certificates, audit trail, legal validity included."
+        "overview": {
+          "eyebrow": "At a glance",
+          "title": "The service package, at a glance",
+          "cards": {
+            "technical": {
+              "title": "The full technical package",
+              "items": [
+                "SİMA signing integration",
+                "Digital Login (myGov SSO)",
+                "Backend and API setup",
+                "Sandbox-to-production cutover",
+                "Government audit and KVDB compliance"
+              ]
             },
-            "i2": {
-              "title": "Digital Login integration",
-              "description": "myGov SSO and SİMA auth — citizens sign in with their existing identity."
+            "whoFor": {
+              "title": "Who it’s for",
+              "items": [
+                "Startups that need to ship fast",
+                "SaaS platforms",
+                "Companies without an in-house dev team",
+                "Teams extending an existing system"
+              ]
             },
-            "i3": {
-              "title": "Backend and API setup",
-              "description": "Endpoints, session handling, error handling — from scratch or layered onto your existing system."
-            },
-            "i4": {
-              "title": "Test and production cutover",
-              "description": "We build in sandbox, validate every state, then move to production safely."
-            },
-            "i5": {
-              "title": "Government compliance",
-              "description": "Local data residency, KVDB, audit logs — built to the rules."
-            }
-          }
-        },
-        "whoFor": {
-          "eyebrow": "Who it’s for",
-          "title": "This service is for you if",
-          "items": {
-            "i1": {
-              "title": "Startups",
-              "description": "You need to ship fast and don’t want to lose weeks on government integration."
-            },
-            "i2": {
-              "title": "SaaS platforms",
-              "description": "Offer your customers legally binding signing and verified login."
-            },
-            "i3": {
-              "title": "Companies without a dev team",
-              "description": "No engineers in-house? We deliver the full package — set up and running."
-            },
-            "i4": {
-              "title": "Teams extending an existing system",
-              "description": "We add government identity alongside your current product, not on top of it."
-            }
-          }
-        },
-        "whyUs": {
-          "eyebrow": "Why us",
-          "title": "Why our team",
-          "items": {
-            "i1": {
-              "title": "Fast integration",
-              "description": "Sandbox to production in a typical 4–6 weeks."
-            },
-            "i2": {
-              "title": "Real project experience",
-              "description": "myGov, SİMA auth, SİMA signing — running in production."
-            },
-            "i3": {
-              "title": "Compliant with state standards",
-              "description": "Built around local data, KVDB, and audit requirements."
-            },
-            "i4": {
-              "title": "Full technical support",
-              "description": "Post-launch monitoring, certificate renewal, on-call."
+            "whyUs": {
+              "title": "Why Lunatech?",
+              "items": [
+                "Typical 4–6 week integration",
+                "Real myGov / SİMA experience",
+                "Local data and audit compliance",
+                "Post-launch technical support"
+              ]
             }
           }
         },
         "cta": {
           "eyebrow": "Get started",
-          "title": "Let’s scope your integration",
-          "lede": "Tell us which government service you need. We’ll come back with a plan within two business days.",
-          "ctaLabel": "Order integration",
+          "title": "Need to integrate government identity?",
+          "lede": "We assess the technical side of your project and deliver a clear integration plan.",
+          "ctaLabel": "Scope my project",
           "ctaHref": "/#contact"
         }
       },

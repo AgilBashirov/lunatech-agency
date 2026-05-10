@@ -593,81 +593,45 @@
             }
           }
         },
-        "whatWeDo": {
-          "eyebrow": "Görülən işlər",
-          "title": "Tam texniki paket",
-          "items": {
-            "i1": {
-              "title": "SİMA İmza inteqrasiyası",
-              "description": "Sənəd imzalama axını məhsulunuza qurulur — sertifikat, audit izi və hüquqi qüvvə daxil."
+        "overview": {
+          "eyebrow": "Xülasə",
+          "title": "Xidmət paketi bir baxışda",
+          "cards": {
+            "technical": {
+              "title": "Tam texniki paket",
+              "items": [
+                "SİMA İmza inteqrasiyası",
+                "Digital Login (myGov SSO)",
+                "Backend və API qurulması",
+                "Sandbox-dan produksiyaya keçid",
+                "Dövlət audit və KVDB uyğunluğu"
+              ]
             },
-            "i2": {
-              "title": "Digital Login inteqrasiyası",
-              "description": "myGov SSO və SİMA autentifikasiyası — vətəndaşlar mövcud kimliyi ilə girir."
+            "whoFor": {
+              "title": "Kimlər üçün uyğundur?",
+              "items": [
+                "Sürətli buraxılış istəyən startuplar",
+                "SaaS platformalar",
+                "Developer komandası olmayan şirkətlər",
+                "Mövcud sistemini genişləndirənlər"
+              ]
             },
-            "i3": {
-              "title": "Backend və API qurulması",
-              "description": "Endpoint, sessiya idarəsi, error handling — sıfırdan və ya hazır sisteminizin üstünə."
-            },
-            "i4": {
-              "title": "Test və produksiya mühitə keçid",
-              "description": "Sandbox-da qururuq, sınadığımızı təsdiqləyirik, sonra produksiyaya təhlükəsiz keçirik."
-            },
-            "i5": {
-              "title": "Dövlət sistemlərinə uyğunluq",
-              "description": "Lokal data tələbləri, KVDB, audit jurnalları — qaydalara uyğun."
-            }
-          }
-        },
-        "whoFor": {
-          "eyebrow": "Kimə uyğundur",
-          "title": "Bu xidmət sizin üçündür",
-          "items": {
-            "i1": {
-              "title": "Startuplar",
-              "description": "Sürətli buraxılış lazımdır, dövlət inteqrasiyası ilə vaxt itirmək istəmirsiniz."
-            },
-            "i2": {
-              "title": "SaaS platformalar",
-              "description": "Müştərilərinizə hüquqi qüvvəli imza və təsdiqlənmiş giriş təklif edin."
-            },
-            "i3": {
-              "title": "Developer komandası olmayan şirkətlər",
-              "description": "Texniki komanda yoxdur? Tam paketdə təhvil veririk — başlayıb işə salırıq."
-            },
-            "i4": {
-              "title": "Mövcud sistemini genişləndirənlər",
-              "description": "Hazır məhsulunuza dövlət identifikasiyasını yan-yana qoşuruq."
-            }
-          }
-        },
-        "whyUs": {
-          "eyebrow": "Niyə biz",
-          "title": "Niyə bizim komandamız",
-          "items": {
-            "i1": {
-              "title": "Sürətli inteqrasiya",
-              "description": "Sandbox-dan produksiyaya tipik 4–6 həftə."
-            },
-            "i2": {
-              "title": "Real layihə təcrübəsi",
-              "description": "myGov, SİMA auth və SİMA İmza üzrə produksiyada işləyən inteqrasiyalar."
-            },
-            "i3": {
-              "title": "Dövlət standartlarına uyğunluq",
-              "description": "Lokal data, KVDB və audit tələblərinə görə qurulur."
-            },
-            "i4": {
-              "title": "Tam texniki dəstək",
-              "description": "Buraxılışdan sonra monitorinq, sertifikat yenilənməsi və on-call."
+            "whyUs": {
+              "title": "Niyə Lunatech?",
+              "items": [
+                "Tipik 4–6 həftə inteqrasiya",
+                "Real myGov / SİMA təcrübəsi",
+                "Lokal data və audit uyğunluğu",
+                "Buraxılışdan sonra texniki dəstək"
+              ]
             }
           }
         },
         "cta": {
           "eyebrow": "Başlayaq",
-          "title": "Layihənizi qiymətləndirək",
-          "lede": "Hansı dövlət xidməti lazımdır — qısa yazın. İki iş günü ərzində planla qayıdırıq.",
-          "ctaLabel": "İnteqrasiya sifariş et",
+          "title": "Dövlət identifikasiyası inteqrasiyasına ehtiyacınız var?",
+          "lede": "Layihənizin texniki tərəfini qiymətləndirib sizə aydın inteqrasiya planı təqdim edirik.",
+          "ctaLabel": "Layihəni qiymətləndirək",
           "ctaHref": "/#contact"
         }
       },
