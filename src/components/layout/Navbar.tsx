@@ -8,11 +8,16 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { cn } from "@/lib/cn";
 import { motionTransition } from "@/lib/motion";
 
+// Hash links point at sections that only exist on the home page. From any
+// other route (e.g. /services/government) we must navigate back to "/" with
+// the hash, not just append the hash to the current path.
 const links = [
-  { href: "#services", key: "services" as const },
-  { href: "#about", key: "about" as const },
-  { href: "#portfolio", key: "portfolio" as const },
+  { hash: "services", key: "services" as const },
+  { hash: "about", key: "about" as const },
+  { hash: "portfolio", key: "portfolio" as const },
 ];
+
+const MotionLink = motion.create(Link);
 
 const navLinkClass =
   "flex min-h-11 shrink-0 snap-start items-center rounded-full px-3 py-2 text-xs font-medium text-text-secondary transition-colors duration-300 ease-out hover:bg-white/[0.04] hover:text-white md:min-h-0 md:rounded-none md:bg-transparent md:px-0 md:py-0 md:text-sm";
@@ -49,21 +54,25 @@ export function Navbar() {
           </div>
         </div>
         <div className="flex min-h-11 min-w-0 w-full snap-x snap-mandatory scroll-ps-1 scroll-pe-1 gap-1 overflow-x-auto overscroll-x-contain touch-pan-x pb-1 [-webkit-overflow-scrolling:touch] md:min-h-0 md:w-auto md:snap-none md:items-center md:gap-8 md:overflow-visible md:overscroll-x-auto md:touch-auto md:pb-0">
-          {links.map(({ href, key }) =>
+          {links.map(({ hash, key }) =>
             reduce ? (
-              <a key={key} href={href} className={navLinkClass}>
-                {t(key)}
-              </a>
-            ) : (
-              <motion.a
+              <Link
                 key={key}
-                href={href}
+                href={{ pathname: "/", hash }}
+                className={navLinkClass}
+              >
+                {t(key)}
+              </Link>
+            ) : (
+              <MotionLink
+                key={key}
+                href={{ pathname: "/", hash }}
                 className={navLinkClass}
                 whileTap={{ scale: 0.98 }}
                 transition={motionTransition.fast}
               >
                 {t(key)}
-              </motion.a>
+              </MotionLink>
             ),
           )}
         </div>
