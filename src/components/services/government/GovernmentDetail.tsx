@@ -38,7 +38,6 @@ export async function GovernmentDetail() {
   const t = await getTranslations("services.detail.government");
 
   const ctaPrimaryHref = splitHref(t("ctas.primaryHref"));
-  const ctaSecondaryHref = splitHref(t("ctas.secondaryHref"));
   const finalCtaHref = splitHref(t("cta.ctaHref"));
 
   return (
@@ -67,14 +66,13 @@ export async function GovernmentDetail() {
 
       {/* CTA band — sits visually under the hero but lives outside the hero
           <section>, so `section[aria-labelledby="svc-hero-heading"] a` count
-          stays at 0 (preserves the universal e2e contract). */}
+          stays at 0 (preserves the universal e2e contract). The secondary
+          "Əlaqə" CTA was removed because both buttons pointed at /#contact —
+          the final CTA at the bottom of the page covers that intent. */}
       <Container className="-mt-2 mb-2 md:-mt-4 md:mb-4">
         <div className="flex flex-wrap items-center gap-3">
           <Link href={ctaPrimaryHref}>
             <Button>{t("ctas.primary")}</Button>
-          </Link>
-          <Link href={ctaSecondaryHref}>
-            <Button variant="ghost">{t("ctas.secondary")}</Button>
           </Link>
         </div>
       </Container>

@@ -665,8 +665,8 @@
     "subtitle": "Each phase is planned and transparent."
   },
   "portfolio": {
-    "title": "3D website concepts",
-    "subtitle": "Concept directions we’ve explored — each piece is one storytelling problem and one design approach for 3D-driven brands.",
+    "title": "Selected work",
+    "subtitle": "Brands and projects we’ve shaped across industries — each one a distinct design problem and approach.",
     "conceptBadge": "Concept",
     "coverAlt": "{title} — animated dark 3D-style interface preview",
     "viewCase": "Visit site",
@@ -719,10 +719,9 @@
   "contact": {
     "title": "Let’s build something powerful together",
     "subtitle": "Tell us about your product or campaign. We typically reply within two business days.",
-    "formName": "Name",
+    "formName": "Full name",
     "formEmail": "Email",
     "formPhone": "Mobile number",
-    "phoneHint": "+994 XX XXX XX XX",
     "formService": "Service type",
     "servicePlaceholder": "Select",
     "otherHint": "Please describe what you need",

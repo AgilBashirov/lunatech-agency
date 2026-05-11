@@ -665,8 +665,8 @@
     "subtitle": "Hər mərhələ planlı və şəffaf şəkildə idarə olunur"
   },
   "portfolio": {
-    "title": "3D vebsayt konseptləri",
-    "subtitle": "Tədqiq etdiyimiz konsept istiqamətlər — hər iş bir hekayə problemi və 3D yönümlü brendlər üçün bir dizayn yanaşmasıdır.",
+    "title": "Seçilmiş işlər",
+    "subtitle": "Müxtəlif sahələrdə işlədiyimiz brendlər və layihələr — hər biri özünəməxsus dizayn problemi və yanaşması.",
     "conceptBadge": "Konsept",
     "coverAlt": "{title} — animasiyalı tünd 3D interfeys önizləməsi",
     "viewCase": "Sayta bax",
@@ -719,10 +719,9 @@
   "contact": {
     "title": "Gəlin birlikdə güclü bir şey yaradaq",
     "subtitle": "Məhsulunuz və ya kampaniyanız haqqında yazın. Adətən iki iş günü ərzində cavab veririk.",
-    "formName": "Ad",
+    "formName": "Ad Soyad",
     "formEmail": "E-poçt",
     "formPhone": "Mobil nömrə",
-    "phoneHint": "+994 XX XXX XX XX",
     "formService": "Xidmət növü",
     "servicePlaceholder": "Seçin",
     "otherHint": "Zəhmət olmasa ehtiyacınızı qeyd edin",

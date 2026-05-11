@@ -546,7 +546,6 @@ export function Contact() {
                   autoComplete="tel"
                   maxLength={MAX.phone}
                   required
-                  hintText={t("phoneHint")}
                   errorText={errorTextFor("phone")}
                 />
 
