@@ -721,10 +721,23 @@
     "subtitle": "Məhsulunuz və ya kampaniyanız haqqında yazın. Adətən iki iş günü ərzində cavab veririk.",
     "formName": "Ad",
     "formEmail": "E-poçt",
+    "formPhone": "Mobil nömrə",
+    "phoneHint": "+994 XX XXX XX XX",
+    "formService": "Xidmət növü",
+    "servicePlaceholder": "Seçin",
+    "otherHint": "Zəhmət olmasa ehtiyacınızı qeyd edin",
     "formMessage": "Mesaj",
-    "formSubmit": "Bizimlə əlaqə",
-    "formNote": "Bizimlə email vasitəsilə əlaqə saxlamaq üçün düyməyə klikləyin.",
-    "mailtoHint": "Mesaj yalnız email tətbiqinizdə təsdiqlədikdən sonra göndəriləcək."
+    "formSubmit": "Göndər",
+    "submitting": "Göndərilir…",
+    "success": "Müraciətiniz uğurla göndərildi. Tezliklə sizinlə əlaqə saxlanılacaq.",
+    "errorSubmit": "Göndərmə zamanı xəta baş verdi. Bir az sonra yenidən cəhd edin.",
+    "services": {
+      "newWebsite": "Yeni vebsayt",
+      "uxUi": "UX/UI dizayn",
+      "sima": "Sima inteqrasiya",
+      "digitalLogin": "Digital login inteqrasiya",
+      "other": "Digər"
+    }
   },
   "footer": {
     "rights": "Bütün hüquqlar qorunur.",

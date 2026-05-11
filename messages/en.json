@@ -721,10 +721,23 @@
     "subtitle": "Tell us about your product or campaign. We typically reply within two business days.",
     "formName": "Name",
     "formEmail": "Email",
+    "formPhone": "Mobile number",
+    "phoneHint": "+994 XX XXX XX XX",
+    "formService": "Service type",
+    "servicePlaceholder": "Select",
+    "otherHint": "Please describe what you need",
     "formMessage": "Message",
-    "formSubmit": "Contact us",
-    "formNote": "Click the button to contact us by email.",
-    "mailtoHint": "Your message will be sent only after you confirm it in your email app."
+    "formSubmit": "Send",
+    "submitting": "Sending…",
+    "success": "Your request has been sent. We’ll be in touch shortly.",
+    "errorSubmit": "Something went wrong. Please try again in a moment.",
+    "services": {
+      "newWebsite": "New website",
+      "uxUi": "UX/UI design",
+      "sima": "SİMA integration",
+      "digitalLogin": "Digital Login integration",
+      "other": "Other"
+    }
   },
   "footer": {
     "rights": "All rights reserved.",
