@@ -178,8 +178,8 @@ function DigitalLoginCard({
           <Image
             src="/brand/digital-login-logo.png"
             alt={brandLabel}
-            width={296}
-            height={200}
+            width={480}
+            height={272}
             className="block h-10 w-auto"
             sizes="160px"
           />
