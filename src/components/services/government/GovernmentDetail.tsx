@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/motion/Reveal";
 import { ServiceSection } from "@/components/services/detail/ServiceSection";
@@ -95,10 +95,9 @@ export async function GovernmentDetail() {
                 brandLabel={t("intro.cards.sima.title")}
                 description={t("intro.cards.sima.description")}
               />
-              <ProductCard
-                title={t("intro.cards.digital.title")}
+              <DigitalLoginCard
+                brandLabel={t("intro.cards.digital.title")}
                 description={t("intro.cards.digital.description")}
-                icon={<IconDigitalLogin />}
               />
             </div>
           </div>
@@ -135,36 +134,14 @@ export async function GovernmentDetail() {
 // -----------------------------------------------------------------------------
 // Product cards (intro section)
 //
-// SİMA card uses the official brand mark on a white plate (the brand colours
-// are navy + green, both unreadable on the dark page background — the plate
-// is what makes them legible). Digital Login keeps an outline icon + text
-// title until an official mark is provided.
+// Both cards render the official brand mark on a white plate. The plate is
+// what keeps the navy SİMA wordmark + the black "digital login" wordmark
+// readable against the dark page surface. The plate sits inside the <h3> so
+// the brand label is announced as the card's heading via the image alt text.
 // -----------------------------------------------------------------------------
 
-function ProductCard({
-  title,
-  description,
-  icon,
-}: {
-  title: string;
-  description: string;
-  icon: ReactNode;
-}) {
-  return (
-    <div className="surface-glass relative overflow-hidden p-5">
-      <span
-        aria-hidden
-        // Soft cyan glow on the icon chip — matches the existing
-        // services-tile chip style without re-using its classname.
-        className="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] border border-white/10 bg-white/5 text-cyan-300/90 shadow-[var(--shadow-1),inset_0_1px_0_rgba(255,255,255,0.06),0_0_22px_rgba(34,211,238,0.18)]"
-      >
-        {icon}
-      </span>
-      <h3 className="mt-4 t-h3 text-foreground">{title}</h3>
-      <p className="mt-2 t-body text-text-secondary">{description}</p>
-    </div>
-  );
-}
+const brandPlateClass =
+  "inline-flex items-center rounded-[var(--radius-md)] bg-white px-3 py-2 shadow-[var(--shadow-1),inset_0_1px_0_rgba(255,255,255,0.6)]";
 
 function SimaCard({
   brandLabel,
@@ -173,17 +150,40 @@ function SimaCard({
   brandLabel: string;
   description: string;
 }) {
-  // White plate so the navy SİMA wordmark stays readable on the dark page.
-  // The plate sits inside the H3 so screen readers announce the brand label
-  // (via the SVG's aria-label) as the heading for the card.
   return (
     <div className="surface-glass relative overflow-hidden p-5">
       <h3>
         <SimaLogo
           ariaLabel={brandLabel}
           className="block h-10 w-auto"
-          plateClassName="inline-flex items-center rounded-[var(--radius-md)] bg-white px-3 py-2 shadow-[var(--shadow-1),inset_0_1px_0_rgba(255,255,255,0.6)]"
+          plateClassName={brandPlateClass}
         />
+      </h3>
+      <p className="mt-4 t-body text-text-secondary">{description}</p>
+    </div>
+  );
+}
+
+function DigitalLoginCard({
+  brandLabel,
+  description,
+}: {
+  brandLabel: string;
+  description: string;
+}) {
+  return (
+    <div className="surface-glass relative overflow-hidden p-5">
+      <h3>
+        <span className={brandPlateClass}>
+          <Image
+            src="/brand/digital-login-logo.png"
+            alt={brandLabel}
+            width={296}
+            height={200}
+            className="block h-10 w-auto"
+            sizes="160px"
+          />
+        </span>
       </h3>
       <p className="mt-4 t-body text-text-secondary">{description}</p>
     </div>
@@ -288,24 +288,3 @@ function SimaLogo({
   );
 }
 
-function IconDigitalLogin() {
-  // Shield with key — communicates "secure login".
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.45"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-6 w-6"
-      aria-hidden
-    >
-      <path d="M12 3 L20 6 V12 C20 16.5 16.5 20.5 12 21.5 C7.5 20.5 4 16.5 4 12 V6 Z" />
-      <circle cx="10.25" cy="11.5" r="2" />
-      <path d="M12.25 11.5 H17" />
-      <path d="M15 11.5 V13.5" />
-      <path d="M17 11.5 V13" />
-    </svg>
-  );
-}
