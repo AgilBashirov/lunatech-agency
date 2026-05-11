@@ -730,7 +730,13 @@
     "formSubmit": "Göndər",
     "submitting": "Göndərilir…",
     "success": "Müraciətiniz uğurla göndərildi. Tezliklə sizinlə əlaqə saxlanılacaq.",
+    "sendAnother": "Yeni müraciət göndər",
     "errorSubmit": "Göndərmə zamanı xəta baş verdi. Bir az sonra yenidən cəhd edin.",
+    "errors": {
+      "required": "Bu sahə tələb olunur",
+      "phone": "Düzgün nömrə daxil edin",
+      "email": "Düzgün e-poçt daxil edin"
+    },
     "services": {
       "newWebsite": "Yeni vebsayt",
       "uxUi": "UX/UI dizayn",

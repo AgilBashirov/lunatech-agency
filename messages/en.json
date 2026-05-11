@@ -730,7 +730,13 @@
     "formSubmit": "Send",
     "submitting": "Sending…",
     "success": "Your request has been sent. We’ll be in touch shortly.",
+    "sendAnother": "Send another",
     "errorSubmit": "Something went wrong. Please try again in a moment.",
+    "errors": {
+      "required": "This field is required",
+      "phone": "Enter a valid phone number",
+      "email": "Enter a valid email"
+    },
     "services": {
       "newWebsite": "New website",
       "uxUi": "UX/UI design",

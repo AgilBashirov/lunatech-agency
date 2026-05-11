@@ -282,6 +282,40 @@ select:focus-visible {
     0 0 0 4px rgba(34, 211, 238, 0.65);
 }
 
+/*
+ * The contact form uses a minimalist bottom-border focus state, so the global
+ * double-ring shadow above would draw an out-of-place rectangle around each
+ * field. Opt these inputs out via an id-scoped rule — higher specificity than
+ * the bare element selectors above, so it wins regardless of CSS layer order.
+ */
+#contact input:focus,
+#contact input:focus-visible,
+#contact textarea:focus,
+#contact textarea:focus-visible,
+#contact select:focus,
+#contact select:focus-visible {
+  box-shadow: none;
+}
+
+/*
+ * Chromium autofill — by default Chrome paints a hard yellow background and
+ * black text on autofilled inputs, which breaks the form's dark theme. The
+ * 1000px inset shadow covers the yellow; the 5000s transition is the standard
+ * trick to defer the autofill style restore practically forever. The fill
+ * colour stays white so users can read what was filled.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  -webkit-text-fill-color: #ffffff;
+  caret-color: #ffffff;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 /* Display: Space Grotesk for page-level titles only; body + card titles use Inter (font-sans) */
 h1,
 h2 {

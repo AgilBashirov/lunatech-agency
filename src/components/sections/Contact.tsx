@@ -7,6 +7,7 @@ import {
   useState,
   type FormEvent,
   type InputHTMLAttributes,
+  type ReactNode,
   type SelectHTMLAttributes,
   type TextareaHTMLAttributes,
 } from "react";
@@ -18,6 +19,7 @@ import { cn } from "@/lib/cn";
 import { motionTransition } from "@/lib/motion";
 
 type FieldName = "name" | "email" | "phone" | "service" | "otherMessage";
+type FieldError = "required" | "phone" | "email";
 type Status = "idle" | "submitting" | "success" | "error";
 
 type FormState = {
@@ -27,7 +29,22 @@ type FormState = {
   service: ServiceId | "";
   otherMessage: string;
   message: string;
+  /** Honeypot — never displayed; if non-empty the API silently drops the submission. */
+  hp: string;
 };
+
+// Per-field length caps. Mirror /api/contact MAX so the browser and server
+// agree; the API is still the source of truth.
+const MAX = {
+  name: 100,
+  phone: 40,
+  email: 120,
+  otherMessage: 500,
+  message: 2000,
+} as const;
+
+const PHONE_RE = /^[+\d][\d\s\-()]{8,}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const EMPTY_FORM: FormState = {
   name: "",
@@ -36,13 +53,17 @@ const EMPTY_FORM: FormState = {
   service: "",
   otherMessage: "",
   message: "",
+  hp: "",
 };
 
 // Shared input/select/textarea bottom-border styles. Kept as a constant so all
 // three controls stay in lockstep and the "invalid" variant only flips the
-// border colour without re-listing every other rule.
+// border colour without re-listing every other rule. `focus-visible:shadow-none`
+// suppresses the global double-ring focus indicator (globals.css) for these
+// minimalist underlined controls — the bottom-border colour change alone
+// indicates focus.
 const controlBase =
-  "peer block w-full border-0 border-b bg-transparent py-3 text-base text-white outline-none transition-[border-color] duration-300 ease-out md:text-sm";
+  "peer block w-full border-0 border-b bg-transparent py-3 text-base text-white outline-none transition-[border-color] duration-300 ease-out focus-visible:shadow-none md:text-sm";
 const controlBorder = "border-white/20 focus:border-b-cyan-400/55";
 const controlBorderInvalid = "border-red-400/70 focus:border-b-red-400";
 
@@ -51,29 +72,119 @@ const labelBase =
 const labelLifted =
   "peer-focus:-top-0 peer-focus:text-[10px] peer-focus:font-mono peer-focus:uppercase peer-focus:tracking-[0.2em] peer-focus:text-cyan-400/90 peer-[:not(:placeholder-shown)]:-top-0 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.2em] peer-[:not(:placeholder-shown)]:text-text-secondary";
 
+function LabelText({
+  label,
+  required,
+}: {
+  label: ReactNode;
+  required?: boolean;
+}) {
+  return (
+    <>
+      {label}
+      {required && (
+        // Inherit the label's current colour (secondary at rest, cyan when
+        // focused) so the asterisk reads as part of the label rather than a
+        // separate decoration.
+        <span aria-hidden className="ml-0.5">
+          *
+        </span>
+      )}
+    </>
+  );
+}
+
+type FieldAriaProps = {
+  errorText?: string;
+  hintText?: string;
+  required?: boolean;
+};
+
+function useFieldAria(
+  id: string,
+  { errorText, hintText, required }: FieldAriaProps,
+) {
+  const errorId = errorText ? `${id}-error` : undefined;
+  const hintId = hintText ? `${id}-hint` : undefined;
+  const describedBy =
+    [errorId, hintId].filter(Boolean).join(" ") || undefined;
+  return {
+    "aria-invalid": errorText ? true : undefined,
+    "aria-errormessage": errorId,
+    "aria-describedby": describedBy,
+    "aria-required": required || undefined,
+    errorId,
+    hintId,
+  } as const;
+}
+
+function FieldHelp({
+  errorId,
+  errorText,
+  hintId,
+  hintText,
+}: {
+  errorId?: string;
+  errorText?: string;
+  hintId?: string;
+  hintText?: string;
+}) {
+  if (!errorText && !hintText) return null;
+  return (
+    <div className="mt-1 flex flex-col gap-0.5 text-xs">
+      {errorText && (
+        <p id={errorId} role="alert" className="text-red-300">
+          {errorText}
+        </p>
+      )}
+      {hintText && (
+        <p id={hintId} className="text-text-tertiary">
+          {hintText}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function FloatInput({
   id,
   label,
-  invalid,
+  errorText,
+  hintText,
+  required,
   className,
   ...props
 }: {
   id: string;
   label: string;
-  invalid?: boolean;
-} & InputHTMLAttributes<HTMLInputElement>) {
+} & FieldAriaProps &
+  InputHTMLAttributes<HTMLInputElement>) {
+  const aria = useFieldAria(id, { errorText, hintText, required });
   return (
     <div className={cn("relative pt-2", className)}>
       <input
         id={id}
         placeholder=" "
-        aria-invalid={invalid || undefined}
-        className={cn(controlBase, invalid ? controlBorderInvalid : controlBorder)}
+        required={required}
+        aria-invalid={aria["aria-invalid"]}
+        aria-errormessage={aria["aria-errormessage"]}
+        aria-describedby={aria["aria-describedby"]}
+        aria-required={aria["aria-required"]}
+        className={cn(
+          controlBase,
+          errorText ? controlBorderInvalid : controlBorder,
+        )}
         {...props}
       />
       <label htmlFor={id} className={cn(labelBase, labelLifted)}>
-        {label}
+        <LabelText label={label} required={required} />
       </label>
+      <FieldHelp
+        errorId={aria.errorId}
+        errorText={errorText}
+        hintId={aria.hintId}
+        hintText={hintText}
+      />
     </div>
   );
 }
@@ -81,30 +192,43 @@ function FloatInput({
 function FloatTextarea({
   id,
   label,
-  invalid,
+  errorText,
+  hintText,
+  required,
   ...props
 }: {
   id: string;
   label: string;
-  invalid?: boolean;
-} & TextareaHTMLAttributes<HTMLTextAreaElement>) {
+} & FieldAriaProps &
+  TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  const aria = useFieldAria(id, { errorText, hintText, required });
   return (
     <div className="relative pt-2">
       <textarea
         id={id}
         placeholder=" "
         rows={4}
-        aria-invalid={invalid || undefined}
+        required={required}
+        aria-invalid={aria["aria-invalid"]}
+        aria-errormessage={aria["aria-errormessage"]}
+        aria-describedby={aria["aria-describedby"]}
+        aria-required={aria["aria-required"]}
         className={cn(
           controlBase,
           "resize-none",
-          invalid ? controlBorderInvalid : controlBorder,
+          errorText ? controlBorderInvalid : controlBorder,
         )}
         {...props}
       />
       <label htmlFor={id} className={cn(labelBase, labelLifted)}>
-        {label}
+        <LabelText label={label} required={required} />
       </label>
+      <FieldHelp
+        errorId={aria.errorId}
+        errorText={errorText}
+        hintId={aria.hintId}
+        hintText={hintText}
+      />
     </div>
   );
 }
@@ -113,7 +237,9 @@ function FloatSelect({
   id,
   label,
   value,
-  invalid,
+  errorText,
+  hintText,
+  required,
   onFocus,
   onBlur,
   children,
@@ -122,92 +248,146 @@ function FloatSelect({
   id: string;
   label: string;
   value: string;
-  invalid?: boolean;
-} & SelectHTMLAttributes<HTMLSelectElement>) {
+} & FieldAriaProps &
+  SelectHTMLAttributes<HTMLSelectElement>) {
   // Native <select> can't drive the floating label via :placeholder-shown
   // because <select> has no placeholder pseudo. Treat "empty value OR focus"
   // as the lifted state and toggle the label class manually.
   const [focused, setFocused] = useState(false);
   const lifted = focused || value !== "";
+  const aria = useFieldAria(id, { errorText, hintText, required });
   return (
-    <div className="relative pt-2">
-      <select
-        id={id}
-        value={value}
-        aria-invalid={invalid || undefined}
-        onFocus={(e) => {
-          setFocused(true);
-          onFocus?.(e);
-        }}
-        onBlur={(e) => {
-          setFocused(false);
-          onBlur?.(e);
-        }}
-        className={cn(
-          controlBase,
-          "appearance-none pr-7",
-          invalid ? controlBorderInvalid : controlBorder,
-          // Style the dropdown panel for dark themes where the browser allows.
-          "[&>option]:bg-[#0b0f1a] [&>option]:text-white",
-        )}
-        {...props}
-      >
-        {children}
-      </select>
-      <label
-        htmlFor={id}
-        className={cn(
-          "pointer-events-none absolute left-0 transition-all duration-300 ease-out",
-          lifted
-            ? "top-0 text-[10px] font-mono uppercase tracking-[0.2em]"
-            : "top-5 text-sm",
-          focused
-            ? "text-cyan-400/90"
-            : "text-text-secondary",
-        )}
-      >
-        {label}
-      </label>
-      <svg
-        aria-hidden
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="pointer-events-none absolute right-0 top-1/2 size-4 -translate-y-1/2 text-text-secondary"
-      >
-        <path d="M6 9 L12 15 L18 9" />
-      </svg>
+    <div>
+      {/* Inner wrapper carries pt-2 so the label's `top-0` (lifted) and
+          `top-5` (resting) anchor against the SAME reference frame as
+          FloatInput — otherwise the lifted state would sit 8px lower than
+          the input's lifted label, visually breaking the column. */}
+      <div className="relative pt-2">
+        <select
+          id={id}
+          value={value}
+          required={required}
+          aria-invalid={aria["aria-invalid"]}
+          aria-errormessage={aria["aria-errormessage"]}
+          aria-describedby={aria["aria-describedby"]}
+          aria-required={aria["aria-required"]}
+          onFocus={(e) => {
+            setFocused(true);
+            onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setFocused(false);
+            onBlur?.(e);
+          }}
+          className={cn(
+            controlBase,
+            "appearance-none pr-7",
+            errorText ? controlBorderInvalid : controlBorder,
+            // Style the dropdown panel for dark themes where the browser allows.
+            "[&>option]:bg-[#0b0f1a] [&>option]:text-white",
+          )}
+          {...props}
+        >
+          {children}
+        </select>
+        <label
+          htmlFor={id}
+          className={cn(
+            "pointer-events-none absolute left-0 transition-all duration-300 ease-out",
+            lifted
+              ? "top-0 text-[10px] font-mono uppercase tracking-[0.2em]"
+              : "top-5 text-sm",
+            focused ? "text-cyan-400/90" : "text-text-secondary",
+          )}
+        >
+          <LabelText label={label} required={required} />
+        </label>
+        <svg
+          aria-hidden
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="pointer-events-none absolute right-0 top-7 size-4 -translate-y-1/2 text-text-secondary"
+        >
+          <path d="M6 9 L12 15 L18 9" />
+        </svg>
+      </div>
+      <FieldHelp
+        errorId={aria.errorId}
+        errorText={errorText}
+        hintId={aria.hintId}
+        hintText={hintText}
+      />
     </div>
+  );
+}
+
+function Spinner() {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 24 24"
+      className="size-4 animate-spin"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    >
+      <circle cx="12" cy="12" r="9" opacity="0.25" />
+      <path d="M21 12 a9 9 0 0 0 -9 -9" />
+    </svg>
   );
 }
 
 export function Contact() {
   const t = useTranslations("contact");
   const tServices = useTranslations("contact.services");
+  const tErrors = useTranslations("contact.errors");
   const reduce = useReducedMotion();
   const formId = useId();
 
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
-  const [errors, setErrors] = useState<Partial<Record<FieldName, boolean>>>({});
+  const [errors, setErrors] = useState<Partial<Record<FieldName, FieldError>>>(
+    {},
+  );
   const [status, setStatus] = useState<Status>("idle");
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-    setErrors((prev) => ({ ...prev, [key]: false }));
+    setErrors((prev) => {
+      if (key in prev) {
+        const next = { ...prev };
+        delete next[key as FieldName];
+        return next;
+      }
+      return prev;
+    });
   };
 
-  const validate = (state: FormState): Partial<Record<FieldName, boolean>> => {
-    const next: Partial<Record<FieldName, boolean>> = {};
-    if (!state.name.trim()) next.name = true;
-    if (!state.phone.trim()) next.phone = true;
-    if (!state.service) next.service = true;
+  const validate = (
+    state: FormState,
+  ): Partial<Record<FieldName, FieldError>> => {
+    const next: Partial<Record<FieldName, FieldError>> = {};
+    if (!state.name.trim()) next.name = "required";
+    if (!state.phone.trim()) next.phone = "required";
+    else if (!PHONE_RE.test(state.phone.trim())) next.phone = "phone";
+    if (!state.service) next.service = "required";
     if (state.service === "other" && !state.otherMessage.trim()) {
-      next.otherMessage = true;
+      next.otherMessage = "required";
+    }
+    if (state.email && !EMAIL_RE.test(state.email.trim())) {
+      next.email = "email";
     }
     return next;
+  };
+
+  const reset = () => {
+    setForm(EMPTY_FORM);
+    setErrors({});
+    setStatus("idle");
   };
 
   const submit = async (e: FormEvent) => {
@@ -240,6 +420,9 @@ export function Contact() {
       setStatus("error");
     }
   };
+
+  const errorTextFor = (field: FieldName): string | undefined =>
+    errors[field] ? tErrors(errors[field] as FieldError) : undefined;
 
   return (
     <Section id="contact" className="z-10 !scroll-mt-0">
@@ -295,6 +478,13 @@ export function Contact() {
                   </svg>
                 </span>
                 <p className="t-body text-text-secondary">{t("success")}</p>
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="mt-1 text-[11px] font-mono uppercase tracking-[0.22em] text-cyan-400/90 transition-colors duration-200 hover:text-cyan-300"
+                >
+                  {t("sendAnother")}
+                </button>
               </div>
             ) : (
               <form
@@ -302,6 +492,25 @@ export function Contact() {
                 noValidate
                 className="flex flex-col gap-8"
               >
+                {/* Honeypot — visually hidden, off-tab, never autofilled. Spam
+                    bots blindly fill every input; a non-empty value here causes
+                    the API to silently drop the submission. */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -left-[9999px] h-px w-px overflow-hidden opacity-0"
+                >
+                  <label htmlFor={`${formId}-hp`}>Leave blank</label>
+                  <input
+                    id={`${formId}-hp`}
+                    type="text"
+                    name="hp"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={form.hp}
+                    onChange={(e) => update("hp", e.target.value)}
+                  />
+                </div>
+
                 <FloatInput
                   id={`${formId}-name`}
                   name="name"
@@ -309,7 +518,9 @@ export function Contact() {
                   value={form.name}
                   onChange={(e) => update("name", e.target.value)}
                   autoComplete="name"
-                  invalid={errors.name}
+                  maxLength={MAX.name}
+                  required
+                  errorText={errorTextFor("name")}
                 />
 
                 <FloatInput
@@ -320,25 +531,24 @@ export function Contact() {
                   value={form.email}
                   onChange={(e) => update("email", e.target.value)}
                   autoComplete="email"
-                  invalid={errors.email}
+                  maxLength={MAX.email}
+                  errorText={errorTextFor("email")}
                 />
 
-                <div>
-                  <FloatInput
-                    id={`${formId}-phone`}
-                    name="phone"
-                    type="tel"
-                    inputMode="tel"
-                    label={t("formPhone")}
-                    value={form.phone}
-                    onChange={(e) => update("phone", e.target.value)}
-                    autoComplete="tel"
-                    invalid={errors.phone}
-                  />
-                  <p className="mt-1 text-xs text-text-tertiary">
-                    {t("phoneHint")}
-                  </p>
-                </div>
+                <FloatInput
+                  id={`${formId}-phone`}
+                  name="phone"
+                  type="tel"
+                  inputMode="tel"
+                  label={t("formPhone")}
+                  value={form.phone}
+                  onChange={(e) => update("phone", e.target.value)}
+                  autoComplete="tel"
+                  maxLength={MAX.phone}
+                  required
+                  hintText={t("phoneHint")}
+                  errorText={errorTextFor("phone")}
+                />
 
                 <FloatSelect
                   id={`${formId}-service`}
@@ -348,11 +558,12 @@ export function Contact() {
                   onChange={(e) =>
                     update("service", e.target.value as ServiceId | "")
                   }
-                  invalid={errors.service}
+                  required
+                  errorText={errorTextFor("service")}
                 >
-                  <option value="" disabled hidden>
-                    {t("servicePlaceholder")}
-                  </option>
+                  {/* Empty option keeps the select on a placeholder state
+                      without leaking text behind the floating label. */}
+                  <option value="" disabled hidden></option>
                   {SERVICE_OPTIONS.map((opt) => (
                     <option key={opt.id} value={opt.id}>
                       {tServices(opt.id)}
@@ -389,8 +600,10 @@ export function Contact() {
                           onChange={(e) =>
                             update("otherMessage", e.target.value)
                           }
-                          invalid={errors.otherMessage}
+                          maxLength={MAX.otherMessage}
+                          required
                           rows={3}
+                          errorText={errorTextFor("otherMessage")}
                         />
                       </div>
                     </motion.div>
@@ -403,6 +616,7 @@ export function Contact() {
                   label={t("formMessage")}
                   value={form.message}
                   onChange={(e) => update("message", e.target.value)}
+                  maxLength={MAX.message}
                 />
 
                 {status === "error" && (
@@ -419,10 +633,16 @@ export function Contact() {
                     type="submit"
                     subtleGlow
                     disabled={status === "submitting"}
+                    className="disabled:opacity-60"
                   >
-                    {status === "submitting"
-                      ? t("submitting")
-                      : t("formSubmit")}
+                    {status === "submitting" ? (
+                      <span className="inline-flex items-center gap-2">
+                        <Spinner />
+                        {t("submitting")}
+                      </span>
+                    ) : (
+                      t("formSubmit")
+                    )}
                   </Button>
                 </div>
               </form>

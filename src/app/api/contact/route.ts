@@ -7,6 +7,22 @@ import {
 
 export const runtime = "nodejs";
 
+// Per-field length caps. Keep the composite Telegram message well under the
+// 4096-char API limit even if every field is filled to the max.
+const MAX = {
+  name: 100,
+  phone: 40,
+  email: 120,
+  otherMessage: 500,
+  message: 2000,
+} as const;
+
+// Soft regexes — strict enough to reject typos, loose enough for international
+// phones and uncommon TLDs. The form mirrors them client-side; server is the
+// source of truth.
+const PHONE_RE = /^[+\d][\d\s\-()]{8,}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 type ContactPayload = {
   name?: unknown;
   email?: unknown;
@@ -14,6 +30,7 @@ type ContactPayload = {
   service?: unknown;
   otherMessage?: unknown;
   message?: unknown;
+  hp?: unknown;
 };
 
 function asString(value: unknown): string {
@@ -32,6 +49,15 @@ export async function POST(req: Request) {
     return fail(400);
   }
 
+  // Honeypot — real users never see this field; spam bots fill every input.
+  // Return success to keep the bot away from retrying without actually
+  // notifying the recipient.
+  const hp = asString(payload.hp);
+  if (hp) {
+    console.warn("[contact] honeypot triggered, dropping submission");
+    return NextResponse.json({ success: true });
+  }
+
   const name = asString(payload.name);
   const email = asString(payload.email);
   const phone = asString(payload.phone);
@@ -39,7 +65,23 @@ export async function POST(req: Request) {
   const otherMessage = asString(payload.otherMessage);
   const message = asString(payload.message);
 
+  if (
+    name.length > MAX.name ||
+    phone.length > MAX.phone ||
+    email.length > MAX.email ||
+    otherMessage.length > MAX.otherMessage ||
+    message.length > MAX.message
+  ) {
+    return fail(400);
+  }
+
   if (!name || !phone || !serviceRaw || !isServiceId(serviceRaw)) {
+    return fail(400);
+  }
+  if (!PHONE_RE.test(phone)) {
+    return fail(400);
+  }
+  if (email && !EMAIL_RE.test(email)) {
     return fail(400);
   }
   const service: ServiceId = serviceRaw;
