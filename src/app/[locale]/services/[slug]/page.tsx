@@ -12,13 +12,30 @@ import { WhatWeDoSection } from "@/components/services/detail/WhatWeDoSection";
 import { WhereItFitsSection } from "@/components/services/detail/WhereItFitsSection";
 import { WhyChooseUsSection } from "@/components/services/detail/WhyChooseUsSection";
 import { GovernmentDetail } from "@/components/services/government/GovernmentDetail";
+import { WebExperienceDetail } from "@/components/services/web-experience/WebExperienceDetail";
 import { routing } from "@/i18n/routing";
 import {
   buildServiceJsonLd,
   buildServiceMetadata,
   isValidServiceSlug,
   serviceSlugs,
+  type ServiceSlug,
 } from "@/lib/services";
+
+/** Slugs that render a bespoke layout instead of the shared editorial template.
+ *  Single source of truth for the branch in `ServiceDetailPage`. */
+const BESPOKE_SLUGS = new Set<ServiceSlug>(["government", "web-experience"]);
+
+function renderBespoke(slug: ServiceSlug) {
+  switch (slug) {
+    case "government":
+      return <GovernmentDetail />;
+    case "web-experience":
+      return <WebExperienceDetail />;
+    default:
+      return null;
+  }
+}
 
 type RouteParams = { locale: string; slug: string };
 
@@ -79,11 +96,11 @@ export default async function ServiceDetailPage({ params }: Props) {
 
   const jsonLd = await buildServiceJsonLd(slug, locale);
 
-  // The `government` slug renders a bespoke layout (cards + flow diagram +
-  // subtle SVG backdrop) rather than the shared editorial template. The
-  // chrome (Navbar / BackToHome × 2 / Footer / ScrollToTopButton) is
-  // identical so the e2e contracts on those landmarks still pass.
-  const isGovernment = slug === "government";
+  // `government` and `web-experience` render bespoke layouts (cards + compact
+  // overview block + subtle SVG backdrop) rather than the shared editorial
+  // template. The chrome (Navbar / BackToHome × 2 / Footer / ScrollToTopButton)
+  // is identical so the e2e contracts on those landmarks still pass.
+  const isBespoke = BESPOKE_SLUGS.has(slug);
 
   return (
     <>
@@ -91,8 +108,8 @@ export default async function ServiceDetailPage({ params }: Props) {
         <Navbar />
         <main className="min-w-0 flex-1">
           <BackToHomeButton placement="top" />
-          {isGovernment ? (
-            <GovernmentDetail />
+          {isBespoke ? (
+            renderBespoke(slug)
           ) : (
             <>
               <ServicePageHeader slug={slug} />

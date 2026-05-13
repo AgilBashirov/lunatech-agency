@@ -53,129 +53,69 @@
       "web-experience": {
         "hero": {
           "eyebrow": "Veb təcrübə",
-          "title": "Sürətli yüklənən, aydın oxunan və konversiya yaradan saytlar",
-          "lede": "Diqqəti tutan, axtarışda görünən və trafikdən real müştəri yaradan marketinq saytları və veb platformalar dizayn edib qururuq.",
-          "ctaLabel": "Layihəyə başla",
-          "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "Necə işləyir",
-          "ctaSecondaryHref": "#how-it-works"
+          "title": "Sürətli, konversiyaya hesablanmış saytlar və veb platformalar",
+          "lede": "Brendinizə uyğun, mobildə sürətli, axtarışda görünən saytlar dizayn edib qururuq. Ziyarətçini real müştəriyə çevirmək üçün."
         },
-        "problem": {
-          "eyebrow": "Problem",
-          "title": "Saytların əksəriyyəti yaxşı görünür və səssizcə zəif işləyir",
-          "p1": "Hero üç saniyəyə yüklənir, CMS redaktoru ilə davamlı mübarizədədir, ikinci həftəyə metriklər donur. Sayt təqdimatdakı kimi görünür — funel kimi davranmır.",
-          "p2": "Hazır şablonlar sizi başqasının strukturuna bağlayır. Performans intizamı olmadan qurulan custom layihələr 4 MB-lıq ana səhifə və SEO-ya zərər vuran Lighthouse balı verir.",
-          "p3": "Bu, sıçrayan trafik, komandanın dəyişə bilmədiyi kontent və illər deyil aylar ərzində köhnələn flaqman bir aktiv deməkdir."
+        "ctas": {
+          "primary": "Layihəyə başla",
+          "primaryHref": "/#contact"
         },
-        "solution": {
-          "eyebrow": "Yanaşmamız",
-          "title": "Konversiya yönümlü, kontent prioritetli, defolta sürətli",
-          "p1": "Səhifəni vəzifəsinə görə dizayn edirik — diqqəti çək, iddianı sübut et, ziyarətçini hərəkətə keçir. Layout, motion və mətn bu vəzifəyə xidmət edir. Dekorativ və ya ləng heç nə.",
-          "p2": "Mühəndislik dizaynı olduğu kimi çatdırır: edge-də render, əlçatan və orta səviyyəli Android-də sürətli. Kontent sahibləri öz iş axınına uyğunlaşan CMS alır, əksinə deyil.",
-          "bullets": {
-            "b1": "Komandanın həqiqətən istifadə edə biləcəyi headless CMS-də redaktor səviyyəli kontent modelləri",
-            "b2": "Edge performansı: yalnız fiber deyil, real cihazlarda saniyəaltı yükləmə",
-            "b3": "İçəridən qurulan SEO əsasları — schema, sitemap, semantik HTML, təmiz URL-lər",
-            "b4": "İlk gündən WCAG AA əlçatanlığı, sonradan əlavə edilən deyil",
-            "b5": "Yalnız aydınlığa və ya diqqətə dəyər qatdığı yerdə motion"
-          },
-          "visualAlt": "Wireframe və dizayn sistemi qatlarının tamamlanmış marketinq saytına çevrildiyini göstərən diaqram"
-        },
-        "useCases": {
-          "uc1": {
-            "title": "Flaqman marketinq saytı",
-            "description": "Axtarışda görünən, konversiya yaradan və marketoloqlara həftəlik buraxılış imkanı verən CMS ilə brend saytı.",
-            "badge": "Ən çox tələb olunan"
-          },
-          "uc2": {
-            "title": "SaaS və ya fintech landing təcrübəsi",
-            "description": "Ödənişli trafik üçün tənzimlənmiş, eksperiment yuvaları və təmiz analitikası olan məhsul yönümlü səhifələr."
-          },
-          "uc3": {
-            "title": "Premium e-commerce front-end",
-            "description": "Redaktor hekayəsini konversiyanı qoruyan checkout ilə birləşdirən headless vitrin."
-          },
-          "uc4": {
-            "title": "Kontent platforması və ya nəşr",
-            "description": "Sürətli naviqasiya, axtarış və təmiz redaktor iş axını ilə uzun forma oxu təcrübəsi."
-          }
-        },
-        "howItWorks": {
-          "eyebrow": "Necə işləyir",
-          "title": "Brifdən buraxılışa qədər tək axında",
-          "footnote": "Tipik müddət: əhatə dairəsindən asılı olaraq buraxılışa 6–12 həftə.",
-          "steps": {
-            "s1": {
-              "label": "Tədqiq və IA",
-              "detail": "Auditoriyaları, onlara lazım olan səhifələri və saytın işlədiyini sübut edən metrikləri xəritələyirik."
+        "intro": {
+          "eyebrow": "Nə qururuq",
+          "title": "İki məhsul, eyni mühəndislik standartı",
+          "lede": "Marketinq saytından SaaS platformasına qədər — hər ikisi eyni performans, CMS və dizayn sistemi əsasları üzərində qurulur.",
+          "cards": {
+            "marketing": {
+              "title": "Marketinq saytları",
+              "description": "Brend, kampaniya və landing səhifələri. Redaktor dostu CMS, saniyəaltı yükləmə, SEO əsasları daxil."
             },
-            "s2": {
-              "label": "Dizayn və prototip",
-              "detail": "Əsas şablonları Figma-da dizayn edir, axınları prototipləyir və real kontentə qarşı yoxlayırıq."
-            },
-            "s3": {
-              "label": "Build və inteqrasiya",
-              "detail": "Dizayna uyğun qururuq, CMS-i bağlayırıq və analitika, SEO və marketinq stekinə qoşuruq."
-            },
-            "s4": {
-              "label": "Buraxılış və iterasiya",
-              "detail": "Feature flag arxasında buraxırıq, istehsalda Core Web Vitals-ı təsdiq edir və runbook təhvil veririk."
+            "platform": {
+              "title": "Veb platformalar",
+              "description": "SaaS dashboard, portal və məhsul tətbiqləri. Komponent kitabxanası, autentifikasiya və real-time data hazır."
             }
           }
         },
-        "benefits": {
-          "eyebrow": "Nə qazanırsınız",
-          "title": "Nəticədə əldə etdikləriniz",
-          "items": {
-            "i1": {
-              "title": "Real cihazlarda daha sürətli",
-              "description": "Lab yox, istehsalda ölçülən orta səviyyəli avadanlıqda saniyəaltı yükləmə."
+        "overview": {
+          "eyebrow": "Xülasə",
+          "title": "Xidmət paketi bir baxışda",
+          "cards": {
+            "technical": {
+              "title": "Tam texniki paket",
+              "items": [
+                "Next.js / React arxitekturası",
+                "Headless CMS inteqrasiyası",
+                "Core Web Vitals optimizasiyası",
+                "SEO, schema və analitika qurulması",
+                "WCAG AA əlçatanlıq standartı"
+              ]
             },
-            "i2": {
-              "title": "Defolta axtarışa hazır",
-              "description": "Axtarış sistemlərinin problemsiz oxuduğu təmiz semantik HTML, struktur data və sitemap."
+            "whoFor": {
+              "title": "Kimlər üçün uyğundur?",
+              "items": [
+                "Yeni sayt buraxan startuplar",
+                "Brendini yeniləyən şirkətlər",
+                "SaaS məhsul komandaları",
+                "Performans problemi olan saytlar",
+                "Daxili CMS istəyən marketinq komandaları"
+              ]
             },
-            "i3": {
-              "title": "Komandanın işlədəcəyi CMS",
-              "description": "Redaktorlar developer iştirakı olmadan səhifə buraxır. Kontent yenilənməsi tikit deyil, dəqiqələr çəkir."
-            },
-            "i4": {
-              "title": "Davamlı qurulmuş",
-              "description": "Bir buraxılış dövrünü deyil, iki redizaynı keçirə bilən dizayn sistemi və kod bazası."
-            }
-          }
-        },
-        "faq": {
-          "eyebrow": "FAQ",
-          "title": "Tez-tez verilən suallar",
-          "items": {
-            "q1": {
-              "q": "Tipik bir layihə nə qədər çəkir?",
-              "a": "Marketinq saytlarının əksəriyyəti üçün altı-on iki həftə — əhatə, kontent hazırlığı və inteqrasiya sayından asılı olaraq. Daha böyük platformalar daha uzun çəkir. Birinci həftə milestone planını sizə təqdim edirik."
-            },
-            "q2": {
-              "q": "Hansı CMS-dən istifadə edirsiniz?",
-              "a": "İş axınınıza uyğun CMS seçirik — kontent kanallar üzrə miqyaslananda headless, redaktor sürəti vacib olanda monolit. Qərar tədqiq mərhələsində verilir, əvvəldən deyil."
-            },
-            "q3": {
-              "q": "Mövcud brend və dizayn sistemimizlə işləyə bilərsinizmi?",
-              "a": "Bəli. Sisteminiz varsa, onu genişləndiririk. Yoxdursa, sayta lazım olan hissələri qurub sənədləşdiririk ki, növbəti komanda dayandığımız yerdən davam etsin."
-            },
-            "q4": {
-              "q": "Buraxılışdan sonra nə olur?",
-              "a": "Kod bazasını, CMS-i və komandanızın ilk gündən oxuya biləcəyi runbook-u təhvil veririk. Opsional retainer performans monitorinqi, SEO yoxlamaları və kiçik iterasiyaları əhatə edir."
-            },
-            "q5": {
-              "q": "SEO və analitika quraşdırmasını öhdənizə götürürsünüzmü?",
-              "a": "Texniki SEO və analitika qoşulması build-in bir hissəsidir — schema, sitemap, redirect, GA4 və ya seçdiyiniz stek. Davam edən kontent SEO istəsəniz, ayrı bir layihədir."
+            "whyUs": {
+              "title": "Niyə Lunatech?",
+              "items": [
+                "Tipik 6–10 həftə buraxılış",
+                "Dizayn + mühəndislik bir komandada",
+                "Lighthouse 95+ standart olaraq",
+                "Buraxılışdan sonra texniki dəstək",
+                "Lokal və beynəlxalq layihə təcrübəsi"
+              ]
             }
           }
         },
         "cta": {
           "eyebrow": "Başlayaq",
-          "title": "Saytınızı dəyərləndirək",
-          "lede": "Hazırkı vəziyyətinizi və saytın nə etməli olduğunu yazın. İki iş günü ərzində planla qayıdırıq.",
-          "ctaLabel": "Layihəyə başla",
+          "title": "Saytınızı və ya platformanızı dəyərləndirək",
+          "lede": "Hazırkı vəziyyət və hədəfləriniz haqqında yazın — iki iş günü ərzində aydın planla qayıdırıq.",
+          "ctaLabel": "Layihəni qiymətləndirək",
           "ctaHref": "/#contact"
         }
       },

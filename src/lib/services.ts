@@ -91,14 +91,19 @@ export const services: ReadonlyArray<ServiceDefinition> = [
     homeKey: "webExperience",
     order: 1,
     Icon: IconWeb,
+    // `web-experience` renders a bespoke layout (WebExperienceDetail) — the
+    // editorial-template `counts` below are kept as placeholders for type
+    // shape only and are NOT consumed by any rendered component. The matching
+    // i18n keys (`useCases`, `howItWorks`, `benefits`, `faq`, etc.) no longer
+    // exist under `services.detail.web-experience` in messages/{locale}.json.
     counts: {
-      useCases: 3,
-      solutionBullets: 4,
-      howItWorksSteps: 4,
-      benefits: 4,
-      faq: 6,
-      problemParagraphs: 2,
-      solutionParagraphs: 2,
+      useCases: 0,
+      solutionBullets: 0,
+      howItWorksSteps: 0,
+      benefits: 0,
+      faq: 0,
+      problemParagraphs: 0,
+      solutionParagraphs: 0,
     },
   },
   {

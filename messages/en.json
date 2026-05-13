@@ -53,129 +53,69 @@
       "web-experience": {
         "hero": {
           "eyebrow": "Web experience",
-          "title": "Sites that load fast, read clearly, and convert",
-          "lede": "We design and build marketing sites and web platforms that hold attention, rank in search, and turn traffic into pipeline.",
-          "ctaLabel": "Start a project",
-          "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "How it works",
-          "ctaSecondaryHref": "#how-it-works"
+          "title": "Fast, conversion-focused sites and web platforms",
+          "lede": "On-brand, mobile-fast, search-friendly sites designed and built to turn visitors into pipeline."
         },
-        "problem": {
-          "eyebrow": "The problem",
-          "title": "Most sites look fine and quietly underperform",
-          "p1": "The hero loads in three seconds, the CMS fights the editor, and the metrics flatline by week two. The site looks like the deck — and behaves nothing like the funnel.",
-          "p2": "Stock templates lock you into someone else’s structure. Custom builds without performance discipline ship a 4 MB homepage and a Lighthouse score that hurts SEO.",
-          "p3": "The cost: traffic that bounces, content the team can’t update, and a flagship asset that ages in months instead of years."
+        "ctas": {
+          "primary": "Start a project",
+          "primaryHref": "/#contact"
         },
-        "solution": {
-          "eyebrow": "Our approach",
-          "title": "Conversion-led, content-first, fast by default",
-          "p1": "We design around the page’s job — capture attention, prove the claim, move the visitor. Layout, motion, and copy serve that job. Nothing decorative, nothing slow.",
-          "p2": "Engineering ships the design intact: edge-rendered, accessible, and fast on a mid-range Android. Content owners get a CMS that bends to their workflow, not the other way around.",
-          "bullets": {
-            "b1": "Editorial-grade content models in a headless CMS your team can actually use",
-            "b2": "Edge performance: sub-second loads on real devices, not just fiber",
-            "b3": "SEO foundations baked in — schema, sitemaps, semantic HTML, clean URLs",
-            "b4": "Accessibility to WCAG AA from day one, not as a retrofit",
-            "b5": "Motion only where it earns its weight in clarity or attention"
-          },
-          "visualAlt": "Wireframe and design-system layers stacking into a finished marketing site"
-        },
-        "useCases": {
-          "uc1": {
-            "title": "Flagship marketing site",
-            "description": "A brand site that ranks, converts, and gives marketers a CMS they can ship from weekly.",
-            "badge": "Most common"
-          },
-          "uc2": {
-            "title": "SaaS or fintech landing experience",
-            "description": "Product-led pages tuned for paid traffic, with experiment slots and clean analytics."
-          },
-          "uc3": {
-            "title": "Premium e-commerce front-end",
-            "description": "Headless storefront that pairs editorial storytelling with checkout that doesn’t drop conversion."
-          },
-          "uc4": {
-            "title": "Content platform or publication",
-            "description": "Long-form reading experience with fast navigation, search, and a clean editorial workflow."
-          }
-        },
-        "howItWorks": {
-          "eyebrow": "How it works",
-          "title": "From brief to launch in a single thread",
-          "footnote": "Typical engagement: 6–12 weeks to launch, scope-dependent.",
-          "steps": {
-            "s1": {
-              "label": "Discovery and IA",
-              "detail": "We map audiences, the pages they need, and the metrics that prove the site works."
+        "intro": {
+          "eyebrow": "What we build",
+          "title": "Two products, one engineering standard",
+          "lede": "From marketing sites to SaaS platforms — both built on the same performance, CMS, and design-system foundations.",
+          "cards": {
+            "marketing": {
+              "title": "Marketing sites",
+              "description": "Brand, campaign, and landing pages. Editor-friendly CMS, sub-second loads, and SEO foundations included."
             },
-            "s2": {
-              "label": "Design and prototype",
-              "detail": "We design key templates in Figma, prototype the flows, and review against real content."
-            },
-            "s3": {
-              "label": "Build and integrate",
-              "detail": "We build to the design, wire the CMS, and connect analytics, SEO, and the marketing stack."
-            },
-            "s4": {
-              "label": "Launch and iterate",
-              "detail": "We ship behind a feature flag, validate Core Web Vitals in production, and hand over a runbook."
+            "platform": {
+              "title": "Web platforms",
+              "description": "SaaS dashboards, portals, and product apps. Component library, auth, and real-time data ready to go."
             }
           }
         },
-        "benefits": {
-          "eyebrow": "Why it matters",
-          "title": "What you get",
-          "items": {
-            "i1": {
-              "title": "Faster on real devices",
-              "description": "Sub-second loads on mid-range hardware, measured in production not lab."
+        "overview": {
+          "eyebrow": "At a glance",
+          "title": "The service package, one screen",
+          "cards": {
+            "technical": {
+              "title": "Full technical package",
+              "items": [
+                "Next.js / React architecture",
+                "Headless CMS integration",
+                "Core Web Vitals optimization",
+                "SEO, schema, and analytics setup",
+                "WCAG AA accessibility baseline"
+              ]
             },
-            "i2": {
-              "title": "Search-ready by default",
-              "description": "Clean semantic HTML, structured data, and sitemaps that search engines parse without arguing."
+            "whoFor": {
+              "title": "Who it's for",
+              "items": [
+                "Startups launching a new site",
+                "Companies refreshing their brand",
+                "SaaS product teams",
+                "Sites with performance issues",
+                "Marketing teams that need a real CMS"
+              ]
             },
-            "i3": {
-              "title": "A CMS the team will use",
-              "description": "Editors ship pages without a developer in the loop. Content updates take minutes, not tickets."
-            },
-            "i4": {
-              "title": "Built to last",
-              "description": "A design system and codebase that survive two redesigns, not one launch cycle."
-            }
-          }
-        },
-        "faq": {
-          "eyebrow": "FAQ",
-          "title": "Common questions",
-          "items": {
-            "q1": {
-              "q": "How long does a typical engagement take?",
-              "a": "Six to twelve weeks for most marketing sites, depending on scope, content readiness, and integration count. Larger platforms run longer. We share a milestone plan in week one."
-            },
-            "q2": {
-              "q": "Which CMS do you use?",
-              "a": "We pick the CMS that fits your workflow — headless when content scales across channels, monolithic when editing speed wins. The decision is made in discovery, not before."
-            },
-            "q3": {
-              "q": "Can you work with our existing brand and design system?",
-              "a": "Yes. If you have a system, we extend it. If you don’t, we build the parts the site needs and document them, so the next team picks up where we left off."
-            },
-            "q4": {
-              "q": "What happens after launch?",
-              "a": "We hand over the codebase, the CMS, and a runbook your team can read on day one. Optional retainer covers performance monitoring, SEO checks, and small iterations."
-            },
-            "q5": {
-              "q": "Do you handle SEO and analytics setup?",
-              "a": "Technical SEO and analytics wiring are part of build — schema, sitemaps, redirects, GA4 or your stack of choice. Ongoing content SEO is a separate engagement if you want it."
+            "whyUs": {
+              "title": "Why Lunatech?",
+              "items": [
+                "6–10 week typical delivery",
+                "Design and engineering in one team",
+                "Lighthouse 95+ as the baseline",
+                "Post-launch technical support",
+                "Local and international project experience"
+              ]
             }
           }
         },
         "cta": {
           "eyebrow": "Get started",
-          "title": "Let’s scope your site",
-          "lede": "Tell us where you are today and what the site needs to do. We’ll come back with a plan within two business days.",
-          "ctaLabel": "Start a project",
+          "title": "Let's scope your site or platform",
+          "lede": "Tell us where you are today and what it needs to do. We'll come back with a plan within two business days.",
+          "ctaLabel": "Scope my project",
           "ctaHref": "/#contact"
         }
       },

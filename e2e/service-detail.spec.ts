@@ -5,17 +5,16 @@ import { test, expect, type Page } from "@playwright/test";
  *
  * Two page shapes exist:
  *
- * 1. Editorial template — used by `web-experience`, `uiux`, `strategy`,
- *    `performance`. Heading ids: hero / what-we-do / usecases / howitworks
- *    / benefits / cta.
+ * 1. Editorial template — used by `uiux`, `strategy`, `performance`. Heading
+ *    ids: hero / what-we-do / usecases / howitworks / benefits / cta.
  *
- * 2. Government bespoke (`GovernmentDetail`) — conversion-first layout with
- *    a single compact "overview" block replacing the three list sections.
- *    Heading ids: hero / what-we-do / overview / cta. The usecases /
- *    howitworks / benefits ids do NOT appear on the government page.
+ * 2. Bespoke layout — used by `government` and `web-experience`. Conversion-
+ *    first layout with a single compact "overview" block replacing the three
+ *    list sections. Heading ids: hero / what-we-do / overview / cta. The
+ *    usecases / howitworks / benefits ids do NOT appear on these pages.
  *
  * Coverage:
- *  - Government section set (4 ids) and intentional absence of FAQ /
+ *  - Bespoke section set (4 ids) and intentional absence of FAQ /
  *    problem / solution / usecases / howitworks / benefits ids
  *  - BackToHomeButton at top AND bottom on every detail page; locale-aware
  *  - Locale-specific BackToHome label (en / az / ru)
@@ -40,19 +39,19 @@ const SLUGS = [
 
 const LOCALES = ["az", "en", "ru"] as const;
 
-/** Government bespoke section set (4 ids). The previous three list sections
- *  collapsed into a single "overview" block. */
-const GOVERNMENT_HEADING_IDS = [
+/** Bespoke section set (4 ids). The previous three list sections collapsed
+ *  into a single "overview" block. */
+const BESPOKE_HEADING_IDS = [
   "svc-hero-heading",
   "svc-what-we-do-heading",
   "svc-overview-heading",
   "svc-cta-heading",
 ] as const;
 
-/** Heading ids that must NOT appear on the government page. The first three
- *  are pre-simplification leftovers; the last three are the editorial-template
- *  ids that the new government overview consolidates away. */
-const GOVERNMENT_REMOVED_HEADING_IDS = [
+/** Heading ids that must NOT appear on bespoke pages. The first three are
+ *  pre-simplification leftovers; the last three are the editorial-template
+ *  ids that the bespoke overview consolidates away. */
+const BESPOKE_REMOVED_HEADING_IDS = [
   "svc-problem-heading",
   "svc-solution-heading",
   "svc-faq-heading",
@@ -60,6 +59,9 @@ const GOVERNMENT_REMOVED_HEADING_IDS = [
   "svc-howitworks-heading",
   "svc-benefits-heading",
 ] as const;
+
+/** Slugs that render the bespoke layout. */
+const BESPOKE_SLUGS = ["government", "web-experience"] as const;
 
 const BACK_TO_HOME_LABEL = {
   en: "Back to home",
@@ -123,68 +125,72 @@ test.describe("Service detail — slug × locale matrix", () => {
 });
 
 test.describe("Service detail — heading hierarchy", () => {
-  test("the simplified detail page renders exactly one <h1>", async ({
-    page,
-  }) => {
-    await gotoDetail(page, "en", "government");
-    // The simplified header is the sole H1 source. Every other section uses
-    // <h2> (via ServiceSection) or <h3> (per-row titles).
-    await expect(page.locator("h1")).toHaveCount(1);
-    await expect(page.locator("h1#svc-hero-heading")).toBeVisible();
-  });
+  for (const slug of BESPOKE_SLUGS) {
+    test(`the bespoke ${slug} detail page renders exactly one <h1>`, async ({
+      page,
+    }) => {
+      await gotoDetail(page, "en", slug);
+      // The simplified header is the sole H1 source. Every other section uses
+      // <h2> (via ServiceSection) or <h3> (per-row titles).
+      await expect(page.locator("h1")).toHaveCount(1);
+      await expect(page.locator("h1#svc-hero-heading")).toBeVisible();
+    });
+  }
 });
 
-test.describe("Service detail — government section set", () => {
-  test("only the 4 bespoke government headings render; legacy ids are gone", async ({
-    page,
-  }) => {
-    await gotoDetail(page, "en", "government");
+test.describe("Service detail — bespoke section set", () => {
+  for (const slug of BESPOKE_SLUGS) {
+    test(`only the 4 bespoke headings render for ${slug}; legacy ids are gone`, async ({
+      page,
+    }) => {
+      await gotoDetail(page, "en", slug);
 
-    for (const id of GOVERNMENT_HEADING_IDS) {
-      const heading = page.locator(`#${id}`);
-      await expect(
-        heading,
-        `expected heading element #${id} to be in DOM`,
-      ).toHaveCount(1);
-      const section = page.locator(`section[aria-labelledby="${id}"]`);
-      await expect(
-        section,
-        `expected <section aria-labelledby="${id}"> wrapper`,
-      ).toHaveCount(1);
-    }
+      for (const id of BESPOKE_HEADING_IDS) {
+        const heading = page.locator(`#${id}`);
+        await expect(
+          heading,
+          `expected heading element #${id} to be in DOM for ${slug}`,
+        ).toHaveCount(1);
+        const section = page.locator(`section[aria-labelledby="${id}"]`);
+        await expect(
+          section,
+          `expected <section aria-labelledby="${id}"> wrapper for ${slug}`,
+        ).toHaveCount(1);
+      }
 
-    // Neither the pre-simplification ids nor the editorial-template ids that
-    // the new overview block consolidates away may appear.
-    for (const removedId of GOVERNMENT_REMOVED_HEADING_IDS) {
-      await expect(
-        page.locator(`#${removedId}`),
-        `removed heading #${removedId} must not be in the government DOM`,
-      ).toHaveCount(0);
-      await expect(
-        page.locator(`section[aria-labelledby="${removedId}"]`),
-        `removed section[aria-labelledby="${removedId}"] must not be in the government DOM`,
-      ).toHaveCount(0);
-    }
-  });
+      // Neither the pre-simplification ids nor the editorial-template ids that
+      // the bespoke overview block consolidates away may appear.
+      for (const removedId of BESPOKE_REMOVED_HEADING_IDS) {
+        await expect(
+          page.locator(`#${removedId}`),
+          `removed heading #${removedId} must not be in the ${slug} DOM`,
+        ).toHaveCount(0);
+        await expect(
+          page.locator(`section[aria-labelledby="${removedId}"]`),
+          `removed section[aria-labelledby="${removedId}"] must not be in the ${slug} DOM`,
+        ).toHaveCount(0);
+      }
+    });
 
-  test("overview block renders three card titles (desktop + accordion shape)", async ({
-    page,
-  }) => {
-    await gotoDetail(page, "en", "government");
-    const overview = page.locator(
-      'section[aria-labelledby="svc-overview-heading"]',
-    );
-    await expect(overview).toBeVisible();
+    test(`overview block on ${slug} renders three card titles (desktop + accordion shape)`, async ({
+      page,
+    }) => {
+      await gotoDetail(page, "en", slug);
+      const overview = page.locator(
+        'section[aria-labelledby="svc-overview-heading"]',
+      );
+      await expect(overview).toBeVisible();
 
-    // The three cards each render an <h3> with the localized card title.
-    // Both desktop columns and mobile <details> render — the responsive
-    // toggle is purely CSS — so we expect six <h3>s total in the section.
-    const cardHeadings = overview.locator("h3");
-    expect(
-      await cardHeadings.count(),
-      "overview should expose three card titles per viewport (desktop + accordion)",
-    ).toBe(6);
-  });
+      // The three cards each render an <h3> with the localized card title.
+      // Both desktop columns and mobile <details> render — the responsive
+      // toggle is purely CSS — so we expect six <h3>s total in the section.
+      const cardHeadings = overview.locator("h3");
+      expect(
+        await cardHeadings.count(),
+        "overview should expose three card titles per viewport (desktop + accordion)",
+      ).toBe(6);
+    });
+  }
 });
 
 test.describe("Service detail — invalid slug behaviour", () => {
