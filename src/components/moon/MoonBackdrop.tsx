@@ -67,12 +67,28 @@ const TIERS = {
     scrollMotionScale: 0.88,
     scrollZoomScale: 0.88,
   },
+  // Ultra-wide / large displays (≥1920px — 27" QHD, 4K, ultrawide monitors).
+  // Without this tier the moon sits at desktop offsetX=1.02 world units, which
+  // at a >1920px viewport visually drifts off-axis and the hero's right column
+  // looks empty. Wider offsetX pushes the moon back into the hero's right
+  // half; baseScale compensates for the wider FOV applied in MoonScene.
+  ultrawide: {
+    offsetX: 1.6,
+    baseScale: 1.25,
+    dprMax: 1.75,
+    sphereSegments: 64,
+    antialias: true,
+    idleTimeScale: 1,
+    scrollMotionScale: 0.88,
+    scrollZoomScale: 0.88,
+  },
 } as const satisfies Record<string, MoonTier>;
 
 type Breakpoint = keyof typeof TIERS;
 
 function resolveBreakpoint(): Breakpoint {
   if (typeof window === "undefined") return "mobile";
+  if (window.matchMedia("(min-width: 1920px)").matches) return "ultrawide";
   if (window.matchMedia("(min-width: 1024px)").matches) return "desktop";
   if (window.matchMedia("(min-width: 768px)").matches) return "tablet";
   return "mobile";
@@ -103,11 +119,14 @@ function useMoonResponsive(): MoonTier {
 
     const mTablet = window.matchMedia("(min-width: 768px)");
     const mDesktop = window.matchMedia("(min-width: 1024px)");
+    const mUltra = window.matchMedia("(min-width: 1920px)");
     mTablet.addEventListener("change", apply);
     mDesktop.addEventListener("change", apply);
+    mUltra.addEventListener("change", apply);
     return () => {
       mTablet.removeEventListener("change", apply);
       mDesktop.removeEventListener("change", apply);
+      mUltra.removeEventListener("change", apply);
     };
   }, []);
 

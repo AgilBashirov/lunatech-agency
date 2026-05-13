@@ -536,6 +536,17 @@ export function MoonScene({
           antialias,
           powerPreference: "high-performance",
         }}
+        onCreated={({ camera, size }) => {
+          // At wide aspect ratios (>1920px or ultrawide monitors) the default
+          // fov=40 frustum is too narrow horizontally — the moon, positioned
+          // at offsetX world units, projects past the right edge of the
+          // viewport. Widening fov re-frames it inside the hero's right column.
+          if (camera instanceof THREE.PerspectiveCamera) {
+            const aspect = size.width / size.height;
+            camera.fov = aspect > 2 ? 52 : aspect > 1.78 ? 46 : 40;
+            camera.updateProjectionMatrix();
+          }
+        }}
         style={{ background: "transparent", width: "100%", height: "100%" }}
       >
         <MoonWorld
