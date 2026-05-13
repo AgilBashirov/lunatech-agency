@@ -69,6 +69,28 @@ export function IconBranding({ className, ...props }: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function IconMobile({ className, ...props }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={stroke}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={cn(iconClass, className)}
+      aria-hidden
+      {...props}
+    >
+      {/* Phone outline + speaker slot + home indicator + content lines */}
+      <rect x="6" y="2.5" width="12" height="19" rx="2.5" />
+      <path d="M10 5.5h4" />
+      <circle cx="12" cy="18.75" r="0.65" fill="currentColor" stroke="none" />
+      <path d="M8.5 9.5h7M8.5 12h5.5M8.5 14.5h6" />
+    </svg>
+  );
+}
+
 export function IconMotion({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
     <svg

@@ -3,15 +3,12 @@ import { test, expect, type Page } from "@playwright/test";
 /**
  * Service detail pages (`/[locale]/services/[slug]`).
  *
- * Two page shapes exist:
- *
- * 1. Editorial template — used by `uiux`, `strategy`, `performance`. Heading
- *    ids: hero / what-we-do / usecases / howitworks / benefits / cta.
- *
- * 2. Bespoke layout — used by `government` and `web-experience`. Conversion-
- *    first layout with a single compact "overview" block replacing the three
- *    list sections. Heading ids: hero / what-we-do / overview / cta. The
- *    usecases / howitworks / benefits ids do NOT appear on these pages.
+ * All shipped services render the bespoke layout (`web-experience`,
+ * `mobile-app`, `government`) — conversion-first with a single compact
+ * "overview" block. Heading ids: hero / what-we-do / overview / cta. The
+ * usecases / howitworks / benefits ids do NOT appear on any detail page.
+ * The editorial-template branch in `[slug]/page.tsx` is unreachable today
+ * but kept in place for future slugs.
  *
  * Coverage:
  *  - Bespoke section set (4 ids) and intentional absence of FAQ /
@@ -29,13 +26,7 @@ import { test, expect, type Page } from "@playwright/test";
  *  - Heading hierarchy: exactly one <h1> on the detail page
  */
 
-const SLUGS = [
-  "web-experience",
-  "uiux",
-  "strategy",
-  "performance",
-  "government",
-] as const;
+const SLUGS = ["web-experience", "mobile-app", "government"] as const;
 
 const LOCALES = ["az", "en", "ru"] as const;
 
@@ -60,8 +51,8 @@ const BESPOKE_REMOVED_HEADING_IDS = [
   "svc-benefits-heading",
 ] as const;
 
-/** Slugs that render the bespoke layout. */
-const BESPOKE_SLUGS = ["government", "web-experience"] as const;
+/** Slugs that render the bespoke layout. Currently every shipped service. */
+const BESPOKE_SLUGS = ["web-experience", "mobile-app", "government"] as const;
 
 const BACK_TO_HOME_LABEL = {
   en: "Back to home",

@@ -12,6 +12,7 @@ import { WhatWeDoSection } from "@/components/services/detail/WhatWeDoSection";
 import { WhereItFitsSection } from "@/components/services/detail/WhereItFitsSection";
 import { WhyChooseUsSection } from "@/components/services/detail/WhyChooseUsSection";
 import { GovernmentDetail } from "@/components/services/government/GovernmentDetail";
+import { MobileAppDetail } from "@/components/services/mobile-app/MobileAppDetail";
 import { WebExperienceDetail } from "@/components/services/web-experience/WebExperienceDetail";
 import { routing } from "@/i18n/routing";
 import {
@@ -23,8 +24,15 @@ import {
 } from "@/lib/services";
 
 /** Slugs that render a bespoke layout instead of the shared editorial template.
- *  Single source of truth for the branch in `ServiceDetailPage`. */
-const BESPOKE_SLUGS = new Set<ServiceSlug>(["government", "web-experience"]);
+ *  Single source of truth for the branch in `ServiceDetailPage`. Currently
+ *  every shipped service is bespoke — the editorial-template fallback below
+ *  is dead code kept in place so the underlying components remain reachable
+ *  to any future slug. */
+const BESPOKE_SLUGS = new Set<ServiceSlug>([
+  "web-experience",
+  "mobile-app",
+  "government",
+]);
 
 function renderBespoke(slug: ServiceSlug) {
   switch (slug) {
@@ -32,6 +40,8 @@ function renderBespoke(slug: ServiceSlug) {
       return <GovernmentDetail />;
     case "web-experience":
       return <WebExperienceDetail />;
+    case "mobile-app":
+      return <MobileAppDetail />;
     default:
       return null;
   }

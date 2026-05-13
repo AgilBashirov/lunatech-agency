@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import type { ComponentType, SVGProps } from "react";
 import { getTranslations } from "next-intl/server";
 import {
-  IconBranding,
-  IconDesign,
   IconGovernment,
-  IconMotion,
+  IconMobile,
   IconWeb,
 } from "@/components/services/ServiceIcons";
 import { routing } from "@/i18n/routing";
@@ -24,9 +22,7 @@ import { routing } from "@/i18n/routing";
 
 export const SERVICE_SLUGS = [
   "web-experience",
-  "uiux",
-  "strategy",
-  "performance",
+  "mobile-app",
   "government",
 ] as const;
 
@@ -38,12 +34,7 @@ export type ServiceSlug = (typeof SERVICE_SLUGS)[number];
  * (`web-experience`). Keep both in sync — every entry in the registry must
  * have a matching `home*Key` so the home grid can link to it.
  */
-export type HomeServiceKey =
-  | "webExperience"
-  | "uiux"
-  | "strategy"
-  | "performance"
-  | "government";
+export type HomeServiceKey = "webExperience" | "mobileApp" | "government";
 
 type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -86,16 +77,17 @@ export type ServiceDefinition = {
  * lists services (sitemap, breadcrumbs, related links).
  */
 export const services: ReadonlyArray<ServiceDefinition> = [
+  // All three rendered services use the bespoke layout (see
+  // `WebExperienceDetail`, `MobileAppDetail`, `GovernmentDetail`). The
+  // editorial-template `counts` below are kept as zeroed placeholders for
+  // type shape only and are NOT consumed by any rendered component — the
+  // matching long-form i18n keys (`useCases`, `howItWorks`, `benefits`,
+  // `faq`, etc.) no longer exist under `services.detail.*`.
   {
     slug: "web-experience",
     homeKey: "webExperience",
     order: 1,
     Icon: IconWeb,
-    // `web-experience` renders a bespoke layout (WebExperienceDetail) — the
-    // editorial-template `counts` below are kept as placeholders for type
-    // shape only and are NOT consumed by any rendered component. The matching
-    // i18n keys (`useCases`, `howItWorks`, `benefits`, `faq`, etc.) no longer
-    // exist under `services.detail.web-experience` in messages/{locale}.json.
     counts: {
       useCases: 0,
       solutionBullets: 0,
@@ -107,54 +99,24 @@ export const services: ReadonlyArray<ServiceDefinition> = [
     },
   },
   {
-    slug: "uiux",
-    homeKey: "uiux",
+    slug: "mobile-app",
+    homeKey: "mobileApp",
     order: 2,
-    Icon: IconDesign,
+    Icon: IconMobile,
     counts: {
-      useCases: 3,
-      solutionBullets: 4,
-      howItWorksSteps: 4,
-      benefits: 4,
-      faq: 6,
-      problemParagraphs: 2,
-      solutionParagraphs: 2,
-    },
-  },
-  {
-    slug: "strategy",
-    homeKey: "strategy",
-    order: 3,
-    Icon: IconBranding,
-    counts: {
-      useCases: 3,
-      solutionBullets: 4,
-      howItWorksSteps: 4,
-      benefits: 4,
-      faq: 6,
-      problemParagraphs: 2,
-      solutionParagraphs: 2,
-    },
-  },
-  {
-    slug: "performance",
-    homeKey: "performance",
-    order: 4,
-    Icon: IconMotion,
-    counts: {
-      useCases: 3,
-      solutionBullets: 4,
-      howItWorksSteps: 4,
-      benefits: 4,
-      faq: 6,
-      problemParagraphs: 2,
-      solutionParagraphs: 2,
+      useCases: 0,
+      solutionBullets: 0,
+      howItWorksSteps: 0,
+      benefits: 0,
+      faq: 0,
+      problemParagraphs: 0,
+      solutionParagraphs: 0,
     },
   },
   {
     slug: "government",
     homeKey: "government",
-    order: 5,
+    order: 3,
     Icon: IconGovernment,
     // Counts mirror the content marketing has already populated under
     // `services.detail.government.*` in messages/{locale}.json. If marketing

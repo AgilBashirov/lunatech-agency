@@ -33,17 +33,9 @@
       "title": "Web experiences",
       "desc": "Modern, fast, user-centred web platforms crafted for your brand."
     },
-    "uiux": {
-      "title": "UI / UX design",
-      "desc": "Interfaces that guide, feel intuitive, and look refined."
-    },
-    "strategy": {
-      "title": "Digital strategy",
-      "desc": "Structure and direction aligned with your business goals."
-    },
-    "performance": {
-      "title": "Performance and optimization",
-      "desc": "Speed, stability, and maximum real-world efficiency."
+    "mobileApp": {
+      "title": "Mobile app development",
+      "desc": "iOS, Android, and cross-platform mobile apps — from design to App Store launch."
     },
     "government": {
       "title": "Government Integrations",
@@ -119,390 +111,72 @@
           "ctaHref": "/#contact"
         }
       },
-      "uiux": {
+      "mobile-app": {
         "hero": {
-          "eyebrow": "UI/UX design",
-          "title": "Product design that ships and scales",
-          "lede": "Research, flows, and interfaces for software teams under pressure to grow. We design what the team can actually build.",
-          "ctaLabel": "Start a project",
-          "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "How it works",
-          "ctaSecondaryHref": "#how-it-works"
+          "eyebrow": "Mobile app",
+          "title": "iOS, Android, and cross-platform mobile apps",
+          "lede": "Native-speed mobile apps that meet App Store and Google Play standards. From concept to your users' hands."
         },
-        "problem": {
-          "eyebrow": "The problem",
-          "title": "Design that looks good in Figma and falls apart in code",
-          "p1": "Mockups assume a perfect data state, ignore loading and empty cases, and ship to engineers who fill the gaps with guesses. Two sprints later the product looks nothing like the file.",
-          "p2": "Design systems get started, never finished. Components fork, color and spacing drift, and new hires re-learn the rules every quarter.",
-          "p3": "The cost is product velocity: every screen becomes a debate, and the team ships slower the bigger it gets."
+        "ctas": {
+          "primary": "Start a project",
+          "primaryHref": "/#contact"
         },
-        "solution": {
-          "eyebrow": "Our approach",
-          "title": "Design that holds up at the engineering handoff",
-          "p1": "We start with the user research and the flows, not the screens. Information architecture comes before pixels, and edge cases show up in the prototype, not in production.",
-          "p2": "We design components that map to real code, document the rules, and pair with engineering through implementation. The handoff is a conversation, not a throw-over.",
-          "bullets": {
-            "b1": "User research that drives decisions, not slide decks",
-            "b2": "IA and flows that survive contact with engineering",
-            "b3": "Design system founding work — tokens, components, documentation",
-            "b4": "Interaction and motion design for states the team usually forgets",
-            "b5": "Figma libraries that map cleanly to your component framework"
-          },
-          "visualAlt": "Layered Figma frames showing flows, components, and a design system in use"
-        },
-        "useCases": {
-          "uc1": {
-            "title": "Product redesign under traction",
-            "description": "Refactor the interface without rebuilding the product. Keep what works, fix what blocks growth.",
-            "badge": "Most common"
-          },
-          "uc2": {
-            "title": "Design system founding work",
-            "description": "Tokens, core components, documentation, and a Figma library your engineers can map to code."
-          },
-          "uc3": {
-            "title": "Dashboard or admin tool",
-            "description": "Information-dense interfaces that stay readable as the data and the user base scale."
-          },
-          "uc4": {
-            "title": "Mobile app interface",
-            "description": "iOS and Android flows designed against platform conventions, with prototypes ready for usability testing."
-          }
-        },
-        "howItWorks": {
-          "eyebrow": "How it works",
-          "title": "From research to a system the team can run with",
-          "footnote": "Typical engagement: 8–14 weeks, depending on system scope.",
-          "steps": {
-            "s1": {
-              "label": "Research and audit",
-              "detail": "We talk to users, audit the existing product, and map the problems worth solving first."
+        "intro": {
+          "eyebrow": "What we build",
+          "title": "Native or cross-platform — matched to your business",
+          "lede": "Separate native apps for iOS and Android, or one React Native codebase shipping both. The choice depends on your goals.",
+          "cards": {
+            "native": {
+              "title": "Native iOS / Android",
+              "description": "Fully native experience built with Swift and Kotlin. Peak performance, platform-specific UI, and deep system integration."
             },
-            "s2": {
-              "label": "IA and flows",
-              "detail": "We design the structure and journeys, validate them in low-fi, and align with engineering before pixels."
-            },
-            "s3": {
-              "label": "Interface and system",
-              "detail": "We design the interface, build the component library, and document the rules in Figma and prose."
-            },
-            "s4": {
-              "label": "Handoff and pairing",
-              "detail": "We pair with engineering through build, refine in code, and leave a system the team can extend."
+            "cross": {
+              "title": "Cross-platform (React Native)",
+              "description": "One codebase shipping to iOS and Android. Faster launch, shared workflow, and lower maintenance cost."
             }
           }
         },
-        "benefits": {
-          "eyebrow": "Why it matters",
-          "title": "What you get",
-          "items": {
-            "i1": {
-              "title": "Faster product velocity",
-              "description": "Engineers stop guessing. New screens are assembled from components in hours, not days."
+        "overview": {
+          "eyebrow": "At a glance",
+          "title": "The service package, one screen",
+          "cards": {
+            "technical": {
+              "title": "Full technical package",
+              "items": [
+                "Native iOS (Swift) or Android (Kotlin)",
+                "Cross-platform React Native",
+                "Backend API and authentication",
+                "Push notifications and analytics",
+                "App Store and Google Play release"
+              ]
             },
-            "i2": {
-              "title": "Consistency that lasts",
-              "description": "A documented system means the tenth designer makes the same decisions as the first."
+            "whoFor": {
+              "title": "Who it's for",
+              "items": [
+                "Startups shipping their first mobile product",
+                "Web-only businesses missing mobile",
+                "Companies with internal employee apps",
+                "Teams refreshing an existing app",
+                "Teams moving from MVP to full product"
+              ]
             },
-            "i3": {
-              "title": "Real user evidence",
-              "description": "Decisions backed by research and prototype testing, not opinion in review meetings."
-            },
-            "i4": {
-              "title": "Design that ships intact",
-              "description": "What’s in Figma is what reaches production — including loading, empty, and error states."
-            }
-          }
-        },
-        "faq": {
-          "eyebrow": "FAQ",
-          "title": "Common questions",
-          "items": {
-            "q1": {
-              "q": "Do you do user research, or just design?",
-              "a": "Both — and they connect. Research shapes the design brief, and prototypes feed back into research. The depth scales with budget; we’ll recommend what’s worth funding."
-            },
-            "q2": {
-              "q": "Can you work alongside our in-house designers?",
-              "a": "Yes. We often join existing teams as a strike force on a specific surface, system, or redesign — not to replace anyone, but to ship the work that’s been queued."
-            },
-            "q3": {
-              "q": "Do you build the design system, or just design components?",
-              "a": "We design the system, document the rules, and pair with engineering on the implementation. The library lives in your tools and your codebase, not ours."
-            },
-            "q4": {
-              "q": "What about handoff to engineering?",
-              "a": "Engineering is in the loop from week one — not at handoff. We pair through build, review the code against the design, and fix mismatches together."
-            },
-            "q5": {
-              "q": "Can you work in our existing Figma setup?",
-              "a": "Yes. We work in your file structure, your naming, and your branching model. If those don’t exist yet, we propose a setup that scales without rebuilding later."
+            "whyUs": {
+              "title": "Why Lunatech?",
+              "items": [
+                "8–12 week typical delivery",
+                "Design, mobile, and backend in one team",
+                "Audited code on both platforms",
+                "App Store and Google Play experience",
+                "Post-launch support and updates"
+              ]
             }
           }
         },
         "cta": {
           "eyebrow": "Get started",
-          "title": "Let’s scope the work",
-          "lede": "Tell us what the product is and where it’s stuck. We’ll come back with a plan within two business days.",
-          "ctaLabel": "Start a project",
-          "ctaHref": "/#contact"
-        }
-      },
-      "strategy": {
-        "hero": {
-          "eyebrow": "Digital strategy",
-          "title": "A clear plan and the metrics to prove it",
-          "lede": "We help founders and brands set the next quarter’s priority, ship against it, and measure what changed. No deck-ware.",
-          "ctaLabel": "Start a project",
-          "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "How it works",
-          "ctaSecondaryHref": "#how-it-works"
-        },
-        "problem": {
-          "eyebrow": "The problem",
-          "title": "Strategy as slides, not as a plan you can run",
-          "p1": "Most strategy work ends in a 60-page deck nobody reads twice. The real questions — what to ship next quarter, which channel to fund, what proves the bet worked — go unanswered.",
-          "p2": "Founders pick a positioning by gut. Growth teams run channels they inherited. Brand teams write content nobody asked for. Effort goes in, signal does not come out.",
-          "p3": "The cost is wasted quarters: campaigns that don’t compound, hires aimed at the wrong gap, and a roadmap that drifts toward whoever spoke last."
-        },
-        "solution": {
-          "eyebrow": "Our approach",
-          "title": "Strategy as the next quarter’s priority and how it’s measured",
-          "p1": "We start where you are: the product, the audience, the numbers that exist today. We name the one or two bets worth making this quarter, and the metrics that will show whether they worked.",
-          "p2": "Then we shape the work around those bets — positioning, content, channel mix, roadmap — and stay in the room while the team executes. Strategy that ends at the deck is half the job.",
-          "bullets": {
-            "b1": "Positioning and messaging grounded in customer language, not internal jargon",
-            "b2": "Channel and content mix tied to a measurement framework you can read",
-            "b3": "Roadmap shaping — what to ship, what to cut, what to defer",
-            "b4": "OKRs or KPIs that mean something, with weekly read-outs the team trusts",
-            "b5": "Go-to-market plans for launches, repositions, and category shifts"
-          },
-          "visualAlt": "Strategy framework showing positioning, channels, and measurement connected to a quarterly roadmap"
-        },
-        "useCases": {
-          "uc1": {
-            "title": "Pre-launch positioning",
-            "description": "Founders shaping the narrative, channels, and first-quarter targets before they go to market.",
-            "badge": "Most common"
-          },
-          "uc2": {
-            "title": "Brand reposition",
-            "description": "Established brands moving up-market, into a new category, or away from a positioning that’s stopped paying."
-          },
-          "uc3": {
-            "title": "Growth team without a strategist",
-            "description": "Strong execution, missing direction. We set the bets and the measurement, then hand the wheel back."
-          },
-          "uc4": {
-            "title": "Content and channel rebuild",
-            "description": "Replace the calendar nobody reads with a plan tied to pipeline, distribution, and a measurable thesis."
-          }
-        },
-        "howItWorks": {
-          "eyebrow": "How it works",
-          "title": "From audit to a plan the team can ship",
-          "footnote": "Typical engagement: 4–8 weeks for the plan, optional ongoing partnership for execution.",
-          "steps": {
-            "s1": {
-              "label": "Audit and interviews",
-              "detail": "We review the product, the numbers, and the market, and talk to customers, the team, and the leaders."
-            },
-            "s2": {
-              "label": "Positioning and bets",
-              "detail": "We name the positioning, the audience, and the one or two bets worth funding this quarter."
-            },
-            "s3": {
-              "label": "Plan and measurement",
-              "detail": "We shape channels, content, and roadmap around the bets, with metrics the team can read weekly."
-            },
-            "s4": {
-              "label": "Run and review",
-              "detail": "We stay in the room — weekly check-ins, mid-quarter review, course-correction before the quarter ends."
-            }
-          }
-        },
-        "benefits": {
-          "eyebrow": "Why it matters",
-          "title": "What you get",
-          "items": {
-            "i1": {
-              "title": "A plan, not a deck",
-              "description": "The output is a working document the team uses every week, not a PDF that ages in a shared drive."
-            },
-            "i2": {
-              "title": "Metrics that mean something",
-              "description": "Each bet has a number attached. You’ll know within a quarter whether it worked — and what to do next."
-            },
-            "i3": {
-              "title": "Faster decisions",
-              "description": "Positioning, audience, and priorities are written down. New hires, agencies, and partners get the brief in one read."
-            },
-            "i4": {
-              "title": "Compounding, not churn",
-              "description": "Quarter on quarter, the work builds on itself instead of restarting from scratch."
-            }
-          }
-        },
-        "faq": {
-          "eyebrow": "FAQ",
-          "title": "Common questions",
-          "items": {
-            "q1": {
-              "q": "Is this consulting or execution?",
-              "a": "Both, and we’re clear about the line. We shape the plan, then either hand it to your team or stay on as a partner through the quarter. We won’t do strategy that’s never executed."
-            },
-            "q2": {
-              "q": "How is this different from a brand or growth agency?",
-              "a": "Brand and growth agencies execute well in their lane. We sit upstream of both — naming what should be done, in what order, with what budget. Then we pick the right partners to execute, in-house or external."
-            },
-            "q3": {
-              "q": "Do you work with pre-revenue founders?",
-              "a": "Yes, often. The work is leaner — positioning, audience, first channel, first metric — and the goal is to ship the first version with the right shape, not the perfect one."
-            },
-            "q4": {
-              "q": "What does measurement look like in practice?",
-              "a": "A small dashboard the team reads weekly, two or three numbers per bet, and a written read-out every other week. Not 40 KPIs, not a BI build."
-            },
-            "q5": {
-              "q": "Can you work with our agencies and freelancers?",
-              "a": "Yes. Strategy is most useful when the existing partners get a clearer brief. We write the brief, sit in the kickoff, and review the output against the plan."
-            }
-          }
-        },
-        "cta": {
-          "eyebrow": "Get started",
-          "title": "Let’s name the next bet",
-          "lede": "Tell us where the business is and what’s stuck. We’ll come back with a scoping plan within two business days.",
-          "ctaLabel": "Start a project",
-          "ctaHref": "/#contact"
-        }
-      },
-      "performance": {
-        "hero": {
-          "eyebrow": "Performance and engineering",
-          "title": "Ship the product the design promised",
-          "lede": "We make slow products fast, brittle codebases stable, and audits pass on the first try. The engineering side that delivers what design and strategy planned.",
-          "ctaLabel": "Start a project",
-          "ctaHref": "/#contact",
-          "ctaSecondaryLabel": "How it works",
-          "ctaSecondaryHref": "#how-it-works"
-        },
-        "problem": {
-          "eyebrow": "The problem",
-          "title": "Where products lose users without anyone noticing",
-          "p1": "The site looks finished and the analytics dashboard looks fine. Meanwhile real users on real networks bounce — the page took four seconds, the form didn’t submit on a flaky connection, the screen reader hit a dead end.",
-          "p2": "Codebases inherited from earlier teams hide their cost: every release breaks something, the test suite is decorative, and one engineer holds the deploy in their head.",
-          "p3": "By the time it shows up in revenue, the gap between what was shipped and what was promised is months of rework."
-        },
-        "solution": {
-          "eyebrow": "Our approach",
-          "title": "Measure first, fix what matters, prove it changed",
-          "p1": "We start with measurement on real devices and real networks — not synthetic lab runs. Core Web Vitals, accessibility audits, error budgets, and the parts of the codebase that quietly cost the team time.",
-          "p2": "Then we fix in priority order: the issues that move the metric, not the long tail. Each change is shipped behind monitoring, with the before-and-after recorded so the team can see what worked.",
-          "bullets": {
-            "b1": "Core Web Vitals tuned on real-user data, not just Lighthouse",
-            "b2": "Accessibility to WCAG AA, validated with assistive tech, not just a checker",
-            "b3": "Observability — logs, traces, error budgets — wired into the team’s daily work",
-            "b4": "CI/CD pipelines that catch regressions before they ship, not after",
-            "b5": "Compliance-grade ops for regulated industries — audit trails, runbooks, on-call"
-          },
-          "visualAlt": "Performance dashboard showing Core Web Vitals trending downward as real users see faster pages"
-        },
-        "useCases": {
-          "uc1": {
-            "title": "Slow product or failing audits",
-            "description": "A diagnosis, a prioritized fix list, and the engineering work to land it — measured before and after.",
-            "badge": "Most common"
-          },
-          "uc2": {
-            "title": "Inherited brittle codebase",
-            "description": "Stabilize a codebase mid-flight: tests, CI, observability, and the refactors that pay back inside a quarter."
-          },
-          "uc3": {
-            "title": "Regulated-industry delivery",
-            "description": "Banking, health, govtech: compliance-grade ops, audit trails, and release processes regulators accept."
-          },
-          "uc4": {
-            "title": "Accessibility remediation",
-            "description": "Move from failing audits to WCAG AA conformance, validated with screen readers and keyboard testing — not just automated tools."
-          }
-        },
-        "howItWorks": {
-          "eyebrow": "How it works",
-          "title": "From audit to a measurable improvement",
-          "footnote": "Typical engagement: 4–10 weeks, depending on the codebase size and the metric gap.",
-          "steps": {
-            "s1": {
-              "label": "Audit and baseline",
-              "detail": "We measure performance, accessibility, and code health on real devices, then write a baseline you can compare against."
-            },
-            "s2": {
-              "label": "Prioritize",
-              "detail": "We rank the fixes by impact and effort, name the ones that move the metric, and defer the ones that don’t."
-            },
-            "s3": {
-              "label": "Ship and monitor",
-              "detail": "We land the changes behind feature flags, watch real-user metrics, and roll back if anything regresses."
-            },
-            "s4": {
-              "label": "Hand over",
-              "detail": "We document the system, set up the dashboards, and leave the team able to keep the metric where we put it."
-            }
-          }
-        },
-        "benefits": {
-          "eyebrow": "Why it matters",
-          "title": "What you get",
-          "items": {
-            "i1": {
-              "title": "Measurable speed gains",
-              "description": "Core Web Vitals reported before and after, on real users — not synthetic scores."
-            },
-            "i2": {
-              "title": "Audits that pass",
-              "description": "WCAG AA conformance and clean Lighthouse on the first regulator or procurement review."
-            },
-            "i3": {
-              "title": "Code that doesn’t fight back",
-              "description": "CI/CD, tests, and observability that turn deploys from events into routine."
-            },
-            "i4": {
-              "title": "A team that owns it",
-              "description": "Dashboards, runbooks, and documentation so the work doesn’t unwind the week we leave."
-            }
-          }
-        },
-        "faq": {
-          "eyebrow": "FAQ",
-          "title": "Common questions",
-          "items": {
-            "q1": {
-              "q": "How do you measure performance — Lighthouse?",
-              "a": "Lighthouse is a starting point. We tune against real-user metrics — Core Web Vitals from your actual traffic — because lab scores often miss what real users feel. Both numbers go in the report."
-            },
-            "q2": {
-              "q": "Do you rewrite the codebase or work with what we have?",
-              "a": "We work with what you have. Rewrites are slow, expensive, and rarely fix the underlying issue. We refactor in place, with tests, until the metric moves."
-            },
-            "q3": {
-              "q": "What counts as accessibility work?",
-              "a": "WCAG AA conformance, validated with screen readers (NVDA, VoiceOver), keyboard testing, and color-contrast checks. Automated tools catch maybe 30%; we cover the rest."
-            },
-            "q4": {
-              "q": "Do you handle on-call and incident response?",
-              "a": "We set up the systems — dashboards, alerts, runbooks — and we can stay on retainer for incident support. Long-term on-call usually belongs with your team; we make that handover clean."
-            },
-            "q5": {
-              "q": "Can you work with our existing CI/CD and observability stack?",
-              "a": "Yes. We work with whatever you run — GitHub Actions, GitLab, Jenkins; Datadog, Grafana, Sentry. The goal is to make your stack work better, not to swap it."
-            }
-          }
-        },
-        "cta": {
-          "eyebrow": "Get started",
-          "title": "Let’s measure what’s slowing you down",
-          "lede": "Tell us what the product is and where it hurts. We’ll come back with a baseline plan within two business days.",
-          "ctaLabel": "Start a project",
+          "title": "Let's scope your mobile app",
+          "lede": "Tell us about your app idea or existing product. We'll come back with a plan within two business days.",
+          "ctaLabel": "Scope my project",
           "ctaHref": "/#contact"
         }
       },
