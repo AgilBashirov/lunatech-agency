@@ -1,25 +1,23 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import type { PortfolioProjectKey } from "@/lib/portfolioDemos";
 
-const ACCENT: Record<PortfolioProjectKey, { a: string; b: string }> = {
-  project1: { a: "124, 58, 237", b: "34, 211, 238" },
-  project2: { a: "59, 130, 246", b: "34, 211, 238" },
-  project3: { a: "167, 139, 250", b: "45, 212, 191" },
-  project4: { a: "34, 197, 94", b: "34, 211, 238" },
-  project5: { a: "192, 132, 252", b: "244, 114, 182" },
-  project6: { a: "244, 114, 182", b: "34, 211, 238" },
-};
+const ACCENT: Array<{ a: string; b: string }> = [
+  { a: "124, 58, 237", b: "34, 211, 238" },
+  { a: "59, 130, 246", b: "34, 211, 238" },
+  { a: "167, 139, 250", b: "45, 212, 191" },
+  { a: "34, 197, 94", b: "34, 211, 238" },
+  { a: "192, 132, 252", b: "244, 114, 182" },
+  { a: "244, 114, 182", b: "34, 211, 238" },
+];
 
 type Props = {
-  projectKey: PortfolioProjectKey;
   index: number;
   label: string;
 };
 
-export function PortfolioCoverArt({ projectKey, index, label }: Props) {
-  const { a, b } = ACCENT[projectKey];
+export function PortfolioCoverArt({ index, label }: Props) {
+  const { a, b } = ACCENT[index % ACCENT.length];
   const delay = index * 0.7;
   const style = {
     "--pc-a": a,

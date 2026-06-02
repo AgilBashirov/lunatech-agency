@@ -1,5 +1,10 @@
 import { PortfolioSection } from "@/components/portfolio/PortfolioSection";
+import type { PortfolioItem } from "@/lib/admin/types";
 
-export function Portfolio() {
-  return <PortfolioSection />;
+type Props = {
+  items: PortfolioItem[];
+};
+
+export function Portfolio({ items }: Props) {
+  return <PortfolioSection items={items} />;
 }

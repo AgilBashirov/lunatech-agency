@@ -10,6 +10,8 @@ import { Portfolio } from "@/components/sections/Portfolio";
 import { AgencyNarrativeSection } from "@/components/sections/AgencyNarrativeSection";
 import { Services } from "@/components/sections/Services";
 import { ValueStrip } from "@/components/sections/ValueStrip";
+import { loadContactTopics } from "@/data/services";
+import { getPortfolio } from "@/lib/admin/contentStore";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -18,6 +20,15 @@ type Props = {
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+
+  const [contactTopics, portfolioItems] = await Promise.all([
+    loadContactTopics(),
+    getPortfolio(),
+  ]);
+
+  const sortedPortfolio = [...portfolioItems]
+    .filter((item) => item.visible)
+    .sort((a, b) => a.order - b.order);
 
   return (
     <MoonReadyProvider>
@@ -30,14 +41,14 @@ export default async function HomePage({ params }: Props) {
           <Hero />
           <ValueStrip />
           <Services />
-          <Portfolio />
+          {sortedPortfolio.length > 0 && <Portfolio items={sortedPortfolio} />}
           {/* Anchor wraps the strip + narrative so #about scrolls to land
               on the strip (visual lead-in to the about section). */}
           <div id="about" className="scroll-mt-44 md:scroll-mt-40">
             <ValueStrip tKey="aboutStrip" variant="secondary" />
             <AgencyNarrativeSection />
           </div>
-          <Contact />
+          <Contact topics={contactTopics} />
         </main>
         <Footer />
         <ScrollToTopButton />

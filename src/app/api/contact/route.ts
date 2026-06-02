@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import {
-  getServiceTelegramLabel,
-  isServiceId,
-  type ServiceId,
+  loadContactTopics,
+  isValidTopicId,
+  getTopicTelegramLabel,
 } from "@/data/services";
 
 export const runtime = "nodejs";
@@ -75,7 +75,10 @@ export async function POST(req: Request) {
     return fail(400);
   }
 
-  if (!name || !phone || !serviceRaw || !isServiceId(serviceRaw)) {
+  // Load topics from Blob (falls back to static seed on failure).
+  const topics = await loadContactTopics();
+
+  if (!name || !phone || !serviceRaw || !isValidTopicId(serviceRaw, topics)) {
     return fail(400);
   }
   if (!PHONE_RE.test(phone)) {
@@ -84,8 +87,10 @@ export async function POST(req: Request) {
   if (email && !EMAIL_RE.test(email)) {
     return fail(400);
   }
-  const service: ServiceId = serviceRaw;
-  if (service === "other" && !otherMessage) {
+
+  // The "other" topic keeps the same id "other" in the seed; admin can rename
+  // but by convention the special extra-message field is triggered by id "other".
+  if (serviceRaw === "other" && !otherMessage) {
     return fail(400);
   }
 
@@ -96,15 +101,17 @@ export async function POST(req: Request) {
     return fail(500);
   }
 
+  const telegramLabel = getTopicTelegramLabel(serviceRaw, topics);
+
   const lines = [
     "📩 Yeni müraciət (lunatech.az)",
     "",
     `👤 Ad: ${name}`,
     `📱 Telefon: ${phone}`,
     `📧 Email: ${email || "Qeyd edilməyib"}`,
-    `🛠 Xidmət: ${getServiceTelegramLabel(service)}`,
+    `🛠 Xidmət: ${telegramLabel}`,
   ];
-  if (service === "other") {
+  if (serviceRaw === "other") {
     lines.push(`📌 Əlavə: ${otherMessage}`);
   }
   lines.push("", "📝 Mesaj:", message || "Yoxdur");
