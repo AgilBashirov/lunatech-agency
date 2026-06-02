@@ -11,7 +11,7 @@ import { motionTransition } from "@/lib/motion";
 // Hash links point at sections that only exist on the home page. From any
 // other route (e.g. /services/government) we must navigate back to "/" with
 // the hash, not just append the hash to the current path.
-const links = [
+const hashLinks = [
   { hash: "services", key: "services" as const },
   { hash: "about", key: "about" as const },
   { hash: "portfolio", key: "portfolio" as const },
@@ -54,7 +54,7 @@ export function Navbar() {
           </div>
         </div>
         <div className="flex min-h-11 min-w-0 w-full snap-x snap-mandatory scroll-ps-1 scroll-pe-1 gap-1 overflow-x-auto overscroll-x-contain touch-pan-x pb-1 [-webkit-overflow-scrolling:touch] md:min-h-0 md:w-auto md:snap-none md:items-center md:gap-8 md:overflow-visible md:overscroll-x-auto md:touch-auto md:pb-0">
-          {links.map(({ hash, key }) =>
+          {hashLinks.map(({ hash, key }) =>
             reduce ? (
               <Link
                 key={key}
@@ -74,6 +74,20 @@ export function Navbar() {
                 {t(key)}
               </MotionLink>
             ),
+          )}
+          {reduce ? (
+            <Link href="/blog" className={navLinkClass}>
+              {t("blog")}
+            </Link>
+          ) : (
+            <MotionLink
+              href="/blog"
+              className={navLinkClass}
+              whileTap={{ scale: 0.98 }}
+              transition={motionTransition.fast}
+            >
+              {t("blog")}
+            </MotionLink>
           )}
         </div>
         <div className="hidden items-center gap-3 md:flex">

@@ -61,7 +61,11 @@ export async function Services() {
               className="group block h-full"
               aria-label={t(`${key}.title`)}
             >
-              <GlassCard className="h-full services-tile">
+              <GlassCard
+                className="h-full services-tile"
+                disableLift
+                innerClassName="flex flex-col h-full"
+              >
                 <span
                   className={iconWrapClass}
                   style={iconWrapStyle}
@@ -75,12 +79,9 @@ export async function Services() {
                 <p className="mt-2 text-sm leading-relaxed text-text-tertiary [text-shadow:0_1px_14px_rgba(0,0,0,0.35)]">
                   {t(`${key}.desc`)}
                 </p>
-                {/* Subtle "Learn more" affordance — revised spec R6.
-                    The wrapping <Link> already owns the click target and focus
-                    ring; this is just visual signposting that the tile is a
-                    link. The arrow translates +2px on parent hover, mirroring
-                    the cs-arrow-next:hover micro-interaction. */}
-                <span className="mt-4 flex items-center gap-2 text-sm font-medium text-[var(--neon-cyan)]">
+                {/* Subtle "Learn more" affordance — mt-auto pushes it to the
+                    bottom of every card regardless of description length. */}
+                <span className="mt-auto pt-4 flex items-center gap-2 text-sm font-medium text-[var(--neon-cyan)]">
                   <span className="underline-offset-4 group-hover:underline">
                     {t("learnMore")}
                   </span>

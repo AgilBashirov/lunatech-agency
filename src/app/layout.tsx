@@ -1,7 +1,8 @@
 import type { Viewport } from "next";
-import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
+import { Geist_Mono, Inter, Manrope } from "next/font/google";
 import { getLocale } from "next-intl/server";
 import type { ReactNode } from "react";
+import Script from "next/script";
 import { PreventZoom } from "@/components/layout/PreventZoom";
 import "./globals.css";
 
@@ -11,8 +12,8 @@ const inter = Inter({
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
+const manrope = Manrope({
+  subsets: ["latin", "cyrillic"],
   variable: "--font-space-grotesk",
   display: "swap",
 });
@@ -41,10 +42,23 @@ export default async function RootLayout({ children }: Props) {
   return (
     <html lang={locale} className="dark" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${manrope.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <PreventZoom />
         {children}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-777029437"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-777029437');
+          `}
+        </Script>
       </body>
     </html>
   );

@@ -98,10 +98,6 @@ const FLICK_VELOCITY = 320;
 const LOOP_COPIES = 3;
 const LOOP_ANCHOR_COPY = 1;
 
-/** Card height. Keeping this fixed per breakpoint avoids layout shift as width changes. */
-const CARD_HEIGHT_MOBILE = 380; // below sm
-const CARD_HEIGHT_TABLET = 380; // sm..lg
-const CARD_HEIGHT_DESKTOP = 380; // lg+
 
 type SliderLayout = {
   /** Number of cards visible simultaneously at this breakpoint. */
@@ -248,7 +244,7 @@ function Dot({
   );
 }
 
-export type ArrowVisibility = "always" | "desktop" | "never";
+export type ArrowVisibility = "always" | "tablet" | "desktop" | "never";
 
 type CardsSliderProps = {
   cards?: CardsSliderCard[];
@@ -275,7 +271,7 @@ type CardsSliderProps = {
 
 export function CardsSlider({
   cards: cardsProp,
-  loop = false,
+  loop: loopProp = false,
   autoplay = false,
   autoplayDelay = 5000,
   autoplayResumeDelay = 6000,
@@ -298,19 +294,18 @@ export function CardsSlider({
   const nextBtnId = `selected-work-next-${idBase}`;
 
   const layout = useSliderLayout();
-  // True only on devices with a precise hover input (mouse/trackpad).
-  // `whileHover` engages on pointerover, which iOS WebKit briefly fires during
-  // touch drags — animating a transform on every card the finger crosses.
-  // SSR-safe: starts false and resolves on mount.
-  const [canHover, setCanHover] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const apply = () => setCanHover(mq.matches);
-    apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
-  }, []);
   const visible = Math.max(1, Math.min(layout.visible, count));
+
+  // Gate loop on client mount so SSR never renders ghost copies.
+  // Without this guard, SSR starts with visible=1 (no window), making
+  // loop=true → 3× card copies. CSS then reveals the right breakpoint count
+  // at first paint, but JS removes the copies after hydration → visible flash.
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => { setIsMounted(true); }, []);
+
+  // Loop only when there are genuinely more cards than fit on screen AND the
+  // client has mounted (so we never flash ghost copies on first paint).
+  const loop = loopProp && count > visible && isMounted;
   const gap = layout.gap;
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -340,22 +335,24 @@ export function CardsSlider({
     };
   }, []);
 
-  // Card width is the viewport minus inter-card gaps, divided by visibleCount.
-  // Math.floor prevents sub-pixel overflow that would cause a slight clip.
+  // Card width — used ONLY for animation math (slideStep, dragConstraints).
+  // Visual sizing is owned entirely by CSS (.cs-card in globals.css) via the
+  // `100cqi`-based formula — JS never writes width/minWidth/maxWidth inline
+  // styles on the card element, so there is no JS-driven layout shift.
+  //
+  // When only 1 card exists, `visible` is clamped to 1 but CSS still uses the
+  // breakpoint-based `--cs-visible` (e.g. 3 on tablet) — so the lone card
+  // renders at the natural multi-card width. We mirror that here so slideStep
+  // is accurate in case navigation is ever enabled for a single-item set.
   const cardWidth = useMemo(() => {
     if (viewportWidth <= 0) return 0;
-    const totalGap = (visible - 1) * gap;
-    return Math.max(160, Math.floor((viewportWidth - totalGap) / visible));
-  }, [viewportWidth, visible, gap]);
+    const widthVisible = count === 1 ? layout.visible : visible;
+    const totalGap = (widthVisible - 1) * gap;
+    return Math.max(160, Math.floor((viewportWidth - totalGap) / widthVisible));
+  }, [viewportWidth, visible, gap, count, layout.visible]);
 
   /** Distance to advance for one slide step. */
   const slideStep = cardWidth + gap;
-
-  const cardHeight = useMemo(() => {
-    if (visible >= 4) return CARD_HEIGHT_DESKTOP;
-    if (visible >= 2) return CARD_HEIGHT_TABLET;
-    return CARD_HEIGHT_MOBILE;
-  }, [visible]);
 
   /** Base virtual index for the middle copy, so "0" canonically equals this value. */
   const CANONICAL_BASE = loop ? count * LOOP_ANCHOR_COPY : 0;
@@ -383,7 +380,10 @@ export function CardsSlider({
   }, [virtualIdx]);
 
   // Reset when the card set or base changes (e.g. locale swap, count change).
+  // Set forceSnap so the animation effect snaps instead of animating — a
+  // programmatic reset is never user-initiated and must never produce motion.
   useEffect(() => {
+    forceSnapRef.current = true;
     virtualIdxRef.current = CANONICAL_BASE;
     setVirtualIdx(CANONICAL_BASE);
   }, [CANONICAL_BASE, count]);
@@ -409,6 +409,23 @@ export function CardsSlider({
   const hasMountedRef = useRef(false);
 
   /**
+   * Ref set by the CANONICAL_BASE reset effect so the animation effect knows
+   * to snap (not animate) when the base changes — e.g. on first client mount
+   * when `isMounted` turns on loop mode and teleports `virtualIdx` to 15.
+   * Without this, both `slideStep` and `virtualIdx` change in the same render
+   * batch, `shouldSnap` evaluates false, and a huge spring from x=0 to
+   * x=-15*slideStep plays visibly on every page load.
+   */
+  const forceSnapRef = useRef(false);
+
+  /**
+   * Holds the controls for the currently-running spring so `advance()` can
+   * stop it before teleporting x (safeWrap). Without this, the dying spring
+   * fights the x.set() for 1-2 frames and produces a visible lurch.
+   */
+  const animControlsRef = useRef<{ stop: () => void } | null>(null);
+
+  /**
    * Drive x from virtualIdx + slideStep. This effect is the SINGLE WRITER for
    * animated motion. Any navigation change (setVirtualIdx) reruns it, stops the
    * previous animation cleanly, and starts a fresh one from the current x.
@@ -429,20 +446,48 @@ export function CardsSlider({
     prevVirtualIdxRef.current = virtualIdx;
     hasMountedRef.current = true;
 
-    // Resize / mount: snap instantly to avoid an entrance slide-in.
+    // Consume the forceSnap flag set by the CANONICAL_BASE reset effect.
+    const isReset = forceSnapRef.current;
+    // eslint-disable-next-line react-hooks/immutability
+    forceSnapRef.current = false; // consume: intentional read-then-clear pattern
+
+    // Resize / mount / programmatic reset: snap instantly; never animate.
     const shouldSnap =
       isFirst ||
+      isReset ||
       prefersReducedMotion ||
       (slideStepChanged && !virtualIdxChanged);
 
     if (shouldSnap) {
       x.set(target);
+      // Clear any stale animating flag when we snap.
+      if (viewportRef.current) viewportRef.current.removeAttribute("data-animating");
       return;
     }
 
+    // Mark viewport as animating — CSS suppresses pointer-events on cards
+    // so hover doesn't fire as cards pass under the cursor during the spring.
+    if (viewportRef.current) viewportRef.current.setAttribute("data-animating", "true");
+
+    // Idempotent clear — called from both the natural-complete path and the
+    // interrupted-by-cleanup path so `data-animating` is always removed.
+    const clearAnimating = () => {
+      animControlsRef.current = null;
+      if (viewportRef.current) viewportRef.current.removeAttribute("data-animating");
+    };
+
     const controls = animate(x, target, SPRING_TRANSITION);
+    animControlsRef.current = controls;
+
+    // Remove the flag when the spring finishes naturally. `animate()` in
+    // Framer Motion 12 returns a thenable (Promise-like); `.then` resolves
+    // on completion. If `controls.stop()` is called first the promise never
+    // resolves, so the cleanup path below handles that case instead.
+    void (controls as unknown as Promise<void>).then?.(clearAnimating);
+
     return () => {
       controls.stop();
+      clearAnimating();
     };
   }, [virtualIdx, slideStep, prefersReducedMotion, x]);
 
@@ -504,8 +549,10 @@ export function CardsSlider({
       if (loop) {
         const wrapped = safeWrap(raw, x.get());
         if (wrapped.nextX !== x.get()) {
-          // Content-identical x shift — invisible to the user. The animation
-          // effect about to fire will continue smoothly from this new x.
+          // Stop any running spring BEFORE teleporting x so the dying animation
+          // cannot fight the position shift for 1-2 frames (visible lurch).
+          animControlsRef.current?.stop();
+          animControlsRef.current = null;
           x.set(wrapped.nextX);
         }
         nextIdx = wrapped.idx;
@@ -718,7 +765,9 @@ export function CardsSlider({
       ? "hidden"
       : arrowsOn === "desktop"
         ? "hidden lg:contents"
-        : "contents";
+        : arrowsOn === "tablet"
+          ? "hidden sm:contents"
+          : "contents";
 
   return (
     <div
@@ -821,6 +870,15 @@ export function CardsSlider({
           style={{ x }}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
+          // Suppress accidental link navigations on drag-end without
+          // re-rendering every card. A ref (not state) is read here so
+          // no child re-renders occur when dragging starts/stops.
+          onClickCapture={(e) => {
+            if (isDraggingRef.current) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
           className="cs-rail will-change-transform"
         >
           {renderedCards.map((card, i) => {
@@ -837,10 +895,6 @@ export function CardsSlider({
                 aria-label={isClone ? undefined : formatSlideLabel(realIdx + 1)}
                 aria-current={!isClone && isActive ? "true" : undefined}
                 aria-hidden={isClone ? "true" : undefined}
-                // `cs-card` gives the card its proper width directly from CSS.
-                // The inline `width` below kicks in once JS has measured the
-                // viewport (≤1px Math.floor delta from the CSS calc) — values
-                // match within human perception, so no visible jump.
                 className="cs-card"
                 // Loop mode renders cards × 3 copies; only the anchor copy is
                 // ever centered. `data-clone` keeps the semantic distinction
@@ -850,23 +904,14 @@ export function CardsSlider({
                 // of which copy ended up on-screen after wrap.
                 data-clone={isClone ? "true" : undefined}
                 data-active={realIdx === activeIndex ? "true" : undefined}
-                style={{
-                  width: cardWidth > 0 ? cardWidth : undefined,
-                  minWidth: cardWidth > 0 ? cardWidth : undefined,
-                  maxWidth: cardWidth > 0 ? cardWidth : undefined,
-                  height: cardHeight,
-                }}
-                whileHover={
-                  !canHover || prefersReducedMotion
-                    ? undefined
-                    : { y: -6, transition: { duration: 0.26, ease: [0.16, 1, 0.3, 1] } }
-                }
+                // Width and height are both driven by CSS (.cs-card in globals.css)
+                // using the same cqi-based formula — no inline styles needed.
+                // `cardWidth` is still computed above for animation math only.
               >
                 <CardContent
                   card={card}
                   viewDetailsLabel={viewDetailsLabel}
                   ctaHref={card.href}
-                  suppressClick={isDragging}
                   isClone={isClone}
                 />
               </motion.div>
@@ -902,14 +947,11 @@ function CardContent({
   card,
   viewDetailsLabel,
   ctaHref,
-  suppressClick = false,
   isClone = false,
 }: {
   card: CardsSliderCard;
   viewDetailsLabel: string;
   ctaHref?: string;
-  /** True while the track is being dragged — prevents accidental link activation. */
-  suppressClick?: boolean;
   /** Clone cards (loop copies) don't get focusable links. */
   isClone?: boolean;
 }) {
@@ -922,35 +964,40 @@ function CardContent({
         // on .cs-card (see globals.css) — looks softer than any rounded-rect
         // box-shadow can.
         "border-border bg-card/95 text-card-foreground shadow-[0_2px_6px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]",
-        // backdrop-blur-md is the dominant per-frame cost on iOS WebKit during
-        // a swipe (multiplied across loop copies). Gate it to md+ so mobile
-        // sliding stays smooth; tablet/desktop keep the glassy look.
-        "md:backdrop-blur-md transition-[border-color,box-shadow,transform] duration-500 ease-out",
+        // backdrop-blur is omitted: it multiplies compositor layers across all
+        // loop copies and causes frame-drops during the spring animation even
+        // on desktop. bg-card/95 already makes the card opaque enough that
+        // the blur adds no perceptible visual benefit.
+        "transition-[border-color,box-shadow] duration-500 ease-out",
         "hover:border-primary/35 hover:shadow-[0_4px_10px_rgba(0,0,0,0.4),0_0_0_1px_var(--glow-purple),0_0_28px_var(--glow-cyan),inset_0_1px_0_rgba(255,255,255,0.06)]",
       )}
     >
-      <div className="relative h-40 shrink-0 overflow-hidden bg-surface ring-1 ring-inset ring-white/[0.06] sm:h-44">
-        {card.cover ? (
-          <div className="h-full w-full [&_.portfolio-cover]:min-h-[10rem] sm:[&_.portfolio-cover]:min-h-[11rem]">
-            {card.cover}
-          </div>
-        ) : card.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- demo Unsplash URLs; portfolio uses `cover` slot
-          <img
-            src={card.imageUrl}
-            alt={card.title}
-            draggable={false}
-            loading="lazy"
-            decoding="async"
-            className="pointer-events-none h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-110"
-          />
-        ) : null}
+      <div className="relative aspect-video shrink-0 overflow-hidden bg-surface ring-1 ring-inset ring-white/[0.06]">
+        {/* Grayscale wrapper — b&w at rest, full colour on hover.
+            Uses arbitrary Tailwind properties so the filter/transition are
+            inlined directly into the stylesheet without relying on globals.css
+            layer ordering. `[.cs-card:hover_&]` selects this element when its
+            `.cs-card` ancestor is hovered. */}
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-background/55 to-transparent opacity-70 transition-opacity duration-300 group-hover/card:opacity-55"
-          aria-hidden
-        />
+          className="cs-card-media h-full w-full [filter:grayscale(1)] [transition:filter_500ms_ease-out] [.cs-card:hover_&]:[filter:grayscale(0)]"
+        >
+          {card.cover ? (
+            <div className="h-full w-full">{card.cover}</div>
+          ) : card.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- demo Unsplash URLs; portfolio uses `cover` slot
+            <img
+              src={card.imageUrl}
+              alt={card.title}
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+              className="pointer-events-none h-full w-full object-cover"
+            />
+          ) : null}
+        </div>
+        {/* Bottom gradient — keeps title text legible over the image */}
         <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_100%,rgba(124,58,237,0.12),transparent_55%)]"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-background/40 to-transparent opacity-80 transition-opacity duration-300 group-hover/card:opacity-50"
           aria-hidden
         />
         {card.badge ? (
@@ -966,10 +1013,16 @@ function CardContent({
       {ctaHref ? (
         <div className="flex min-h-0 flex-1 flex-col gap-3 border-t border-white/[0.06] bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)] px-4 pb-4 pt-3 sm:px-5 sm:pb-5 sm:pt-3.5">
           <div className="min-h-0 space-y-1.5">
-            <h3 className="text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
+            <h3
+              className="line-clamp-2 text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl"
+              title={card.title}
+            >
               {card.title}
             </h3>
-            <p className="line-clamp-2 text-xs leading-snug text-text-tertiary sm:text-sm sm:leading-relaxed">
+            <p
+              className="line-clamp-2 text-xs leading-snug text-text-tertiary sm:text-sm sm:leading-relaxed"
+              title={card.description}
+            >
               {card.description}
             </p>
           </div>
@@ -979,28 +1032,25 @@ function CardContent({
             a "view link" affordance, not a hero button. Cyan accent only on
             hover/focus keeps the resting state quiet.
           */}
-          <motion.a
-            href={ctaHref}
+          {/* Plain <a> — no Framer Motion listener overhead across 45 loop
+              copies. Tap feedback is CSS active:scale so it costs nothing
+              when not pressed. Click suppression during drag is handled at
+              the rail level via onClickCapture on the motion.div. */}
+          <a
+            href={isClone ? undefined : ctaHref}
             target="_blank"
             rel="noopener noreferrer"
             draggable={false}
             tabIndex={isClone ? -1 : undefined}
             aria-hidden={isClone ? "true" : undefined}
             onDragStart={(e) => e.preventDefault()}
-            onClickCapture={(e) => {
-              if (suppressClick || isClone) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-            }}
-            whileTap={{ scale: 0.97 }}
             className={cn(
               "group/btn mt-auto inline-flex h-9 w-fit max-w-full shrink cursor-pointer items-center gap-1.5 self-start rounded-full",
               "border border-white/[0.14] bg-white/[0.03] px-3.5 text-[0.75rem] font-medium leading-none tracking-wide text-text-secondary",
-              "no-underline outline-none touch-manipulation",
+              "no-underline outline-none touch-manipulation select-none",
               "transition-[border-color,background-color,color,box-shadow] duration-300 ease-out",
               "hover:border-cyan-300/45 hover:bg-cyan-300/[0.05] hover:text-white hover:shadow-[0_0_14px_rgba(34,211,238,0.16)]",
-              // Focus ring: handled by the global layered ring in globals.css.
+              "active:scale-[0.97]",
             )}
             aria-label={`${card.title} — ${viewDetailsLabel}`}
           >
@@ -1020,15 +1070,21 @@ function CardContent({
               <path d="M7 17L17 7" />
               <path d="M8 7h9v9" />
             </svg>
-          </motion.a>
+          </a>
         </div>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col gap-2 border-t border-white/[0.06] bg-[color-mix(in_oklab,var(--card-bg-inner)_88%,transparent)] px-4 pb-4 pt-3 sm:px-5 sm:pb-5 sm:pt-3.5">
           <div className="min-h-0 space-y-1.5">
-            <h3 className="text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
+            <h3
+              className="line-clamp-2 text-card-heading text-lg font-bold leading-snug tracking-tight sm:text-xl"
+              title={card.title}
+            >
               {card.title}
             </h3>
-            <p className="line-clamp-2 text-xs leading-snug text-text-tertiary sm:text-sm sm:leading-relaxed">
+            <p
+              className="line-clamp-2 text-xs leading-snug text-text-tertiary sm:text-sm sm:leading-relaxed"
+              title={card.description}
+            >
               {card.description}
             </p>
           </div>

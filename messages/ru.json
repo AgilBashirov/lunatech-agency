@@ -7,6 +7,7 @@
     "services": "Услуги",
     "about": "О нас",
     "portfolio": "Портфолио",
+    "blog": "Блог",
     "contact": "Контакты",
     "tagline": "Creative technology",
     "scrollToTop": "Наверх",
@@ -328,7 +329,8 @@
       "summary": "Продуктовый релиз и соцнарезки — shader-герой и модульный сторителлинг.",
       "body": "Realtime-визуалы, аудиореактивные тизеры и модульные биты для paid media.",
       "demoLink": "Компоненты CTA в Aura"
-    }
+    },
+    "emptyPlaceholder": "Портфолио скоро появится."
   },
   "contact": {
     "title": "Создадим вместе что-то сильное",
@@ -356,6 +358,25 @@
       "sima": "Интеграция SİMA",
       "digitalLogin": "Интеграция Digital Login",
       "other": "Другое"
+    }
+  },
+  "blog": {
+    "title": "Блог",
+    "subtitle": "Новости и статьи",
+    "readMore": "Читать →",
+    "empty": "Публикации скоро...",
+    "emptyTitle": "Статьи скоро появятся",
+    "emptySubtitle": "Опубликованных статей пока нет. Скоро появится интересный контент.",
+    "backToHome": "На главную",
+    "page": "Страница",
+    "prevPage": "← Назад",
+    "nextPage": "Вперёд →",
+    "pageOf": "{current} / {total}",
+    "publishedOn": "Дата публикации",
+    "backToList": "← Назад к блогу",
+    "metadata": {
+      "title": "Блог | Lunatech",
+      "description": "Новости и технические статьи от Lunatech"
     }
   },
   "footer": {

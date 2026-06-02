@@ -6,12 +6,18 @@ export function GlassCard({
   children,
   interactive = true,
   disableBackdropBlur = false,
+  disableLift = false,
+  innerClassName,
 }: {
   className?: string;
   children: ReactNode;
   interactive?: boolean;
   /** When true, skip backdrop blur (avoids stacked blur with opaque fills). */
   disableBackdropBlur?: boolean;
+  /** When true, keep hover glow/border but suppress the upward translate. */
+  disableLift?: boolean;
+  /** Extra classes applied to the inner z-[2] wrapper (interactive mode only). */
+  innerClassName?: string;
 }) {
   return (
     <div
@@ -20,7 +26,8 @@ export function GlassCard({
         !disableBackdropBlur && "backdrop-blur-sm md:backdrop-blur-md",
         interactive ? "bg-[var(--card-bg)]" : "bg-[var(--card-bg-inner)]",
         interactive &&
-          "transition-all duration-300 hover:-translate-y-1 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(124,58,237,0.18),0_0_60px_rgba(34,211,238,0.06)]",
+          "transition-all duration-300 hover:border-purple-500/30 hover:shadow-[0_0_40px_rgba(124,58,237,0.18),0_0_60px_rgba(34,211,238,0.06)]",
+        interactive && !disableLift && "hover:-translate-y-1",
         interactive &&
           "before:pointer-events-none before:absolute before:inset-0 before:z-0 before:rounded-2xl before:opacity-0 before:transition-opacity before:duration-300 group-hover:before:opacity-100",
         interactive &&
@@ -31,7 +38,7 @@ export function GlassCard({
       )}
     >
       {interactive ? (
-        <div className="relative z-[2]">{children}</div>
+        <div className={cn("relative z-[2]", innerClassName)}>{children}</div>
       ) : (
         children
       )}

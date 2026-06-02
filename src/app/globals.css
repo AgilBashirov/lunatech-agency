@@ -329,6 +329,10 @@ h2 {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  /* Descenders (g, y, p…) extend below the content box and get clipped by
+     background-clip:text. A small bottom padding expands the paint area so
+     they render fully — this is the canonical fix for this CSS pattern. */
+  padding-bottom: 0.12em;
 }
 
 /* Card / rail titles — solid, slight cyan mix; reads clearly under section H2 gradient */
@@ -635,16 +639,9 @@ h2 {
   --pc-b: 34, 211, 238;
   --pc-delay: 0s;
   position: relative;
-  min-height: 240px;
   width: 100%;
   height: 100%;
   background: radial-gradient(ellipse 130% 90% at 50% 100%, #0a0c14 0%, #040508 50%, #020203 100%);
-}
-
-@media (min-width: 640px) {
-  .portfolio-cover {
-    min-height: 0;
-  }
 }
 
 .pc-orb {
@@ -890,12 +887,21 @@ h2 {
 .cs-card {
   position: relative;
   flex: 0 0 auto;
-  /* (viewport width – total inter-card gap) / visible-cards. Mirrors the JS
-     formula in cards-slider-shadcnui.tsx exactly. */
+  /* Card width: (viewport – total gap) / visible cards. Mirrors JS exactly. */
   width: calc(
     (100cqi - (var(--cs-visible) - 1) * var(--cs-gap)) / var(--cs-visible)
   );
   min-width: 160px;
+  /*
+   * Card height = cover (aspect-video, 9/16 of card width) + text panel (~174px).
+   * Using the same cqi-based formula as width keeps the card proportions
+   * consistent across all breakpoints without any JS measurement.
+   *   cover_h = card_w * 9/16  →  card_w / 16 * 9
+   *   total   = cover_h + 174px
+   */
+  height: calc(
+    ((100cqi - (var(--cs-visible) - 1) * var(--cs-gap)) / var(--cs-visible)) / 16 * 9 + 174px
+  );
 }
 
 /* Premium soft oval drop-shadow on the floor below each card. The inner
@@ -959,6 +965,17 @@ h2 {
   transition: none !important;
 }
 
+/* While a spring animation is running, prevent cards from receiving hover
+ * events. As the rail translates, cards pass under the cursor and their
+ * hover state toggles — triggering purple-overlay + border + shadow
+ * transitions on multiple cards simultaneously. This compounds with the
+ * spring's per-frame compositor work and causes visible frame-drops.
+ * pointer-events:none is applied to .cs-card children (not the rail) so
+ * Framer Motion's drag detection on the rail is unaffected. */
+.cs-viewport[data-animating="true"] .cs-card {
+  pointer-events: none;
+}
+
 /* Animations only run on the card matching the current canonical index
  * (across all 3 loop copies). This handles two problems with one rule:
  *  1. Off-screen cards (anchor or clone) burn no GPU on continuous keyframes
@@ -975,6 +992,12 @@ h2 {
 .cs-card:not([data-active="true"]) *::before,
 .cs-card:not([data-active="true"]) *::after {
   animation-play-state: paused;
+}
+
+/* Keep greyscale filter frozen while the rail is sliding (no transition
+ * flash as cards drift under the cursor during the spring animation). */
+.cs-viewport[data-animating="true"] .cs-card-media {
+  transition: none !important;
 }
 
 /* ---------- Slider arrows (bare chevron, XL cinematic) -------------------

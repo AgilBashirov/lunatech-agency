@@ -47,12 +47,12 @@ export function Hero() {
 
       <div className="relative z-[2] mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12">
         <motion.div
-          initial={reduce ? false : { opacity: 1, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={motionTransition.smooth}
           className="mx-auto max-w-xl text-center md:mx-0 md:max-w-2xl md:text-left"
         >
-          <h1 className="text-gradient-hero text-balance break-words text-4xl font-bold leading-[1.05] tracking-tight drop-shadow-[0_4px_28px_rgba(0,0,0,0.55)] sm:text-5xl md:text-6xl lg:text-[3.5rem] xl:text-[4rem]">
+          <h1 className="text-gradient-hero text-balance break-words text-4xl font-bold leading-[1.12] tracking-tight drop-shadow-[0_4px_28px_rgba(0,0,0,0.55)] sm:text-5xl md:text-6xl lg:text-[3.5rem] xl:text-[4rem]">
             {t("headline")}
           </h1>
           <p className="mt-6 text-base leading-relaxed text-text-secondary md:text-lg [text-shadow:0_1px_28px_rgba(0,0,0,0.72)]">

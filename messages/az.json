@@ -7,6 +7,7 @@
     "services": "Xidmətlər",
     "about": "Haqqımızda",
     "portfolio": "Portfolio",
+    "blog": "Blog",
     "contact": "Əlaqə",
     "tagline": "Kreativ texnologiya",
     "scrollToTop": "Yuxarı",
@@ -328,7 +329,8 @@
       "summary": "Məhsul açılışı və sosial kəsiklər — shader əsaslı hero və modul hekayə.",
       "body": "Real vaxt vizuallar, səs-reaktiv teaserlər və ödənişli media üçün modul hekayəçilik.",
       "demoLink": "Aura: CTA komponentləri"
-    }
+    },
+    "emptyPlaceholder": "Portfolio tezliklə burada olacaq."
   },
   "contact": {
     "title": "Gəlin birlikdə güclü bir şey yaradaq",
@@ -356,6 +358,25 @@
       "sima": "Sima inteqrasiya",
       "digitalLogin": "Digital login inteqrasiya",
       "other": "Digər"
+    }
+  },
+  "blog": {
+    "title": "Bloqlar",
+    "subtitle": "Xəbərlər və məqalələr",
+    "readMore": "Oxu →",
+    "empty": "Yazılar tezliklə...",
+    "emptyTitle": "Məqalələr tezliklə gəlir",
+    "emptySubtitle": "Hələ dərc edilmiş məqalə yoxdur. Tezliklə maraqlı məzmun paylaşacağıq.",
+    "backToHome": "Ana səhifəyə qayıt",
+    "page": "Səhifə",
+    "prevPage": "← Əvvəlki",
+    "nextPage": "Sonrakı →",
+    "pageOf": "{current} / {total}",
+    "publishedOn": "Dərc tarixi",
+    "backToList": "← Bloga qayıt",
+    "metadata": {
+      "title": "Blog | Lunatech",
+      "description": "Lunatech-dən xəbərlər və texniki məqalələr"
     }
   },
   "footer": {

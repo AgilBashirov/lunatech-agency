@@ -7,6 +7,7 @@
     "services": "Services",
     "about": "About",
     "portfolio": "Portfolio",
+    "blog": "Blog",
     "contact": "Contact",
     "tagline": "Creative technology",
     "scrollToTop": "Back to top",
@@ -328,7 +329,8 @@
       "summary": "Product reveal and social cutdowns — shader-led hero and modular story beats.",
       "body": "Real-time visuals, audio-reactive teasers, and paid-media-ready modular storytelling.",
       "demoLink": "CTA components on Aura"
-    }
+    },
+    "emptyPlaceholder": "Portfolio coming soon."
   },
   "contact": {
     "title": "Let’s build something powerful together",
@@ -356,6 +358,25 @@
       "sima": "SİMA integration",
       "digitalLogin": "Digital Login integration",
       "other": "Other"
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "News and articles",
+    "readMore": "Read →",
+    "empty": "Posts coming soon...",
+    "emptyTitle": "Articles coming soon",
+    "emptySubtitle": "No published articles yet. Interesting content is on its way.",
+    "backToHome": "Back to home",
+    "page": "Page",
+    "prevPage": "← Previous",
+    "nextPage": "Next →",
+    "pageOf": "{current} / {total}",
+    "publishedOn": "Published on",
+    "backToList": "← Back to blog",
+    "metadata": {
+      "title": "Blog | Lunatech",
+      "description": "News and technical articles from Lunatech"
     }
   },
   "footer": {

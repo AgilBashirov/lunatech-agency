@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   useId,
   useState,
@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Section } from "@/components/ui/Section";
-import { SERVICE_OPTIONS, type ServiceId } from "@/data/services";
+import type { ContactTopic } from "@/lib/admin/types";
 import { cn } from "@/lib/cn";
 import { motionTransition } from "@/lib/motion";
 
@@ -26,7 +26,7 @@ type FormState = {
   name: string;
   email: string;
   phone: string;
-  service: ServiceId | "";
+  service: string;
   otherMessage: string;
   message: string;
   /** Honeypot — never displayed; if non-empty the API silently drops the submission. */
@@ -342,10 +342,14 @@ function Spinner() {
   );
 }
 
-export function Contact() {
+type ContactProps = {
+  topics: ContactTopic[];
+};
+
+export function Contact({ topics }: ContactProps) {
   const t = useTranslations("contact");
-  const tServices = useTranslations("contact.services");
   const tErrors = useTranslations("contact.errors");
+  const locale = useLocale() as "az" | "en" | "ru";
   const reduce = useReducedMotion();
   const formId = useId();
 
@@ -428,8 +432,8 @@ export function Contact() {
     <Section id="contact" className="z-10 !scroll-mt-0">
       <div className="mx-auto w-full max-w-lg">
         <motion.div
-          initial={reduce ? false : { opacity: 1, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={reduce ? false : { opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={motionTransition.smooth}
           className="text-center"
@@ -444,8 +448,8 @@ export function Contact() {
         </motion.div>
 
         <motion.div
-          initial={reduce ? false : { opacity: 1, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={reduce ? false : { opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ ...motionTransition.smooth, delay: 0.06 }}
           className="relative mt-10"
@@ -554,20 +558,20 @@ export function Contact() {
                   name="service"
                   label={t("formService")}
                   value={form.service}
-                  onChange={(e) =>
-                    update("service", e.target.value as ServiceId | "")
-                  }
+                  onChange={(e) => update("service", e.target.value)}
                   required
                   errorText={errorTextFor("service")}
                 >
                   {/* Empty option keeps the select on a placeholder state
                       without leaking text behind the floating label. */}
                   <option value="" disabled hidden></option>
-                  {SERVICE_OPTIONS.map((opt) => (
-                    <option key={opt.id} value={opt.id}>
-                      {tServices(opt.id)}
-                    </option>
-                  ))}
+                  {[...topics]
+                    .sort((a, b) => a.order - b.order)
+                    .map((topic) => (
+                      <option key={topic.id} value={topic.id}>
+                        {topic[locale] ?? topic.az}
+                      </option>
+                    ))}
                 </FloatSelect>
 
                 <AnimatePresence initial={false}>
