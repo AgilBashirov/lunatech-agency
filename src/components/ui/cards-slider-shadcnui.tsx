@@ -747,9 +747,6 @@ export function CardsSlider({
     if (!autoplay) return;
     if (prefersReducedMotion) return;
     if (count <= 1) return;
-    // Don't auto-advance on mobile (visible: 1) — users expect to control the
-    // single-card-at-a-time rail with their finger; auto-advance fights that.
-    if (visible <= 1) return;
     const id = window.setInterval(() => {
       if (isDraggingRef.current) return;
       if (isHoverRef.current) return;
@@ -772,7 +769,6 @@ export function CardsSlider({
     loop,
     maxVirtualNonLoop,
     prefersReducedMotion,
-    visible,
   ]);
 
   // ————— Render —————
