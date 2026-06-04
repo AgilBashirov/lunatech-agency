@@ -316,6 +316,11 @@ select:-webkit-autofill {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+/* Russian locale: override --font-space-grotesk with Jost (Cyrillic geometric grotesque) */
+[lang="ru"] {
+  --font-space-grotesk: var(--font-ru);
+}
+
 /* Display: Space Grotesk for page-level titles only; body + card titles use Inter (font-sans) */
 h1,
 h2 {

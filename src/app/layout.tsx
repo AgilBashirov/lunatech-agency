@@ -1,5 +1,5 @@
 import type { Viewport } from "next";
-import { Geist_Mono, Inter, Manrope } from "next/font/google";
+import { Geist_Mono, Inter, Jost, Space_Grotesk } from "next/font/google";
 import { getLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import Script from "next/script";
@@ -12,9 +12,17 @@ const inter = Inter({
   display: "swap",
 });
 
-const manrope = Manrope({
-  subsets: ["latin", "cyrillic"],
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
   variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+// Jost: geometric grotesque with Cyrillic support, closest aesthetic match
+// to Space Grotesk for the Russian locale. Cyrillic "у" resembles Latin "y".
+const jost = Jost({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-ru",
   display: "swap",
 });
 
@@ -42,7 +50,7 @@ export default async function RootLayout({ children }: Props) {
   return (
     <html lang={locale} className="dark" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${manrope.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${jost.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
         <PreventZoom />
