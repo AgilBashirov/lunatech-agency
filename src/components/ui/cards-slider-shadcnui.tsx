@@ -380,10 +380,10 @@ export function CardsSlider({
   }, [virtualIdx]);
 
   // Reset when the card set or base changes (e.g. locale swap, count change).
-  // Set forceSnap so the animation effect snaps instead of animating — a
-  // programmatic reset is never user-initiated and must never produce motion.
+  // Store the target so the animation effect snaps (not springs) when it next
+  // runs with virtualIdx === CANONICAL_BASE.
   useEffect(() => {
-    forceSnapRef.current = true;
+    pendingSnapTargetRef.current = CANONICAL_BASE;
     virtualIdxRef.current = CANONICAL_BASE;
     setVirtualIdx(CANONICAL_BASE);
   }, [CANONICAL_BASE, count]);
@@ -409,14 +409,14 @@ export function CardsSlider({
   const hasMountedRef = useRef(false);
 
   /**
-   * Ref set by the CANONICAL_BASE reset effect so the animation effect knows
-   * to snap (not animate) when the base changes — e.g. on first client mount
-   * when `isMounted` turns on loop mode and teleports `virtualIdx` to 15.
-   * Without this, both `slideStep` and `virtualIdx` change in the same render
-   * batch, `shouldSnap` evaluates false, and a huge spring from x=0 to
-   * x=-15*slideStep plays visibly on every page load.
+   * Tracks a pending programmatic snap target set by the CANONICAL_BASE reset
+   * effect. Unlike the previous boolean forceSnapRef, this is consumed only
+   * when the animation effect runs with virtualIdx === target — preventing the
+   * race where the flag was consumed by an earlier animation-effect run
+   * (virtualIdx still 0) and the real snap run (virtualIdx = CANONICAL_BASE)
+   * found the flag already cleared and fired a spring instead.
    */
-  const forceSnapRef = useRef(false);
+  const pendingSnapTargetRef = useRef<number | null>(null);
 
   /**
    * Holds the controls for the currently-running spring so `advance()` can
@@ -446,15 +446,21 @@ export function CardsSlider({
     prevVirtualIdxRef.current = virtualIdx;
     hasMountedRef.current = true;
 
-    // Consume the forceSnap flag set by the CANONICAL_BASE reset effect.
-    const isReset = forceSnapRef.current;
-    // eslint-disable-next-line react-hooks/immutability
-    forceSnapRef.current = false; // consume: intentional read-then-clear pattern
+    // Consume the pending snap only when virtualIdx has reached the target set
+    // by the CANONICAL_BASE reset effect. Consuming early (when virtualIdx is
+    // still at the old value) would leave the real snap run without the flag.
+    const isPendingSnap =
+      pendingSnapTargetRef.current !== null &&
+      virtualIdx === pendingSnapTargetRef.current;
+    if (isPendingSnap) {
+      // eslint-disable-next-line react-hooks/immutability
+      pendingSnapTargetRef.current = null;
+    }
 
     // Resize / mount / programmatic reset: snap instantly; never animate.
     const shouldSnap =
       isFirst ||
-      isReset ||
+      isPendingSnap ||
       prefersReducedMotion ||
       (slideStepChanged && !virtualIdxChanged);
 
