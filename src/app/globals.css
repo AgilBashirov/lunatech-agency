@@ -316,6 +316,18 @@ select:-webkit-autofill {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+/* Prevent accidental text selection on interactive and decorative elements. */
+button,
+a,
+h1, h2, h3, h4, h5, h6,
+label,
+[role="tab"],
+[role="group"],
+[role="region"],
+nav {
+  user-select: none;
+}
+
 /* Russian locale: override --font-space-grotesk with Jost (Cyrillic geometric grotesque) */
 [lang="ru"] {
   --font-space-grotesk: var(--font-ru);
