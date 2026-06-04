@@ -7,7 +7,7 @@
     "services": "Xidmətlər",
     "about": "Haqqımızda",
     "portfolio": "Portfolio",
-    "blog": "Blog",
+    "blog": "Bloq",
     "contact": "Əlaqə",
     "tagline": "Kreativ texnologiya",
     "scrollToTop": "Yuxarı",
@@ -373,9 +373,9 @@
     "nextPage": "Sonrakı →",
     "pageOf": "{current} / {total}",
     "publishedOn": "Dərc tarixi",
-    "backToList": "← Bloga qayıt",
+    "backToList": "← Bloqa qayıt",
     "metadata": {
-      "title": "Blog | Lunatech",
+      "title": "Bloq | Lunatech",
       "description": "Lunatech-dən xəbərlər və texniki məqalələr"
     }
   },
