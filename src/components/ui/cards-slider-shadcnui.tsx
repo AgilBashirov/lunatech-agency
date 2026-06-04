@@ -711,9 +711,28 @@ export function CardsSlider({
   const isHoverRef = useRef(false);
   const isFocusRef = useRef(false);
   const isDraggingRef = useRef(false);
+  // True while the page is being scrolled — prevents autoplay from firing a
+  // spring animation that competes with Lenis/native scroll and causes jank.
+  const isScrollingRef = useRef(false);
   useEffect(() => {
     isDraggingRef.current = isDragging;
   }, [isDragging]);
+
+  // Detect page scroll and suspend autoplay for 300 ms after it stops.
+  useEffect(() => {
+    if (!autoplay) return;
+    let tid: ReturnType<typeof setTimeout>;
+    const onScroll = () => {
+      isScrollingRef.current = true;
+      clearTimeout(tid);
+      tid = setTimeout(() => { isScrollingRef.current = false; }, 300);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(tid);
+    };
+  }, [autoplay]);
 
   const [isVisible, setIsVisible] = useState(true);
   const [isTabVisible, setIsTabVisible] = useState(true);
@@ -751,6 +770,7 @@ export function CardsSlider({
       if (isDraggingRef.current) return;
       if (isHoverRef.current) return;
       if (isFocusRef.current) return;
+      if (isScrollingRef.current) return;
       if (!isVisible || !isTabVisible) return;
       if (Date.now() - lastInteractionAtRef.current < autoplayResumeDelay) return;
       // Non-loop: freeze at the end rather than keep advancing.
