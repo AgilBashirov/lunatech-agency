@@ -73,6 +73,7 @@ export function PortfolioSection({ items }: PortfolioSectionProps) {
           />
           <div className="relative z-[1]">
             <CardsSlider
+              key={locale}
               cards={cards}
               loop
               autoplay

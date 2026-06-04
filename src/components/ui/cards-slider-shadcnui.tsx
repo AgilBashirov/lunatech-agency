@@ -14,6 +14,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useReducer,
   useRef,
@@ -301,7 +302,6 @@ export function CardsSlider({
   // loop=true → 3× card copies. CSS then reveals the right breakpoint count
   // at first paint, but JS removes the copies after hydration → visible flash.
   const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => { setIsMounted(true); }, []);
 
   // Loop only when there are genuinely more cards than fit on screen AND the
   // client has mounted (so we never flash ghost copies on first paint).
@@ -326,7 +326,11 @@ export function CardsSlider({
         setViewportWidth(vp.clientWidth);
       });
     };
-    schedule();
+    // Activate loop + measure synchronously in one React batch so we skip
+    // the intermediate render where isMounted=true but viewportWidth=0.
+    setViewportWidth(vp.clientWidth);
+    setIsMounted(true);
+    // Then watch for subsequent resizes (RAF-throttled to avoid flooding).
     const ro = new ResizeObserver(schedule);
     ro.observe(vp);
     return () => {
@@ -407,6 +411,27 @@ export function CardsSlider({
   const prevSlideStepRef = useRef(0);
   const prevVirtualIdxRef = useRef<number>(CANONICAL_BASE);
   const hasMountedRef = useRef(false);
+
+  /**
+   * Guard for the initialization snap. Becomes true after the first
+   * useLayoutEffect snap fires so we don't run it again after init.
+   */
+  const initSnappedRef = useRef(false);
+
+  /**
+   * Synchronously snap x to the correct CANONICAL_BASE position before the
+   * browser paints whenever virtualIdx has reached CANONICAL_BASE and
+   * slideStep is known. This eliminates the 1-frame flash where the rail
+   * is at x=0 while loop copies are already rendered — the `useEffect`
+   * animation runs AFTER paint, so without this the browser would briefly
+   * show the wrong copy before the spring/snap takes over.
+   */
+  useLayoutEffect(() => {
+    if (initSnappedRef.current) return;
+    if (slideStep <= 0 || virtualIdx !== CANONICAL_BASE) return;
+    x.set(-CANONICAL_BASE * slideStep);
+    initSnappedRef.current = true;
+  }, [CANONICAL_BASE, slideStep, virtualIdx, x]);
 
   /**
    * Tracks a pending programmatic snap target set by the CANONICAL_BASE reset
