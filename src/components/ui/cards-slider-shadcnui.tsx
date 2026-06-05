@@ -302,6 +302,9 @@ export function CardsSlider({
   // loop=true → 3× card copies. CSS then reveals the right breakpoint count
   // at first paint, but JS removes the copies after hydration → visible flash.
   const [isMounted, setIsMounted] = useState(false);
+  // Becomes true after the first snap to the canonical position — until then
+  // the container is invisible so the browser never paints a wrong x value.
+  const [isReady, setIsReady] = useState(false);
 
   // Loop only when there are genuinely more cards than fit on screen AND the
   // client has mounted (so we never flash ghost copies on first paint).
@@ -491,6 +494,9 @@ export function CardsSlider({
 
     if (shouldSnap) {
       x.set(target);
+      // Reveal the slider once we have snapped to the canonical position —
+      // this is the first correct frame, so we can safely show it.
+      if (!isReady && virtualIdx === CANONICAL_BASE) setIsReady(true);
       // Clear any stale animating flag when we snap.
       if (viewportRef.current) viewportRef.current.removeAttribute("data-animating");
       return;
@@ -520,7 +526,7 @@ export function CardsSlider({
       controls.stop();
       clearAnimating();
     };
-  }, [virtualIdx, slideStep, prefersReducedMotion, x]);
+  }, [CANONICAL_BASE, isReady, virtualIdx, slideStep, prefersReducedMotion, x]);
 
   // ————— Navigation API —————
   const lastInteractionAtRef = useRef(0);
@@ -823,7 +829,11 @@ export function CardsSlider({
       // (PortfolioSection's slider wrapper is itself w-full inside an
       // `uncontained` Section, so this expands to the page edges minus the
       // outer responsive padding below).
-      className="group/slider relative w-full px-3 py-4 sm:px-5 sm:py-5 md:px-8 md:py-6 lg:px-12 xl:px-16"
+      className={cn(
+        "group/slider relative w-full px-3 py-4 sm:px-5 sm:py-5 md:px-8 md:py-6 lg:px-12 xl:px-16",
+        "transition-opacity duration-150",
+        isReady ? "opacity-100" : "opacity-0",
+      )}
       onMouseEnter={() => {
         isHoverRef.current = true;
       }}
