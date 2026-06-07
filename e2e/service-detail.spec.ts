@@ -354,19 +354,15 @@ test.describe("Detail page is moon-free (no MoonBackdrop)", () => {
 
 test.describe("Home regression — moon and learnMore intact", () => {
   test("home page still ships the MoonScene chunk", async ({ page }) => {
-    // Structural check — the runtime `.moon-backdrop` wrapper depends on the
-    // dynamic three.js chunk fully loading, which is unreliable in headless
-    // dev mode. Instead we assert the home page references the MoonScene
-    // chunk in its served HTML; the home keeping that chunk is the actual
-    // regression we want to guard against, since the detail-page refactor
-    // could otherwise quietly tree-shake it out of the home bundle too.
+    // Regression guard: MoonBackdrop (three.js + @react-three) must still be
+    // included in the home bundle. We verify this by waiting for the dynamic
+    // chunk to actually mount its `.moon-backdrop` wrapper in the DOM — if the
+    // import were tree-shaken or removed, this element would never appear.
+    // (Turbopack uses content-hashed chunk names that don't embed the module
+    // path, so checking the HTML source for "MoonScene" is not portable.)
     const response = await page.goto("/en", { waitUntil: "load" });
     expect(response?.status()).toBe(200);
-    const html = await page.content();
-    expect(
-      /MoonScene|moon[-_/]scene/i.test(html),
-      "home HTML must still reference the MoonScene chunk",
-    ).toBe(true);
+    await page.locator(".moon-backdrop").waitFor({ state: "attached", timeout: 40000 });
   });
 
   for (const locale of LOCALES) {

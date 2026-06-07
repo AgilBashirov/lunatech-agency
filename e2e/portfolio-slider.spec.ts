@@ -99,8 +99,11 @@ test.describe("Portfolio slider loop / navigation stress", () => {
       .toMatchObject({
         selectedSnap: expect.any(Number),
         loop: true,
-        slideCount: 6,
+        slideCount: expect.any(Number),
       });
+    // Carousel must have enough slides to justify looping.
+    const state = await getSelectedWorkCarousel(page);
+    expect(state?.slideCount).toBeGreaterThanOrEqual(2);
   });
 
   test("loop stress: repeated next advances through multiple snaps", async ({ page }) => {

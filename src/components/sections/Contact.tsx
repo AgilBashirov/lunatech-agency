@@ -516,7 +516,7 @@ export function Contact({ topics }: ContactProps) {
                 </div>
 
                 <FloatInput
-                  id={`${formId}-name`}
+                  id="contact-name"
                   name="name"
                   label={t("formName")}
                   value={form.name}
@@ -528,7 +528,7 @@ export function Contact({ topics }: ContactProps) {
                 />
 
                 <FloatInput
-                  id={`${formId}-email`}
+                  id="contact-email"
                   name="email"
                   type="email"
                   label={t("formEmail")}
@@ -614,7 +614,7 @@ export function Contact({ topics }: ContactProps) {
                 </AnimatePresence>
 
                 <FloatTextarea
-                  id={`${formId}-message`}
+                  id="contact-message"
                   name="message"
                   label={t("formMessage")}
                   value={form.message}

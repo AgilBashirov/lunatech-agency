@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 const MoonScene = dynamic(
-  () => import("./MoonScene").then((m) => m.MoonScene),
+  () => import(/* webpackChunkName: "MoonScene" */ "./MoonScene").then((m) => m.MoonScene),
   { ssr: false, loading: () => null },
 );
 

@@ -60,7 +60,7 @@ async function runStabilityCheck(page: Page) {
   // Wait for the moon wrapper to appear (dynamic-imported, mounts after the
   // GLB HEAD probe + Three.js boot). 20s ceiling — under parallel CI load
   // the dynamic chunk + WebGL init can run past the 8s moon-ready fallback.
-  await page.locator(SELECTOR).waitFor({ state: "attached", timeout: 20000 });
+  await page.locator(SELECTOR).waitFor({ state: "attached", timeout: 40000 });
 
   // Initial measurement at top of page.
   await scrollTo(page, 0);

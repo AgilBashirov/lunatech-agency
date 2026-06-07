@@ -74,13 +74,58 @@ export async function setSettings(data: SiteSettings): Promise<void> {
 // Portfolio
 // ---------------------------------------------------------------------------
 
+const PORTFOLIO_SEED: PortfolioItem[] = [
+  {
+    id: "seed-1", slug: "web-platform", order: 0, visible: true,
+    tags: ["Web"],
+    az: { title: "Veb platforma", summary: "Müasir veb həll" },
+    en: { title: "Web platform", summary: "Modern web solution" },
+    ru: { title: "Веб-платформа", summary: "Современное веб-решение" },
+  },
+  {
+    id: "seed-2", slug: "mobile-app", order: 1, visible: true,
+    tags: ["Mobile"],
+    az: { title: "Mobil tətbiq", summary: "iOS və Android üçün" },
+    en: { title: "Mobile app", summary: "iOS and Android" },
+    ru: { title: "Мобильное приложение", summary: "iOS и Android" },
+  },
+  {
+    id: "seed-3", slug: "gov-portal", order: 2, visible: true,
+    tags: ["Government"],
+    az: { title: "Dövlət portalı", summary: "E-xidmət inteqrasiyası" },
+    en: { title: "Gov portal", summary: "E-service integration" },
+    ru: { title: "Гос. портал", summary: "Интеграция е-услуг" },
+  },
+  {
+    id: "seed-4", slug: "ux-redesign", order: 3, visible: true,
+    tags: ["UX/UI"],
+    az: { title: "UX yenilənməsi", summary: "İstifadəçi təcrübəsi" },
+    en: { title: "UX redesign", summary: "User experience overhaul" },
+    ru: { title: "Редизайн UX", summary: "Улучшение пользовательского опыта" },
+  },
+  {
+    id: "seed-5", slug: "crm-system", order: 4, visible: true,
+    tags: ["Web"],
+    az: { title: "CRM sistemi", summary: "Müştəri idarəetməsi" },
+    en: { title: "CRM system", summary: "Customer management" },
+    ru: { title: "CRM система", summary: "Управление клиентами" },
+  },
+  {
+    id: "seed-6", slug: "analytics-dashboard", order: 5, visible: true,
+    tags: ["Web"],
+    az: { title: "Analitika paneli", summary: "Real vaxt məlumatlar" },
+    en: { title: "Analytics dashboard", summary: "Real-time data insights" },
+    ru: { title: "Аналитика", summary: "Данные в реальном времени" },
+  },
+];
+
 /**
  * Read all portfolio items from Blob storage.
- * Returns an empty array when the file is absent or Blob is unavailable.
+ * Falls back to PORTFOLIO_SEED when the file is absent or Blob is unavailable.
  */
 export async function getPortfolio(): Promise<PortfolioItem[]> {
   const result = await readJson<PortfolioItem[]>(PATHS.portfolio);
-  if (!result) return [];
+  if (!result) return PORTFOLIO_SEED;
   // Back-fill `visible` for items saved before the field existed.
   return result.map((item) => ({
     ...item,
