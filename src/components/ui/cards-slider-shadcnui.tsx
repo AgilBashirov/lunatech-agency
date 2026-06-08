@@ -87,8 +87,10 @@ const SPRING_TRANSITION = {
   damping: 32,
   mass: 1,
 };
-/** Drag velocity threshold (px/s) that forces a one-slide advance regardless of proximity. */
-const FLICK_VELOCITY = 320;
+/** Drag velocity threshold (px/s) that forces a one-slide advance regardless of proximity.
+ *  180 is intentionally low so a quick mobile flick reliably advances even when the
+ *  finger travels less than 50% of the card width before release. */
+const FLICK_VELOCITY = 180;
 
 /**
  * For seamless infinite loop we render `count * LOOP_COPIES` cards in the track
