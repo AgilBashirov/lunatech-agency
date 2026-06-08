@@ -2,21 +2,12 @@
 
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
-import {
-  animate,
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  type MotionValue,
-  type PanInfo,
-} from "framer-motion";
+import EmblaCarousel, { type EmblaCarouselType } from "embla-carousel";
+import Autoplay from "embla-carousel-autoplay";
 import {
   useCallback,
   useEffect,
   useId,
-  useLayoutEffect,
-  useMemo,
-  useReducer,
   useRef,
   useState,
   type KeyboardEvent,
@@ -32,8 +23,7 @@ export type CardsSliderCard = {
   imageUrl?: string;
   /** Custom cover, e.g. `PortfolioCoverArt` */
   cover?: ReactNode;
-  /** Optional small chip rendered over the cover (e.g. "Concept"). Kept on the
-   *  card type so the slider stays data-driven for the future API source. */
+  /** Optional small chip rendered over the cover (e.g. "Concept"). */
   badge?: string;
 };
 
@@ -80,75 +70,6 @@ const DEMO_CARDS: CardsSliderCard[] = [
   },
 ];
 
-/** Transition used by arrow/dot/keyboard navigation + drag-end snap. */
-const SPRING_TRANSITION = {
-  type: "spring" as const,
-  stiffness: 280,
-  damping: 32,
-  mass: 1,
-};
-/** Drag velocity threshold (px/s) that forces a one-slide advance regardless of proximity.
- *  180 is intentionally low so a quick mobile flick reliably advances even when the
- *  finger travels less than 50% of the card width before release. */
-const FLICK_VELOCITY = 180;
-
-/**
- * For seamless infinite loop we render `count * LOOP_COPIES` cards in the track
- * and keep the canonical position anchored to the *middle* copy. After any
- * animation settles, the virtual index is silently wrapped back into the
- * middle copy — visually identical because adjacent copies share content.
- */
-const LOOP_COPIES = 3;
-const LOOP_ANCHOR_COPY = 1;
-
-
-type SliderLayout = {
-  /** Number of cards visible simultaneously at this breakpoint. */
-  visible: number;
-  /** Flex gap (px) between cards. */
-  gap: number;
-  /** Whether arrow controls should render at this breakpoint. */
-  arrows: boolean;
-};
-
-/**
- * Resolves the slider layout from the window width.
- *  - <640px (mobile)         → 1 card, no arrows
- *  - 640..1023 (tablet)      → 3 cards, no arrows
- *  - 1024..1439 (laptop)     → 4 cards, arrows
- *  - 1440..1919 (wide)       → 5 cards, arrows
- *  - ≥1920px (ultra-wide)    → 6 cards, arrows  ← prevents oversized cards on 1920+ displays
- */
-function resolveLayout(width: number): SliderLayout {
-  if (width >= 1920) return { visible: 6, gap: 28, arrows: true };
-  if (width >= 1440) return { visible: 5, gap: 28, arrows: true };
-  if (width >= 1024) return { visible: 4, gap: 24, arrows: true };
-  if (width >= 640) return { visible: 3, gap: 20, arrows: false };
-  return { visible: 1, gap: 16, arrows: false };
-}
-
-function useSliderLayout(): SliderLayout {
-  // Start with a neutral "mobile" default for SSR; real value is computed on mount.
-  const [layout, setLayout] = useState<SliderLayout>(() => ({
-    visible: 1,
-    gap: 16,
-    arrows: false,
-  }));
-
-  useEffect(() => {
-    const apply = () => setLayout(resolveLayout(window.innerWidth));
-    apply();
-    window.addEventListener("resize", apply, { passive: true });
-    window.addEventListener("orientationchange", apply);
-    return () => {
-      window.removeEventListener("resize", apply);
-      window.removeEventListener("orientationchange", apply);
-    };
-  }, []);
-
-  return layout;
-}
-
 function BrandArrow({
   direction,
   gradId,
@@ -172,8 +93,6 @@ function BrandArrow({
       id={id}
       type="button"
       className={cn(
-        // Bare 56×56 chevron — no pill, no glass. The drop-shadow + cyan
-        // glow on hover are defined by `.cs-arrow` in globals.css.
         "cs-arrow",
         isPrev ? "cs-arrow-prev" : "cs-arrow-next",
         "absolute top-1/2 z-40 -translate-y-1/2 touch-manipulation",
@@ -237,8 +156,6 @@ function Dot({
       onClick={() => onSelect(index)}
       className={cn(
         "relative h-2 rounded-full transition-all duration-300 ease-out touch-manipulation",
-        // Focus ring: global premium layered ring (see globals.css). No
-        // local utility — would otherwise shadow the global selector.
         active
           ? "w-8 bg-[var(--neon-cyan)] shadow-[0_0_10px_rgba(34,211,238,0.45)]"
           : "w-2 bg-white/20 hover:bg-white/35 motion-reduce:transition-none",
@@ -253,11 +170,11 @@ type CardsSliderProps = {
   cards?: CardsSliderCard[];
   /** When true, wraps seamlessly from the last card back to the first. */
   loop?: boolean;
-  /** When true, advances automatically on a timer (pauses on hover/drag/hidden/interaction). */
+  /** When true, advances automatically on a timer. */
   autoplay?: boolean;
   /** Milliseconds between autoplay advances. Defaults to 5000. */
   autoplayDelay?: number;
-  /** Milliseconds to pause autoplay after a user interaction. Defaults to 6000. */
+  /** Milliseconds to pause autoplay after user interaction. Defaults to 6000. */
   autoplayResumeDelay?: number;
   /** When arrows are shown. "desktop" = only at ≥1024px. */
   arrowsOn?: ArrowVisibility;
@@ -274,7 +191,7 @@ type CardsSliderProps = {
 
 export function CardsSlider({
   cards: cardsProp,
-  loop: loopProp = false,
+  loop = false,
   autoplay = false,
   autoplayDelay = 5000,
   autoplayResumeDelay = 6000,
@@ -289,6 +206,7 @@ export function CardsSlider({
 }: CardsSliderProps) {
   const cards = cardsProp ?? DEMO_CARDS;
   const count = cards.length;
+
   const uid = useId();
   const idBase = `cs${uid.replace(/[^a-zA-Z0-9]/g, "")}`;
   const gradPrev = `${idBase}-gp`;
@@ -296,411 +214,140 @@ export function CardsSlider({
   const prevBtnId = `selected-work-prev-${idBase}`;
   const nextBtnId = `selected-work-next-${idBase}`;
 
-  const layout = useSliderLayout();
-  const visible = Math.max(1, Math.min(layout.visible, count));
-
-  // Gate loop on client mount so SSR never renders ghost copies.
-  // Without this guard, SSR starts with visible=1 (no window), making
-  // loop=true → 3× card copies. CSS then reveals the right breakpoint count
-  // at first paint, but JS removes the copies after hydration → visible flash.
-  const [isMounted, setIsMounted] = useState(false);
-  // Becomes true after the first snap to the canonical position — until then
-  // the container is invisible so the browser never paints a wrong x value.
-  const [isReady, setIsReady] = useState(false);
-
-  // Loop only when there are genuinely more cards than fit on screen AND the
-  // client has mounted (so we never flash ghost copies on first paint).
-  const loop = loopProp && count > visible && isMounted;
-  const gap = layout.gap;
-
-  const containerRef = useRef<HTMLDivElement>(null);
+  // Direct Embla initialization via useRef + useEffect — avoids the
+  // useEmblaCarousel hook's internal useState-as-ref pattern which doesn't
+  // initialize reliably in React 19 (the state setter is called as a ref
+  // callback, causing the viewport state to never be populated).
   const viewportRef = useRef<HTMLDivElement>(null);
-  const x: MotionValue<number> = useMotionValue(0);
-  const prefersReducedMotion = useReducedMotion() ?? false;
+  const [emblaApi, setEmblaApi] = useState<EmblaCarouselType | null>(null);
 
-  // Measure the rail viewport so card widths can divide it cleanly.
-  const [viewportWidth, setViewportWidth] = useState(0);
+  // Stable autoplay plugin instance — recreated only when autoplayDelay changes.
+  const autoplayRef = useRef<ReturnType<typeof Autoplay> | null>(null);
+  if (autoplay && count > 1 && !autoplayRef.current) {
+    autoplayRef.current = Autoplay({
+      delay: Math.max(1500, autoplayDelay),
+      stopOnInteraction: true,
+      stopOnMouseEnter: true,
+    });
+  }
+
+  // Initialize Embla on mount using the stable viewportRef.
   useEffect(() => {
-    const vp = viewportRef.current;
-    if (!vp) return;
-    let rafId = 0;
-    const schedule = () => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = 0;
-        setViewportWidth(vp.clientWidth);
-      });
-    };
-    // Activate loop + measure synchronously in one React batch so we skip
-    // the intermediate render where isMounted=true but viewportWidth=0.
-    setViewportWidth(vp.clientWidth);
-    setIsMounted(true);
-    // Then watch for subsequent resizes (RAF-throttled to avoid flooding).
-    const ro = new ResizeObserver(schedule);
-    ro.observe(vp);
+    const el = viewportRef.current;
+    if (!el) return;
+
+    const plugins = autoplay && count > 1 && autoplayRef.current
+      ? [autoplayRef.current]
+      : [];
+
+    const embla = EmblaCarousel(
+      el,
+      {
+        loop: loop && count > 1,
+        align: "start",
+        watchDrag: count > 1,
+      },
+      plugins,
+    );
+
+    setEmblaApi(embla);
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      ro.disconnect();
+      embla.destroy();
+      setEmblaApi(null);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally empty — initialized once on mount; keyed by locale in parent
 
-  // Card width — used ONLY for animation math (slideStep, dragConstraints).
-  // Visual sizing is owned entirely by CSS (.cs-card in globals.css) via the
-  // `100cqi`-based formula — JS never writes width/minWidth/maxWidth inline
-  // styles on the card element, so there is no JS-driven layout shift.
-  //
-  // When only 1 card exists, `visible` is clamped to 1 but CSS still uses the
-  // breakpoint-based `--cs-visible` (e.g. 3 on tablet) — so the lone card
-  // renders at the natural multi-card width. We mirror that here so slideStep
-  // is accurate in case navigation is ever enabled for a single-item set.
-  const cardWidth = useMemo(() => {
-    if (viewportWidth <= 0) return 0;
-    const widthVisible = count === 1 ? layout.visible : visible;
-    const totalGap = (widthVisible - 1) * gap;
-    return Math.max(160, Math.floor((viewportWidth - totalGap) / widthVisible));
-  }, [viewportWidth, visible, gap, count, layout.visible]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(count > 1);
 
-  /** Distance to advance for one slide step. */
-  const slideStep = cardWidth + gap;
-
-  /** Base virtual index for the middle copy, so "0" canonically equals this value. */
-  const CANONICAL_BASE = loop ? count * LOOP_ANCHOR_COPY : 0;
-
-  /**
-   * Virtual index is the SOURCE OF TRUTH for the slider position. The track's
-   * x motion value is derived from it. Rapid clicks bump this integer
-   * deterministically; React re-renders, the effect below retargets the
-   * animation (or snaps instantly on resize). No drift, no lost clicks.
-   */
-  const [virtualIdx, setVirtualIdx] = useReducer(
-    (_: number, next: number) => next,
-    CANONICAL_BASE,
-  );
-
-  /**
-   * Synchronous mirror of `virtualIdx`. Event handlers (rapid clicks, drag end,
-   * autoplay tick) write here BEFORE React commits the next render — that way
-   * a follow-up handler in the same tick reads the latest position rather than
-   * the stale React state value, and we cannot lose increments.
-   */
-  const virtualIdxRef = useRef<number>(CANONICAL_BASE);
+  // Sync React state from Embla after any scroll/reInit.
   useEffect(() => {
-    virtualIdxRef.current = virtualIdx;
-  }, [virtualIdx]);
+    if (!emblaApi) return;
+    const viewport = viewportRef.current;
 
-  // Reset when the card set or base changes (e.g. locale swap, count change).
-  // Store the target so the animation effect snaps (not springs) when it next
-  // runs with virtualIdx === CANONICAL_BASE.
-  useEffect(() => {
-    pendingSnapTargetRef.current = CANONICAL_BASE;
-    virtualIdxRef.current = CANONICAL_BASE;
-    setVirtualIdx(CANONICAL_BASE);
-  }, [CANONICAL_BASE, count]);
-
-  /** Active canonical index (0..count-1) — drives dots / live region. */
-  const activeIndex = useMemo(() => {
-    if (count <= 0) return 0;
-    return (((virtualIdx - CANONICAL_BASE) % count) + count) % count;
-  }, [virtualIdx, CANONICAL_BASE, count]);
-
-  /** In non-loop mode, how far we can scroll before running out of cards. */
-  const maxVirtualNonLoop = useMemo(() => {
-    if (loop) return Number.POSITIVE_INFINITY;
-    return Math.max(0, count - visible);
-  }, [loop, count, visible]);
-
-  const showNav = count > 1 && (loop || maxVirtualNonLoop > 0);
-  const dotsVisible = (showDots ?? true) && count > 1 && (loop || maxVirtualNonLoop > 0);
-
-  // Track the previous slideStep so we can detect resize vs navigation.
-  const prevSlideStepRef = useRef(0);
-  const prevVirtualIdxRef = useRef<number>(CANONICAL_BASE);
-  const hasMountedRef = useRef(false);
-
-  /**
-   * Guard for the initialization snap. Becomes true after the first
-   * useLayoutEffect snap fires so we don't run it again after init.
-   */
-  const initSnappedRef = useRef(false);
-
-  /**
-   * Synchronously snap x to the correct CANONICAL_BASE position before the
-   * browser paints whenever virtualIdx has reached CANONICAL_BASE and
-   * slideStep is known. This eliminates the 1-frame flash where the rail
-   * is at x=0 while loop copies are already rendered — the `useEffect`
-   * animation runs AFTER paint, so without this the browser would briefly
-   * show the wrong copy before the spring/snap takes over.
-   */
-  useLayoutEffect(() => {
-    if (initSnappedRef.current) return;
-    if (slideStep <= 0 || virtualIdx !== CANONICAL_BASE) return;
-    x.set(-CANONICAL_BASE * slideStep);
-    initSnappedRef.current = true;
-  }, [CANONICAL_BASE, slideStep, virtualIdx, x]);
-
-  /**
-   * Tracks a pending programmatic snap target set by the CANONICAL_BASE reset
-   * effect. Unlike the previous boolean forceSnapRef, this is consumed only
-   * when the animation effect runs with virtualIdx === target — preventing the
-   * race where the flag was consumed by an earlier animation-effect run
-   * (virtualIdx still 0) and the real snap run (virtualIdx = CANONICAL_BASE)
-   * found the flag already cleared and fired a spring instead.
-   */
-  const pendingSnapTargetRef = useRef<number | null>(null);
-
-  /**
-   * Holds the controls for the currently-running spring so `advance()` can
-   * stop it before teleporting x (safeWrap). Without this, the dying spring
-   * fights the x.set() for 1-2 frames and produces a visible lurch.
-   */
-  const animControlsRef = useRef<{ stop: () => void } | null>(null);
-
-  /**
-   * Drive x from virtualIdx + slideStep. This effect is the SINGLE WRITER for
-   * animated motion. Any navigation change (setVirtualIdx) reruns it, stops the
-   * previous animation cleanly, and starts a fresh one from the current x.
-   *
-   * Important: callers (advance / drag end / autoplay) ALWAYS pre-wrap
-   * virtualIdx + x so the target stays inside the rendered triple-copy track.
-   * This effect therefore never has to wrap post-animation, and the rail can
-   * never scroll into a blank region — even under sustained rapid clicking.
-   */
-  useEffect(() => {
-    if (slideStep <= 0) return;
-    const target = -virtualIdx * slideStep;
-
-    const isFirst = !hasMountedRef.current;
-    const slideStepChanged = prevSlideStepRef.current !== slideStep;
-    const virtualIdxChanged = prevVirtualIdxRef.current !== virtualIdx;
-    prevSlideStepRef.current = slideStep;
-    prevVirtualIdxRef.current = virtualIdx;
-    hasMountedRef.current = true;
-
-    // Consume the pending snap only when virtualIdx has reached the target set
-    // by the CANONICAL_BASE reset effect. Consuming early (when virtualIdx is
-    // still at the old value) would leave the real snap run without the flag.
-    const isPendingSnap =
-      pendingSnapTargetRef.current !== null &&
-      virtualIdx === pendingSnapTargetRef.current;
-    if (isPendingSnap) {
-      // eslint-disable-next-line react-hooks/immutability
-      pendingSnapTargetRef.current = null;
-    }
-
-    // Resize / mount / programmatic reset: snap instantly; never animate.
-    const shouldSnap =
-      isFirst ||
-      isPendingSnap ||
-      prefersReducedMotion ||
-      (slideStepChanged && !virtualIdxChanged);
-
-    if (shouldSnap) {
-      x.set(target);
-      // Reveal the slider once we have snapped to the canonical position —
-      // this is the first correct frame, so we can safely show it.
-      if (!isReady && virtualIdx === CANONICAL_BASE) setIsReady(true);
-      // Clear any stale animating flag when we snap.
-      if (viewportRef.current) viewportRef.current.removeAttribute("data-animating");
-      return;
-    }
-
-    // Mark viewport as animating — CSS suppresses pointer-events on cards
-    // so hover doesn't fire as cards pass under the cursor during the spring.
-    if (viewportRef.current) viewportRef.current.setAttribute("data-animating", "true");
-
-    // Idempotent clear — called from both the natural-complete path and the
-    // interrupted-by-cleanup path so `data-animating` is always removed.
-    const clearAnimating = () => {
-      animControlsRef.current = null;
-      if (viewportRef.current) viewportRef.current.removeAttribute("data-animating");
+    const sync = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+      setCanPrev(emblaApi.canScrollPrev());
+      setCanNext(emblaApi.canScrollNext());
     };
+    const onScroll = () => { viewport?.setAttribute("data-animating", "true"); };
+    const onSettle = () => { viewport?.removeAttribute("data-animating"); };
+    const onPointerDown = () => { viewport?.setAttribute("data-dragging", "true"); };
+    const onPointerUp = () => { viewport?.removeAttribute("data-dragging"); };
 
-    const controls = animate(x, target, SPRING_TRANSITION);
-    animControlsRef.current = controls;
-
-    // Remove the flag when the spring finishes naturally. `animate()` in
-    // Framer Motion 12 returns a thenable (Promise-like); `.then` resolves
-    // on completion. If `controls.stop()` is called first the promise never
-    // resolves, so the cleanup path below handles that case instead.
-    void (controls as unknown as Promise<void>).then?.(clearAnimating);
-
+    sync();
+    emblaApi
+      .on("select", sync)
+      .on("reInit", sync)
+      .on("scroll", onScroll)
+      .on("settle", onSettle)
+      .on("pointerDown", onPointerDown)
+      .on("pointerUp", onPointerUp);
     return () => {
-      controls.stop();
-      clearAnimating();
+      emblaApi
+        .off("select", sync)
+        .off("reInit", sync)
+        .off("scroll", onScroll)
+        .off("settle", onSettle)
+        .off("pointerDown", onPointerDown)
+        .off("pointerUp", onPointerUp);
     };
-  }, [CANONICAL_BASE, isReady, virtualIdx, slideStep, prefersReducedMotion, x]);
+  }, [emblaApi]);
 
-  // ————— Navigation API —————
-  const lastInteractionAtRef = useRef(0);
-  const markInteraction = useCallback(() => {
-    lastInteractionAtRef.current = Date.now();
-  }, []);
+  // After user swipe, restart autoplay after autoplayResumeDelay.
+  useEffect(() => {
+    if (!autoplay || !emblaApi || !autoplayRef.current) return;
+    const plugin = autoplayRef.current;
+    let tid: ReturnType<typeof setTimeout>;
+    const resume = () => {
+      clearTimeout(tid);
+      tid = setTimeout(() => plugin.play(), autoplayResumeDelay);
+    };
+    emblaApi.on("pointerUp", resume);
+    return () => {
+      emblaApi.off("pointerUp", resume);
+      clearTimeout(tid);
+    };
+  }, [autoplay, autoplayResumeDelay, emblaApi]);
 
-  /**
-   * Pre-animation safe-wrap. Given a *raw* desired virtualIdx, returns the
-   * equivalent index inside the canonical range plus the x shift needed to
-   * keep the visual position content-identical.
-   *
-   * Why: the rendered track only contains `LOOP_COPIES * count` cards. If we
-   * let `virtualIdx` (and therefore the animation target `-virtualIdx*S`)
-   * drift outside that range, the viewport scrolls past the last rendered
-   * card and shows blank space. By shifting both `virtualIdx` and `x` by the
-   * same multiple of `count * slideStep` BEFORE starting the animation, the
-   * visual stays identical (adjacent loop copies are pixel-equal) while
-   * the new target stays comfortably inside rendered bounds.
-   */
-  const safeWrap = useCallback(
-    (rawIdx: number, currentX: number): { idx: number; nextX: number } => {
-      if (!loop || count <= 0 || slideStep <= 0) {
-        return { idx: rawIdx, nextX: currentX };
-      }
-      // Highest virtualIdx such that the animation target plus `visible` cards
-      // stays inside the rendered track. Below 0 we wrap up; above this we wrap down.
-      const maxSafe = Math.max(0, LOOP_COPIES * count - visible);
-      let idx = rawIdx;
-      let nextX = currentX;
-      const period = count * slideStep;
-      while (idx > maxSafe) {
-        idx -= count;
-        nextX += period; // shift the rail right by one period (content-identical)
-      }
-      while (idx < 0) {
-        idx += count;
-        nextX -= period;
-      }
-      return { idx, nextX };
-    },
-    [count, loop, slideStep, visible],
-  );
+  // Pause autoplay while the page is being scrolled (prevents spring jank).
+  useEffect(() => {
+    if (!autoplay || !autoplayRef.current) return;
+    const plugin = autoplayRef.current;
+    let tid: ReturnType<typeof setTimeout>;
+    const onScroll = () => {
+      plugin.stop();
+      clearTimeout(tid);
+      tid = setTimeout(() => plugin.play(), 300);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(tid);
+    };
+  }, [autoplay]);
 
-  /**
-   * Single navigation entry point. Reads the latest virtualIdx synchronously
-   * from the ref (so rapid clicks don't see stale state), applies safeWrap,
-   * commits to ref + state. The animation effect picks it up and animates x
-   * to the new (already-safe) target.
-   */
-  const advance = useCallback(
-    (delta: number) => {
-      if (!showNav || count <= 0) return;
-      const prev = virtualIdxRef.current;
-      const raw = prev + delta;
-      let nextIdx: number;
-      if (loop) {
-        const wrapped = safeWrap(raw, x.get());
-        if (wrapped.nextX !== x.get()) {
-          // Stop any running spring BEFORE teleporting x so the dying animation
-          // cannot fight the position shift for 1-2 frames (visible lurch).
-          animControlsRef.current?.stop();
-          animControlsRef.current = null;
-          x.set(wrapped.nextX);
-        }
-        nextIdx = wrapped.idx;
-      } else {
-        nextIdx = Math.max(0, Math.min(maxVirtualNonLoop, raw));
-      }
-      if (nextIdx === prev) return; // nothing to do (clamp at non-loop end)
-      virtualIdxRef.current = nextIdx;
-      setVirtualIdx(nextIdx);
-    },
-    [count, loop, maxVirtualNonLoop, safeWrap, showNav, x],
-  );
+  // Pause autoplay when the browser tab is hidden.
+  useEffect(() => {
+    if (!autoplay || !autoplayRef.current) return;
+    const plugin = autoplayRef.current;
+    const apply = () => {
+      if (document.hidden) plugin.stop();
+      else plugin.play();
+    };
+    document.addEventListener("visibilitychange", apply);
+    return () => document.removeEventListener("visibilitychange", apply);
+  }, [autoplay]);
 
-  const goNext = useCallback(() => {
-    markInteraction();
-    advance(1);
-  }, [advance, markInteraction]);
+  const goPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const goNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const goTo = useCallback((i: number) => emblaApi?.scrollTo(i), [emblaApi]);
 
-  const goPrev = useCallback(() => {
-    markInteraction();
-    advance(-1);
-  }, [advance, markInteraction]);
-
-  const goToCanonical = useCallback(
-    (targetCanonical: number) => {
-      if (count <= 0) return;
-      markInteraction();
-      if (loop) {
-        // Choose the shortest signed path around the loop, then defer to advance().
-        const prev = virtualIdxRef.current;
-        const prevCanonical =
-          (((prev - CANONICAL_BASE) % count) + count) % count;
-        let delta = (((targetCanonical - prevCanonical) % count) + count) % count;
-        if (delta > count / 2) delta -= count;
-        advance(delta);
-      } else {
-        const clamped = Math.max(0, Math.min(maxVirtualNonLoop, targetCanonical));
-        if (clamped !== virtualIdxRef.current) {
-          virtualIdxRef.current = clamped;
-          setVirtualIdx(clamped);
-        }
-      }
-    },
-    [CANONICAL_BASE, advance, count, loop, markInteraction, maxVirtualNonLoop],
-  );
-
-  const canGoPrev = showNav && (loop || virtualIdx > 0);
-  const canGoNext = showNav && (loop || virtualIdx < maxVirtualNonLoop);
-
-  // ————— Drag —————
-  const [isDragging, setIsDragging] = useState(false);
-  const onDragStart = useCallback(() => {
-    setIsDragging(true);
-    markInteraction();
-  }, [markInteraction]);
-
-  const onDragEnd = useCallback(
-    (_event: unknown, info: PanInfo) => {
-      setIsDragging(false);
-      markInteraction();
-      if (!showNav || slideStep <= 0) return;
-
-      // 33% snap threshold — on mobile the card is ~390px wide so 50% (Math.round)
-      // would require a 195px drag. 33% reduces that to ~130px, matching natural
-      // swipe distances on iPhone. Velocity-based flick still adds ±1 on top.
-      const rawPos = -x.get() / slideStep;
-      const dragDelta = rawPos - virtualIdxRef.current;
-      const nearestVirtual =
-        dragDelta > 1 / 3
-          ? virtualIdxRef.current + 1
-          : dragDelta < -(1 / 3)
-            ? virtualIdxRef.current - 1
-            : virtualIdxRef.current;
-      const vx = info.velocity.x;
-      let targetVirtual = nearestVirtual;
-      if (vx <= -FLICK_VELOCITY) targetVirtual += 1;
-      else if (vx >= FLICK_VELOCITY) targetVirtual -= 1;
-
-      // Route through the same safe-wrap path as arrows so a hard flick never
-      // leaves x parked outside the rendered range.
-      const delta = targetVirtual - virtualIdxRef.current;
-      if (delta === 0) {
-        // User released while still on the current card (e.g. dragged 20%
-        // and let go). `advance(0)` is a no-op, which would leave x parked
-        // mid-drag — the rail visibly stops between two cards. Animate x
-        // back to the canonical position for the unchanged virtualIdx so
-        // the slide always snaps to a card on release.
-        animate(x, -virtualIdxRef.current * slideStep, SPRING_TRANSITION);
-        return;
-      }
-      advance(delta);
-    },
-    [advance, markInteraction, showNav, slideStep, x],
-  );
-
-  const dragConstraints = useMemo(() => {
-    if (!showNav || slideStep <= 0) return { left: 0, right: 0 };
-    if (loop) {
-      // Allow generous drag across the rendered triple copy; resolve on drop.
-      const copyWidth = count * slideStep;
-      return { left: -LOOP_COPIES * copyWidth, right: copyWidth };
-    }
-    return { left: -maxVirtualNonLoop * slideStep, right: 0 };
-  }, [count, loop, maxVirtualNonLoop, showNav, slideStep]);
-
-  // ————— Keyboard —————
   const onKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
-      if (!showNav) return;
+      if (count <= 1) return;
       switch (e.key) {
         case "ArrowLeft":
           e.preventDefault();
@@ -712,110 +359,19 @@ export function CardsSlider({
           break;
         case "Home":
           e.preventDefault();
-          goToCanonical(0);
+          goTo(0);
           break;
         case "End":
           e.preventDefault();
-          goToCanonical(count - 1);
-          break;
-        default:
+          goTo(count - 1);
           break;
       }
     },
-    [count, goNext, goPrev, goToCanonical, showNav],
+    [count, goPrev, goNext, goTo],
   );
 
-  // ————— Autoplay —————
-  const isHoverRef = useRef(false);
-  const isFocusRef = useRef(false);
-  const isDraggingRef = useRef(false);
-  // True while the page is being scrolled — prevents autoplay from firing a
-  // spring animation that competes with Lenis/native scroll and causes jank.
-  const isScrollingRef = useRef(false);
-  useEffect(() => {
-    isDraggingRef.current = isDragging;
-  }, [isDragging]);
-
-  // Detect page scroll and suspend autoplay for 300 ms after it stops.
-  useEffect(() => {
-    if (!autoplay) return;
-    let tid: ReturnType<typeof setTimeout>;
-    const onScroll = () => {
-      isScrollingRef.current = true;
-      clearTimeout(tid);
-      tid = setTimeout(() => { isScrollingRef.current = false; }, 300);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      clearTimeout(tid);
-    };
-  }, [autoplay]);
-
-  const [isVisible, setIsVisible] = useState(true);
-  const [isTabVisible, setIsTabVisible] = useState(true);
-
-  // Tab visibility (document.hidden)
-  useEffect(() => {
-    if (!autoplay) return;
-    const apply = () => setIsTabVisible(!document.hidden);
-    apply();
-    document.addEventListener("visibilitychange", apply);
-    return () => document.removeEventListener("visibilitychange", apply);
-  }, [autoplay]);
-
-  // IntersectionObserver: pause autoplay when slider is off-screen.
-  useEffect(() => {
-    if (!autoplay) return;
-    const el = containerRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setIsVisible(!!entry && entry.intersectionRatio > 0.35),
-      { threshold: [0, 0.35, 0.75] },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [autoplay]);
-
-  // Autoplay loop: every `autoplayDelay` ms, advance by one step — unless paused.
-  // Routes through `advance(1)` so it shares the same safe-wrap pipeline as
-  // arrows / dots / drag — autoplay cannot drift the rail into a blank state.
-  useEffect(() => {
-    if (!autoplay) return;
-    if (prefersReducedMotion) return;
-    if (count <= 1) return;
-    const id = window.setInterval(() => {
-      if (isDraggingRef.current) return;
-      if (isHoverRef.current) return;
-      if (isFocusRef.current) return;
-      if (isScrollingRef.current) return;
-      if (!isVisible || !isTabVisible) return;
-      if (Date.now() - lastInteractionAtRef.current < autoplayResumeDelay) return;
-      // Non-loop: freeze at the end rather than keep advancing.
-      if (!loop && virtualIdxRef.current >= maxVirtualNonLoop) return;
-      advance(1);
-    }, Math.max(1500, autoplayDelay));
-    return () => window.clearInterval(id);
-  }, [
-    advance,
-    autoplay,
-    autoplayDelay,
-    autoplayResumeDelay,
-    count,
-    isTabVisible,
-    isVisible,
-    loop,
-    maxVirtualNonLoop,
-    prefersReducedMotion,
-  ]);
-
-  // ————— Render —————
-  const renderedCards = useMemo(() => {
-    if (!loop) return cards;
-    const out: CardsSliderCard[] = [];
-    for (let k = 0; k < LOOP_COPIES; k++) out.push(...cards);
-    return out;
-  }, [cards, loop]);
+  const showNav = count > 1;
+  const dotsVisible = (showDots ?? true) && count > 1;
 
   const formatSlideLabel = useCallback(
     (current: number) =>
@@ -823,8 +379,6 @@ export function CardsSlider({
     [count, slideLabel],
   );
 
-  // Arrow visibility — the request was desktop-only. Use a wrapper so the
-  // entire arrow pair collapses together and SSR never shows them on mobile.
   const arrowsWrapperClass =
     arrowsOn === "never"
       ? "hidden"
@@ -836,36 +390,9 @@ export function CardsSlider({
 
   return (
     <div
-      ref={containerRef}
-      // Full-bleed: the carousel claims the full width offered by its parent
-      // (PortfolioSection's slider wrapper is itself w-full inside an
-      // `uncontained` Section, so this expands to the page edges minus the
-      // outer responsive padding below).
-      className={cn(
-        "group/slider relative w-full px-3 py-4 sm:px-5 sm:py-5 md:px-8 md:py-6 lg:px-12 xl:px-16",
-        "transition-opacity duration-150",
-        isReady ? "opacity-100" : "opacity-0",
-      )}
-      onMouseEnter={() => {
-        isHoverRef.current = true;
-      }}
-      onMouseLeave={() => {
-        isHoverRef.current = false;
-      }}
-      onFocusCapture={() => {
-        isFocusRef.current = true;
-      }}
-      onBlurCapture={(e) => {
-        // Only clear when focus leaves the slider entirely.
-        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-          isFocusRef.current = false;
-        }
-      }}
+      className="group/slider relative w-full px-3 py-4 sm:px-5 sm:py-5 md:px-8 md:py-6 lg:px-12 xl:px-16"
     >
       {showNav ? (
-        // `display: contents` on lg+ lets the absolutely-positioned arrows
-        // anchor to the slider container while still allowing a clean
-        // `display: none` collapse on mobile/tablet.
         <div className={arrowsWrapperClass}>
           <BrandArrow
             direction="prev"
@@ -873,7 +400,7 @@ export function CardsSlider({
             id={prevBtnId}
             ariaLabel={ariaScrollLeft}
             onPress={goPrev}
-            disabled={!canGoPrev}
+            disabled={!canPrev}
           />
           <BrandArrow
             direction="next"
@@ -881,131 +408,63 @@ export function CardsSlider({
             id={nextBtnId}
             ariaLabel={ariaScrollRight}
             onPress={goNext}
-            disabled={!canGoNext}
+            disabled={!canNext}
           />
         </div>
       ) : null}
 
-      {/* Screen-reader announcement for slide changes. */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
-        {formatSlideLabel(activeIndex + 1)}
+        {formatSlideLabel(selectedIndex + 1)}
       </div>
 
+      {/* Embla viewport — useRef is used here instead of the hook's setState-as-ref
+          pattern, which doesn't initialize reliably under React 19. */}
       <div
         ref={viewportRef}
-        className={cn(
-          // `cs-viewport` establishes a CSS containment context so cards can
-          // size themselves via `100cqi` from first paint — no JS-driven
-          // ResizeObserver dance, no layout shift on hydration.
-          // Top padding stays small; bottom padding leaves room for the
-          // soft oval shadow that sits below each card (.cs-card::after).
-          //
-          // overflow-visible (not -hidden) lets the rail extend visibly
-          // through the slider's left/right padding during a drag — so the
-          // outgoing card doesn't get clipped at the padding boundary while
-          // it slides off, and the incoming card peeks in smoothly. The
-          // body's own `overflow-x: hidden` provides the screen-edge clip.
-          "cs-viewport relative overflow-visible pb-10 pt-2",
-          "[touch-action:pan-y]",
-          showNav
-            ? isDragging
-              ? "cursor-grabbing"
-              : "cursor-grab"
-            : undefined,
-        )}
+        className="cs-viewport relative overflow-hidden pb-10 pt-2 [touch-action:pan-y]"
         data-testid="selected-work-viewport"
-        data-selected-snap={activeIndex}
-        data-loop={loop ? "true" : "false"}
-        data-slide-count={count}
-        data-visible-count={visible}
-        data-dragging={isDragging ? "true" : undefined}
+        data-selected-snap={selectedIndex}
         tabIndex={showNav ? 0 : undefined}
         role="region"
         aria-roledescription={ariaRoleDescription}
         aria-label={ariaRegion}
         onKeyDown={onKeyDown}
       >
-        <motion.div
-          drag={showNav && cardWidth > 0 ? "x" : false}
-          dragConstraints={dragConstraints}
-          dragElastic={loop ? 0.04 : 0.12}
-          // Disable framer's inertia after release — its glide fights the
-          // spring snap in onDragEnd, leaving cards parked between snap points
-          // on mobile. With momentum off, finger lift → immediate spring snap
-          // to the nearest card.
-          dragMomentum={false}
-          // gap is set via the `cs-rail` class media queries — same per-tier
-          // values as the JS table, but applied at first paint by CSS.
-          // touchAction: "pan-y" is always set inline so iOS never loses it
-          // when `drag` toggles false (e.g. while cardWidth is computed).
-          style={{ x, touchAction: "pan-y" }}
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-          // Suppress accidental link navigations on drag-end without
-          // re-rendering every card. A ref (not state) is read here so
-          // no child re-renders occur when dragging starts/stops.
-          onClickCapture={(e) => {
-            if (isDraggingRef.current) {
-              e.preventDefault();
-              e.stopPropagation();
-            }
-          }}
-          className="cs-rail will-change-transform"
-        >
-          {renderedCards.map((card, i) => {
-            const realIdx = loop ? i % count : i;
-            const copyIdx = loop ? Math.floor(i / count) : 0;
-            const isClone = loop && copyIdx !== LOOP_ANCHOR_COPY;
-            const isActive = realIdx === activeIndex;
-            return (
-              <motion.div
-                key={`${card.id}-${i}`}
-                data-embla-slide=""
-                role={isClone ? "presentation" : "group"}
-                aria-roledescription={isClone ? undefined : "slide"}
-                aria-label={isClone ? undefined : formatSlideLabel(realIdx + 1)}
-                aria-current={!isClone && isActive ? "true" : undefined}
-                aria-hidden={isClone ? "true" : undefined}
-                className="cs-card"
-                // Loop mode renders cards × 3 copies; only the anchor copy is
-                // ever centered. `data-clone` keeps the semantic distinction
-                // (a11y suppression, etc.). Animation gating uses `data-active`
-                // below — only the card matching the current canonical index
-                // animates, so the user always sees a "live" card regardless
-                // of which copy ended up on-screen after wrap.
-                data-clone={isClone ? "true" : undefined}
-                data-active={realIdx === activeIndex ? "true" : undefined}
-                // Width and height are both driven by CSS (.cs-card in globals.css)
-                // using the same cqi-based formula — no inline styles needed.
-                // `cardWidth` is still computed above for animation math only.
-              >
-                <CardContent
-                  card={card}
-                  viewDetailsLabel={viewDetailsLabel}
-                  ctaHref={card.href}
-                  isClone={isClone}
-                />
-              </motion.div>
-            );
-          })}
-        </motion.div>
+        {/* Embla container — translated by Embla to scroll slides. */}
+        <div className="cs-rail">
+          {cards.map((card, i) => (
+            <div
+              key={card.id}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={formatSlideLabel(i + 1)}
+              aria-current={i === selectedIndex ? "true" : undefined}
+              data-active={i === selectedIndex ? "true" : undefined}
+              className="cs-card"
+            >
+              <CardContent
+                card={card}
+                viewDetailsLabel={viewDetailsLabel}
+                ctaHref={card.href}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {dotsVisible ? (
         <div
           role="tablist"
           aria-label={ariaRegion}
-          // Tighter gap on mobile so 6+ dots always fit on a 320px viewport
-          // (6 dots × 8px + 5 gaps × 6px = 78px well within the rail).
           className="mt-5 flex flex-wrap items-center justify-center gap-1.5 sm:mt-6 sm:gap-2"
         >
           {cards.map((_, i) => (
             <Dot
               key={i}
               index={i}
-              active={i === activeIndex}
+              active={i === selectedIndex}
               label={formatSlideLabel(i + 1)}
-              onSelect={goToCanonical}
+              onSelect={goTo}
             />
           ))}
         </div>
@@ -1018,37 +477,21 @@ function CardContent({
   card,
   viewDetailsLabel,
   ctaHref,
-  isClone = false,
 }: {
   card: CardsSliderCard;
   viewDetailsLabel: string;
   ctaHref?: string;
-  /** Clone cards (loop copies) don't get focusable links. */
-  isClone?: boolean;
 }) {
   return (
     <Card
       className={cn(
         "group/card relative flex h-full min-h-0 flex-col overflow-hidden rounded-3xl",
-        // Inner card keeps only a tight contact shadow + subtle inner highlight.
-        // The big "card sits on a surface" drop is rendered as an oval pseudo
-        // on .cs-card (see globals.css) — looks softer than any rounded-rect
-        // box-shadow can.
         "border-border bg-card/95 text-card-foreground shadow-[0_2px_6px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]",
-        // backdrop-blur is omitted: it multiplies compositor layers across all
-        // loop copies and causes frame-drops during the spring animation even
-        // on desktop. bg-card/95 already makes the card opaque enough that
-        // the blur adds no perceptible visual benefit.
         "transition-[border-color,box-shadow] duration-500 ease-out",
         "hover:border-primary/35 hover:shadow-[0_4px_10px_rgba(0,0,0,0.4),0_0_0_1px_var(--glow-purple),0_0_28px_var(--glow-cyan),inset_0_1px_0_rgba(255,255,255,0.06)]",
       )}
     >
       <div className="relative aspect-video shrink-0 overflow-hidden bg-surface ring-1 ring-inset ring-white/[0.06]">
-        {/* Grayscale wrapper — b&w at rest, full colour on hover.
-            Uses arbitrary Tailwind properties so the filter/transition are
-            inlined directly into the stylesheet without relying on globals.css
-            layer ordering. `[.cs-card:hover_&]` selects this element when its
-            `.cs-card` ancestor is hovered. */}
         <div
           className="cs-card-media h-full w-full [filter:grayscale(1)] [transition:filter_500ms_ease-out] [.cs-card:hover_&]:[filter:grayscale(0)]"
         >
@@ -1066,7 +509,6 @@ function CardContent({
             />
           ) : null}
         </div>
-        {/* Bottom gradient — keeps title text legible over the image */}
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-background/40 to-transparent opacity-80 transition-opacity duration-300 group-hover/card:opacity-50"
           aria-hidden
@@ -1074,7 +516,6 @@ function CardContent({
         {card.badge ? (
           <span
             className="pointer-events-none absolute left-3 top-3 z-[2] inline-flex items-center rounded-full border border-white/15 bg-black/55 px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.22em] text-text-secondary shadow-[0_2px_10px_rgba(0,0,0,0.45)] backdrop-blur-sm"
-            aria-hidden={isClone ? "true" : undefined}
           >
             {card.badge}
           </span>
@@ -1097,23 +538,11 @@ function CardContent({
               {card.description}
             </p>
           </div>
-          {/*
-            Card CTA — minimal ghost-pill, intentionally lighter than the
-            page-level CTA. The card is the primary visual; this button is
-            a "view link" affordance, not a hero button. Cyan accent only on
-            hover/focus keeps the resting state quiet.
-          */}
-          {/* Plain <a> — no Framer Motion listener overhead across 45 loop
-              copies. Tap feedback is CSS active:scale so it costs nothing
-              when not pressed. Click suppression during drag is handled at
-              the rail level via onClickCapture on the motion.div. */}
           <a
-            href={isClone ? undefined : ctaHref}
+            href={ctaHref}
             target="_blank"
             rel="noopener noreferrer"
             draggable={false}
-            tabIndex={isClone ? -1 : undefined}
-            aria-hidden={isClone ? "true" : undefined}
             onDragStart={(e) => e.preventDefault()}
             className={cn(
               "group/btn mt-auto inline-flex h-9 w-fit max-w-full shrink cursor-pointer items-center gap-1.5 self-start rounded-full",
