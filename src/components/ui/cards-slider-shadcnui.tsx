@@ -654,7 +654,17 @@ export function CardsSlider({
       markInteraction();
       if (!showNav || slideStep <= 0) return;
 
-      const nearestVirtual = Math.round(-x.get() / slideStep);
+      // 33% snap threshold — on mobile the card is ~390px wide so 50% (Math.round)
+      // would require a 195px drag. 33% reduces that to ~130px, matching natural
+      // swipe distances on iPhone. Velocity-based flick still adds ±1 on top.
+      const rawPos = -x.get() / slideStep;
+      const dragDelta = rawPos - virtualIdxRef.current;
+      const nearestVirtual =
+        dragDelta > 1 / 3
+          ? virtualIdxRef.current + 1
+          : dragDelta < -(1 / 3)
+            ? virtualIdxRef.current - 1
+            : virtualIdxRef.current;
       const vx = info.velocity.x;
       let targetVirtual = nearestVirtual;
       if (vx <= -FLICK_VELOCITY) targetVirtual += 1;
@@ -926,7 +936,9 @@ export function CardsSlider({
           dragMomentum={false}
           // gap is set via the `cs-rail` class media queries — same per-tier
           // values as the JS table, but applied at first paint by CSS.
-          style={{ x }}
+          // touchAction: "pan-y" is always set inline so iOS never loses it
+          // when `drag` toggles false (e.g. while cardWidth is computed).
+          style={{ x, touchAction: "pan-y" }}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
           // Suppress accidental link navigations on drag-end without
