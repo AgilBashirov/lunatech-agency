@@ -13,6 +13,11 @@ import { getPublishedPosts } from "@/lib/blog";
  * link sibling locales via `alternates`, mirroring Next 16's localized
  * sitemap recommendation.
  */
+// Blog posts are managed live via the admin CMS (Vercel Blob). Without a
+// revalidate window this route is frozen at build time and silently drifts
+// from the Blob store, listing posts that were unpublished/deleted long ago.
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
   const now = new Date();

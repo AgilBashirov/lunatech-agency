@@ -129,12 +129,18 @@ export async function Footer() {
             >
               {nav("blog")}
             </Link>
-            <span className="inline-flex h-11 shrink-0 cursor-default select-none items-center text-text-muted">
+            <Link
+              href="/privacy"
+              className="inline-flex h-11 shrink-0 items-center transition-colors duration-300 ease-out hover:text-white touch-manipulation"
+            >
               {t("privacy")}
-            </span>
-            <span className="inline-flex h-11 shrink-0 cursor-default select-none items-center text-text-muted">
+            </Link>
+            <Link
+              href="/terms"
+              className="inline-flex h-11 shrink-0 items-center transition-colors duration-300 ease-out hover:text-white touch-manipulation"
+            >
               {t("terms")}
-            </span>
+            </Link>
           </nav>
         </div>
       </div>

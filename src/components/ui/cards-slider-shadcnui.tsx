@@ -147,6 +147,10 @@ function Dot({
   onSelect: (index: number) => void;
 }) {
   return (
+    // Visual dot stays 8px (32px when active); the button itself expands to a
+    // 24x24 minimum hit area (WCAG 2.5.8) via padding around the dot rather
+    // than by enlarging the dot itself, so the pagination rail keeps its
+    // current compact look.
     <button
       type="button"
       role="tab"
@@ -154,13 +158,18 @@ function Dot({
       aria-label={label}
       tabIndex={active ? 0 : -1}
       onClick={() => onSelect(index)}
-      className={cn(
-        "relative h-2 rounded-full transition-all duration-300 ease-out touch-manipulation",
-        active
-          ? "w-8 bg-[var(--neon-cyan)] shadow-[0_0_10px_rgba(34,211,238,0.45)]"
-          : "w-2 bg-white/20 hover:bg-white/35 motion-reduce:transition-none",
-      )}
-    />
+      className="group inline-flex min-h-6 min-w-6 shrink-0 items-center justify-center touch-manipulation"
+    >
+      <span
+        aria-hidden
+        className={cn(
+          "h-2 rounded-full transition-all duration-300 ease-out",
+          active
+            ? "w-8 bg-[var(--neon-cyan)] shadow-[0_0_10px_rgba(34,211,238,0.45)]"
+            : "w-2 bg-white/20 group-hover:bg-white/35 motion-reduce:transition-none",
+        )}
+      />
+    </button>
   );
 }
 

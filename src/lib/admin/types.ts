@@ -27,9 +27,9 @@ export type SiteSettings = {
 
 export const DEFAULT_SETTINGS: SiteSettings = {
   social: {
-    x: "https://x.com",
-    linkedin: "https://linkedin.com",
-    dribbble: "https://dribbble.com",
+    x: "",
+    linkedin: "",
+    dribbble: "",
     instagram: "",
     facebook: "",
     youtube: "",

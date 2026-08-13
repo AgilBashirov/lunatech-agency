@@ -12,6 +12,7 @@ import { Services } from "@/components/sections/Services";
 import { ValueStrip } from "@/components/sections/ValueStrip";
 import { loadContactTopics } from "@/data/services";
 import { getPortfolio } from "@/lib/admin/contentStore";
+import { buildHomeJsonLd } from "@/lib/seo";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -21,9 +22,10 @@ export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [contactTopics, portfolioItems] = await Promise.all([
+  const [contactTopics, portfolioItems, jsonLd] = await Promise.all([
     loadContactTopics(),
     getPortfolio(),
+    buildHomeJsonLd(locale),
   ]);
 
   const sortedPortfolio = [...portfolioItems]
@@ -53,6 +55,10 @@ export default async function HomePage({ params }: Props) {
         <Footer />
         <ScrollToTopButton />
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </MoonReadyProvider>
   );
 }

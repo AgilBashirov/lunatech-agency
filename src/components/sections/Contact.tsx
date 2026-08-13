@@ -14,11 +14,19 @@ import {
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Section } from "@/components/ui/Section";
+import { Link } from "@/i18n/navigation";
 import type { ContactTopic } from "@/lib/admin/types";
 import { cn } from "@/lib/cn";
+import { trackEvent } from "@/lib/gtag";
 import { motionTransition } from "@/lib/motion";
 
-type FieldName = "name" | "email" | "phone" | "service" | "otherMessage";
+type FieldName =
+  | "name"
+  | "email"
+  | "phone"
+  | "service"
+  | "otherMessage"
+  | "consent";
 type FieldError = "required" | "phone" | "email";
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -29,6 +37,7 @@ type FormState = {
   service: string;
   otherMessage: string;
   message: string;
+  consent: boolean;
   /** Honeypot — never displayed; if non-empty the API silently drops the submission. */
   hp: string;
 };
@@ -53,6 +62,7 @@ const EMPTY_FORM: FormState = {
   service: "",
   otherMessage: "",
   message: "",
+  consent: false,
   hp: "",
 };
 
@@ -382,9 +392,9 @@ export function Contact({ topics }: ContactProps) {
     if (state.service === "other" && !state.otherMessage.trim()) {
       next.otherMessage = "required";
     }
-    if (state.email && !EMAIL_RE.test(state.email.trim())) {
-      next.email = "email";
-    }
+    if (!state.email.trim()) next.email = "required";
+    else if (!EMAIL_RE.test(state.email.trim())) next.email = "email";
+    if (!state.consent) next.consent = "required";
     return next;
   };
 
@@ -416,6 +426,7 @@ export function Contact({ topics }: ContactProps) {
         | null;
       if (res.ok && data?.success) {
         setStatus("success");
+        trackEvent("generate_lead", { service: form.service });
         setForm(EMPTY_FORM);
       } else {
         setStatus("error");
@@ -536,6 +547,7 @@ export function Contact({ topics }: ContactProps) {
                   onChange={(e) => update("email", e.target.value)}
                   autoComplete="email"
                   maxLength={MAX.email}
+                  required
                   errorText={errorTextFor("email")}
                 />
 
@@ -621,6 +633,43 @@ export function Contact({ topics }: ContactProps) {
                   onChange={(e) => update("message", e.target.value)}
                   maxLength={MAX.message}
                 />
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="flex items-start gap-3 text-sm text-text-secondary">
+                    <input
+                      type="checkbox"
+                      checked={form.consent}
+                      onChange={(e) => update("consent", e.target.checked)}
+                      aria-invalid={errors.consent ? true : undefined}
+                      aria-errormessage={
+                        errors.consent ? "contact-consent-error" : undefined
+                      }
+                      className="mt-0.5 size-4 shrink-0 cursor-pointer rounded-sm border-white/30 bg-transparent accent-cyan-400 focus-visible:outline-2 focus-visible:outline-cyan-400/60"
+                    />
+                    <span>
+                      {t.rich("consent", {
+                        link: (chunks) => (
+                          <Link
+                            href="/privacy"
+                            target="_blank"
+                            className="underline underline-offset-2 hover:text-cyan-300"
+                          >
+                            {chunks}
+                          </Link>
+                        ),
+                      })}
+                    </span>
+                  </label>
+                  {errors.consent && (
+                    <p
+                      id="contact-consent-error"
+                      role="alert"
+                      className="text-xs text-red-300"
+                    >
+                      {tErrors("required")}
+                    </p>
+                  )}
+                </div>
 
                 {status === "error" && (
                   <p

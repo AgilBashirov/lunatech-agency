@@ -46,3 +46,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# JetBrains IDEs
+/.idea/
+
+# Claude Code
+/.claude/launch.json
+/.claude/worktrees/
