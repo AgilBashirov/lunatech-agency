@@ -2,7 +2,9 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getSettings } from "@/lib/admin/contentStore";
+import { mailtoHref, telHref } from "@/lib/contact";
+import { hasVisiblePortfolio } from "@/lib/portfolio";
+import { getCachedSettings } from "@/lib/siteSettings";
 
 function SocialIcon({ children }: { children: ReactNode }) {
   return (
@@ -54,7 +56,22 @@ const SOCIAL_ICONS: Record<string, ReactNode> = {
 export async function Footer() {
   const t = await getTranslations("footer");
   const nav = await getTranslations("nav");
-  const settings = await getSettings();
+  const settings = await getCachedSettings();
+  const showPortfolio = await hasVisiblePortfolio();
+  const tel = telHref(settings.contact.phone);
+  const mail = mailtoHref(settings.contact.email);
+
+  // These sections live on the home page only. The Footer also renders on
+  // /blog, /services/* and the legal pages, where a bare "#services" resolves
+  // to nothing — so route through "/" with the hash, the same way Navbar does.
+  const sectionLinks = [
+    { hash: "services", label: nav("services") },
+    { hash: "about", label: nav("about") },
+    ...(showPortfolio
+      ? [{ hash: "portfolio", label: nav("portfolio") }]
+      : []),
+    { hash: "contact", label: nav("contact") },
+  ];
 
   return (
     <footer id="site-footer" className="relative z-10">
@@ -80,6 +97,36 @@ export async function Footer() {
                 © {new Date().getFullYear()} Lunatech Agency. {t("rights")}
               </p>
             </div>
+
+            {/* Contact block — each row appears only once its value is set in
+                /admin/settings, so a partially configured site never shows an
+                empty heading or a dead link. */}
+            {(tel || mail || settings.contact.address) && (
+              <div className="flex flex-col gap-2">
+                <p className="t-eyebrow mb-1">{nav("contact")}</p>
+                {tel && (
+                  <a
+                    href={tel}
+                    className="inline-flex h-9 w-fit items-center text-sm text-text-secondary transition-colors duration-300 ease-out hover:text-white"
+                  >
+                    {settings.contact.phone}
+                  </a>
+                )}
+                {mail && (
+                  <a
+                    href={mail}
+                    className="inline-flex h-9 w-fit items-center text-sm text-text-secondary transition-colors duration-300 ease-out hover:text-white"
+                  >
+                    {settings.contact.email}
+                  </a>
+                )}
+                {settings.contact.address && (
+                  <address className="not-italic text-sm text-text-tertiary">
+                    {settings.contact.address}
+                  </address>
+                )}
+              </div>
+            )}
 
             {Object.entries(settings.social).some(([, url]) => url) && (
               <div>
@@ -107,21 +154,14 @@ export async function Footer() {
             className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-white/[0.06] pt-8 text-sm text-text-tertiary sm:gap-x-6"
             aria-label="Footer"
           >
-            {(
-              [
-                ["#services", nav("services")],
-                ["#about", nav("about")],
-                ["#portfolio", nav("portfolio")],
-                ["#contact", nav("contact")],
-              ] as const
-            ).map(([href, label]) => (
-              <a
-                key={href}
-                href={href}
+            {sectionLinks.map(({ hash, label }) => (
+              <Link
+                key={hash}
+                href={{ pathname: "/", hash }}
                 className="inline-flex h-11 shrink-0 items-center transition-colors duration-300 ease-out hover:text-white touch-manipulation"
               >
                 {label}
-              </a>
+              </Link>
             ))}
             <Link
               href="/blog"

@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
+import { SiteNavbar } from "@/components/layout/SiteNavbar";
 import { ScrollToTopButton } from "@/components/layout/ScrollToTopButton";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { BackToHomeButton } from "@/components/services/detail/BackToHomeButton";
 import { OurProcessSection } from "@/components/services/detail/OurProcessSection";
 import { ServiceCTASection } from "@/components/services/detail/ServiceCTASection";
@@ -115,7 +116,7 @@ export default async function ServiceDetailPage({ params }: Props) {
   return (
     <>
       <div className="relative flex min-h-full min-w-0 max-w-full flex-col">
-        <Navbar />
+        <SiteNavbar />
         <main className="min-w-0 flex-1">
           <BackToHomeButton placement="top" />
           {isBespoke ? (
@@ -133,6 +134,7 @@ export default async function ServiceDetailPage({ params }: Props) {
           <BackToHomeButton placement="bottom" />
         </main>
         <Footer />
+        <WhatsAppButton />
         <ScrollToTopButton />
       </div>
       <script

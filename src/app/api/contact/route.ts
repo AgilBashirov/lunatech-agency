@@ -4,6 +4,7 @@ import {
   isValidTopicId,
   getTopicTelegramLabel,
 } from "@/data/services";
+import { isValidEmail, isValidPhone } from "@/lib/contactValidation";
 
 export const runtime = "nodejs";
 
@@ -17,11 +18,8 @@ const MAX = {
   message: 2000,
 } as const;
 
-// Soft regexes — strict enough to reject typos, loose enough for international
-// phones and uncommon TLDs. The form mirrors them client-side; server is the
-// source of truth.
-const PHONE_RE = /^[+\d][\d\s\-()]{8,}$/;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Validation lives in `@/lib/contactValidation` so this handler and the client
+// form cannot drift apart. This handler stays the source of truth.
 
 type ContactPayload = {
   name?: unknown;
@@ -81,10 +79,10 @@ export async function POST(req: Request) {
   if (!name || !phone || !serviceRaw || !isValidTopicId(serviceRaw, topics)) {
     return fail(400);
   }
-  if (!PHONE_RE.test(phone)) {
+  if (!isValidPhone(phone)) {
     return fail(400);
   }
-  if (email && !EMAIL_RE.test(email)) {
+  if (email && !isValidEmail(email)) {
     return fail(400);
   }
 

@@ -17,14 +17,35 @@ const hashLinks = [
   { hash: "portfolio", key: "portfolio" as const },
 ];
 
+type NavbarProps = {
+  /**
+   * Whether the home page currently renders its `#portfolio` section. The
+   * section is data-driven, so the nav entry has to disappear with it —
+   * otherwise this link scrolls to a target that does not exist.
+   */
+  hasPortfolio?: boolean;
+  /** Display phone number from `/admin/settings`; empty hides the call link. */
+  phone?: string;
+  /** Pre-built `tel:` href for `phone` (see `telHref` in `@/lib/contact`). */
+  telHref?: string | null;
+};
+
 const MotionLink = motion.create(Link);
 
 const navLinkClass =
   "flex min-h-11 shrink-0 snap-start items-center rounded-full px-3 py-2 text-xs font-medium text-text-secondary transition-colors duration-300 ease-out hover:bg-white/[0.04] hover:text-white md:min-h-0 md:rounded-none md:bg-transparent md:px-0 md:py-0 md:text-sm";
 
-export function Navbar() {
+export function Navbar({
+  hasPortfolio = false,
+  phone,
+  telHref: tel,
+}: NavbarProps) {
   const t = useTranslations("nav");
   const reduce = useReducedMotion();
+
+  const visibleHashLinks = hasPortfolio
+    ? hashLinks
+    : hashLinks.filter(({ hash }) => hash !== "portfolio");
 
   return (
     <header
@@ -54,7 +75,7 @@ export function Navbar() {
           </div>
         </div>
         <div className="flex min-h-11 min-w-0 w-full snap-x snap-mandatory scroll-ps-1 scroll-pe-1 gap-1 overflow-x-auto overscroll-x-contain touch-pan-x pb-1 [-webkit-overflow-scrolling:touch] md:min-h-0 md:w-auto md:snap-none md:items-center md:gap-8 md:overflow-visible md:overscroll-x-auto md:touch-auto md:pb-0">
-          {hashLinks.map(({ hash, key }) =>
+          {visibleHashLinks.map(({ hash, key }) =>
             reduce ? (
               <Link
                 key={key}
@@ -91,6 +112,26 @@ export function Navbar() {
           )}
         </div>
         <div className="hidden items-center gap-3 md:flex">
+          {tel && phone && (
+            <a
+              href={tel}
+              className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-sm font-medium text-text-secondary transition-colors duration-300 ease-out hover:text-white md:min-h-0 md:px-0"
+            >
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              {phone}
+            </a>
+          )}
           <LanguageSwitcher />
         </div>
       </nav>

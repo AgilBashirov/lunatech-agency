@@ -16,6 +16,36 @@ import styles from "./AgencyNarrativeSection.module.css";
 const TAB_COUNT = 3;
 const PROCESS_STEPS = ["discover", "design", "build", "launch"] as const;
 
+/**
+ * Panel title.
+ *
+ * All three panels render simultaneously into the same grid cell so the cell
+ * keeps a stable height; the two inactive ones are hidden with
+ * `visibility: hidden` (see `.panelHidden`), which preserves their layout box.
+ * A hidden-but-laid-out heading still reads as a real heading to a raw DOM
+ * scan while returning empty `innerText`, so only the active panel gets
+ * heading semantics — the inactive two use a visually identical `<div>`.
+ *
+ * This is a tidiness fix, not an accessibility one: the inactive panels are
+ * already `aria-hidden`, so assistive tech never announced them either way.
+ */
+function PanelHeading({
+  active,
+  id,
+  children,
+}: {
+  active: boolean;
+  id: string;
+  children: string;
+}) {
+  if (!active) return <div className={styles.panelHeading}>{children}</div>;
+  return (
+    <h3 className={styles.panelHeading} id={id}>
+      {children}
+    </h3>
+  );
+}
+
 function ProseContent({
   paragraphs,
   className,
@@ -197,12 +227,9 @@ export function AgencyNarrativeSection() {
                     key={active === 0 ? `active-${active}` : "p0"}
                     className={active === 0 ? styles.panelBody : undefined}
                   >
-                    <h3
-                      className={styles.panelHeading}
-                      id={active === 0 ? panelTitleId : undefined}
-                    >
+                    <PanelHeading active={active === 0} id={panelTitleId}>
                       {tabLabels[0]}
-                    </h3>
+                    </PanelHeading>
                     <ProseContent paragraphs={aboutParagraphs} />
                   </div>
                 </div>
@@ -217,12 +244,9 @@ export function AgencyNarrativeSection() {
                     key={active === 1 ? `active-${active}` : "p1"}
                     className={active === 1 ? styles.panelBody : undefined}
                   >
-                    <h3
-                      className={styles.panelHeading}
-                      id={active === 1 ? panelTitleId : undefined}
-                    >
+                    <PanelHeading active={active === 1} id={panelTitleId}>
                       {tabLabels[1]}
-                    </h3>
+                    </PanelHeading>
                     <ProseContent paragraphs={approachParagraphs} />
                   </div>
                 </div>
@@ -237,12 +261,9 @@ export function AgencyNarrativeSection() {
                     key={active === 2 ? `active-${active}` : "p2"}
                     className={active === 2 ? styles.panelBody : undefined}
                   >
-                    <h3
-                      className={styles.panelHeading}
-                      id={active === 2 ? panelTitleId : undefined}
-                    >
+                    <PanelHeading active={active === 2} id={panelTitleId}>
                       {tabLabels[2]}
-                    </h3>
+                    </PanelHeading>
                     <ProcessTimeline
                       steps={processSteps}
                       footnote={processT("subtitle")}

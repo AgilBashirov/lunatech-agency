@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { skipWithoutPortfolio } from "./helpers/portfolio";
 
 const VIEWPORT = '#portfolio [data-testid="selected-work-viewport"]';
 
@@ -28,6 +29,7 @@ test.describe("Portfolio slider columns", () => {
 
   test("slide widths are consistent for current viewport", async ({ page }) => {
     await page.goto("/en", { waitUntil: "load" });
+    await skipWithoutPortfolio(page);
     const portfolio = page.locator("#portfolio");
     await expect(portfolio).toBeVisible();
     await portfolio.scrollIntoViewIfNeeded();
@@ -64,6 +66,7 @@ test.describe("Portfolio slider columns", () => {
   test("navigation arrows are hidden on narrow viewport", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/en", { waitUntil: "load" });
+    await skipWithoutPortfolio(page);
     const portfolio = page.locator("#portfolio");
     await portfolio.scrollIntoViewIfNeeded();
     const prev = portfolio.locator('[id^="selected-work-prev-"]').first();
@@ -84,6 +87,7 @@ test.describe("Portfolio slider loop / navigation stress", () => {
 
   async function gotoPortfolio(page: Page) {
     await page.goto("/en", { waitUntil: "load" });
+    await skipWithoutPortfolio(page);
     const portfolio = page.locator("#portfolio");
     await expect(portfolio).toBeVisible({ timeout: 30_000 });
     await portfolio.scrollIntoViewIfNeeded();

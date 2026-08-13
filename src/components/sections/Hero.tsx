@@ -9,7 +9,15 @@ import { useMoonReady } from "@/context/moon-ready";
 import { motionTransition } from "@/lib/motion";
 import { scrollToElementWithLenis } from "@/lib/smoothScroll";
 
-export function Hero() {
+type HeroProps = {
+  /**
+   * Whether the `#portfolio` section is rendered further down the page. The
+   * secondary CTA targets it, so it must not render when the section is absent.
+   */
+  hasPortfolio?: boolean;
+};
+
+export function Hero({ hasPortfolio = false }: HeroProps) {
   const t = useTranslations("hero");
   const reduce = useReducedMotion();
   const lenis = useLenis();
@@ -46,12 +54,10 @@ export function Hero() {
       </div>
 
       <div className="relative z-[2] mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12">
-        <motion.div
-          initial={reduce ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={motionTransition.smooth}
-          className="mx-auto max-w-xl text-center md:mx-0 md:max-w-2xl md:text-left"
-        >
+        {/* Plain div + CSS animation, NOT motion.div — see `.hero-copy` in
+            globals.css. Framer Motion's `initial` would server-render this
+            wrapper at opacity:0 and block First Contentful Paint on hydration. */}
+        <div className="hero-copy mx-auto max-w-xl text-center md:mx-0 md:max-w-2xl md:text-left">
           <h1 className="text-gradient-hero text-balance break-words text-4xl font-bold leading-[1.12] tracking-tight drop-shadow-[0_4px_28px_rgba(0,0,0,0.55)] sm:text-5xl md:text-6xl lg:text-[3.5rem] xl:text-[4rem]">
             {t("headline")}
           </h1>
@@ -62,13 +68,15 @@ export function Hero() {
             <a href="#contact">
               <Button type="button">{t("cta")}</Button>
             </a>
-            <a href="#portfolio">
-              <Button type="button" variant="ghost">
-                {t("ctaSecondary")}
-              </Button>
-            </a>
+            {hasPortfolio && (
+              <a href="#portfolio">
+                <Button type="button" variant="ghost">
+                  {t("ctaSecondary")}
+                </Button>
+              </a>
+            )}
           </div>
-        </motion.div>
+        </div>
 
         <div
           className="relative hidden min-h-[min(52vh,520px)] lg:block"

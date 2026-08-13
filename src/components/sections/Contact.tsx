@@ -17,6 +17,11 @@ import { Section } from "@/components/ui/Section";
 import { Link } from "@/i18n/navigation";
 import type { ContactTopic } from "@/lib/admin/types";
 import { cn } from "@/lib/cn";
+import {
+  isValidEmail,
+  isValidPhone,
+  PHONE_INPUT_PATTERN,
+} from "@/lib/contactValidation";
 import { trackEvent } from "@/lib/gtag";
 import { motionTransition } from "@/lib/motion";
 
@@ -52,8 +57,9 @@ const MAX = {
   message: 2000,
 } as const;
 
-const PHONE_RE = /^[+\d][\d\s\-()]{8,}$/;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Shared with the route handler so the two cannot drift — see
+// `@/lib/contactValidation`. The server remains the source of truth; these
+// run only to surface an inline error without a round-trip.
 
 const EMPTY_FORM: FormState = {
   name: "",
@@ -387,13 +393,13 @@ export function Contact({ topics }: ContactProps) {
     const next: Partial<Record<FieldName, FieldError>> = {};
     if (!state.name.trim()) next.name = "required";
     if (!state.phone.trim()) next.phone = "required";
-    else if (!PHONE_RE.test(state.phone.trim())) next.phone = "phone";
+    else if (!isValidPhone(state.phone)) next.phone = "phone";
     if (!state.service) next.service = "required";
     if (state.service === "other" && !state.otherMessage.trim()) {
       next.otherMessage = "required";
     }
     if (!state.email.trim()) next.email = "required";
-    else if (!EMAIL_RE.test(state.email.trim())) next.email = "email";
+    else if (!isValidEmail(state.email)) next.email = "email";
     if (!state.consent) next.consent = "required";
     return next;
   };
@@ -556,6 +562,7 @@ export function Contact({ topics }: ContactProps) {
                   name="phone"
                   type="tel"
                   inputMode="tel"
+                  pattern={PHONE_INPUT_PATTERN}
                   label={t("formPhone")}
                   value={form.phone}
                   onChange={(e) => update("phone", e.target.value)}

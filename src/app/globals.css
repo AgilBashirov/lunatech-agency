@@ -419,6 +419,43 @@ h2 {
 }
 
 /*
+ * Hero copy entrance.
+ *
+ * This deliberately does NOT use Framer Motion. A motion component with
+ * `initial={{ opacity: 0 }}` server-renders as `style="opacity:0"`, and Chrome
+ * does not count fully transparent text as a contentful paint — so First
+ * Contentful Paint could not fire until React had downloaded, parsed and
+ * hydrated, measured at ~4.6s even with every sub-resource cached.
+ *
+ * A CSS animation runs off the stylesheet alone, so the text starts painting on
+ * the first frame after style resolution. Two rules matter here and must not be
+ * "tidied" away:
+ *   - no `animation-delay` — any delay is added directly to FCP.
+ *   - no `both`/`backwards` fill — that would re-apply the 0% frame before the
+ *     animation starts and reintroduce the transparent-text stall.
+ */
+@keyframes hero-copy-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-copy {
+  animation: hero-copy-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy {
+    animation: none;
+  }
+}
+
+/*
  * Hero static overlays — gradient fallback (replaces missing video), vignette,
  * noise, and bottom darkening — all merged into ONE layer to keep the hero
  * compositor cheap. Animated layers (.hero-particles, .hero-moon-placeholder-glow)

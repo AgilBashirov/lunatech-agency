@@ -12,7 +12,13 @@ export type AdminSession = {
 // Site settings
 // ---------------------------------------------------------------------------
 
-/** Social media links managed from the admin panel. Empty string = hidden. */
+/**
+ * Site-wide settings managed from `/admin/settings`.
+ *
+ * Every value follows the same rule: **empty string = the element is not
+ * rendered at all**. That keeps a half-configured site from showing dead
+ * links or an empty contact block.
+ */
 export type SiteSettings = {
   social: {
     x: string;
@@ -23,17 +29,44 @@ export type SiteSettings = {
     youtube: string;
     github: string;
   };
+  contact: {
+    /** Display form, e.g. "+994 50 123 45 67". Dialled via a `tel:` link with
+     *  separators stripped — see `telHref()` in `@/lib/contact`. */
+    phone: string;
+    /** Digits only or `+`-prefixed; turned into a `https://wa.me/...` link. */
+    whatsapp: string;
+    email: string;
+    /** Free-form postal address shown in the footer. */
+    address: string;
+  };
 };
 
+/**
+ * Shipped defaults. `/admin/settings` overrides these once saved — including
+ * back to an empty string, which hides the element again.
+ *
+ * Tracking/session parameters are deliberately stripped from the social URLs:
+ * `?viewAsMember=true` is LinkedIn's own preview mode and `?igsh=…` is an
+ * Instagram share token. Neither belongs in a link shown to the public.
+ */
 export const DEFAULT_SETTINGS: SiteSettings = {
   social: {
     x: "",
-    linkedin: "",
+    linkedin: "https://www.linkedin.com/company/lunatech-agency/",
     dribbble: "",
-    instagram: "",
+    instagram: "https://www.instagram.com/lunatech.az",
     facebook: "",
     youtube: "",
     github: "",
+  },
+  contact: {
+    phone: "+994 51 505 21 50",
+    // Same line as `phone` — change here or in /admin/settings if WhatsApp
+    // should reach a different number.
+    whatsapp: "+994 51 505 21 50",
+    email: "info@lunatech.az",
+    // Not supplied yet; the footer omits the address row while this is empty.
+    address: "",
   },
 };
 

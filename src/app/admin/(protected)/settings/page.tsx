@@ -34,6 +34,12 @@ async function saveSettings(formData: FormData): Promise<void> {
       youtube: get("social.youtube"),
       github: get("social.github"),
     },
+    contact: {
+      phone: get("contact.phone"),
+      whatsapp: get("contact.whatsapp"),
+      email: get("contact.email"),
+      address: get("contact.address"),
+    },
   };
 
   await setSettings(data);
@@ -65,6 +71,37 @@ const SOCIAL_FIELDS = [
   { key: "github",   label: "GitHub",        placeholder: "https://github.com/lunatech" },
 ] as const;
 
+const CONTACT_FIELDS = [
+  {
+    key: "phone",
+    label: "Telefon",
+    type: "tel",
+    placeholder: "+994 50 123 45 67",
+    hint: "Header və footer-də tel: linki kimi göstərilir.",
+  },
+  {
+    key: "whatsapp",
+    label: "WhatsApp",
+    type: "tel",
+    placeholder: "+994 50 123 45 67",
+    hint: "Sağ altdakı sabit WhatsApp düyməsi (wa.me).",
+  },
+  {
+    key: "email",
+    label: "E-poçt",
+    type: "email",
+    placeholder: "salam@lunatech.az",
+    hint: "Footer-də mailto: linki kimi göstərilir.",
+  },
+  {
+    key: "address",
+    label: "Ünvan",
+    type: "text",
+    placeholder: "Bakı, Azərbaycan",
+    hint: "Footer-də mətn kimi göstərilir.",
+  },
+] as const;
+
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
@@ -80,7 +117,8 @@ export default async function SettingsPage({ searchParams }: Props) {
       <div className="mb-8">
         <h1 className="text-xl font-semibold text-white mb-1">Parametrlər</h1>
         <p className="text-sm" style={{ color: "rgba(244,244,245,0.5)" }}>
-          Footer-dəki social media linklərini idarə edin. Boş saxlasanız ikon gizlənir.
+          Əlaqə kanallarını və social media linklərini idarə edin. Boş saxladığınız
+          sahə saytda göstərilmir.
         </p>
       </div>
 
@@ -91,6 +129,43 @@ export default async function SettingsPage({ searchParams }: Props) {
       )}
 
       <form action={saveSettings} className="flex flex-col gap-6">
+        <div
+          className="rounded-xl border p-5 flex flex-col gap-4"
+          style={{ borderColor: "rgba(255,255,255,0.08)", background: "#1a1a1a" }}
+        >
+          <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(244,244,245,0.4)" }}>
+            Əlaqə kanalları
+          </p>
+
+          {CONTACT_FIELDS.map(({ key, label, type, placeholder, hint }) => (
+            <div key={key}>
+              <label
+                htmlFor={`field-contact-${key}`}
+                className="mb-1.5 block text-xs font-medium"
+                style={labelStyle}
+              >
+                {label}
+              </label>
+              <input
+                id={`field-contact-${key}`}
+                name={`contact.${key}`}
+                type={type}
+                defaultValue={settings.contact[key]}
+                placeholder={placeholder}
+                className={inputClass}
+                style={inputStyle}
+              />
+              <p className="mt-1 text-xs" style={hintStyle}>
+                {hint}
+              </p>
+            </div>
+          ))}
+
+          <p className="text-xs" style={hintStyle}>
+            Boş buraxılan sahə saytda ümumiyyətlə göstərilmir.
+          </p>
+        </div>
+
         <div
           className="rounded-xl border p-5 flex flex-col gap-4"
           style={{ borderColor: "rgba(255,255,255,0.08)", background: "#1a1a1a" }}

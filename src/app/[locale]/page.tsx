@@ -2,7 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { MoonBackdrop } from "@/components/moon/MoonBackdrop";
 import { MoonReadyProvider } from "@/context/moon-ready";
 import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
+import { SiteNavbar } from "@/components/layout/SiteNavbar";
 import { ScrollToTopButton } from "@/components/layout/ScrollToTopButton";
 import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
@@ -10,8 +10,9 @@ import { Portfolio } from "@/components/sections/Portfolio";
 import { AgencyNarrativeSection } from "@/components/sections/AgencyNarrativeSection";
 import { Services } from "@/components/sections/Services";
 import { ValueStrip } from "@/components/sections/ValueStrip";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { loadContactTopics } from "@/data/services";
-import { getPortfolio } from "@/lib/admin/contentStore";
+import { getVisiblePortfolio } from "@/lib/portfolio";
 import { buildHomeJsonLd } from "@/lib/seo";
 
 type Props = {
@@ -22,15 +23,13 @@ export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [contactTopics, portfolioItems, jsonLd] = await Promise.all([
+  const [contactTopics, sortedPortfolio, jsonLd] = await Promise.all([
     loadContactTopics(),
-    getPortfolio(),
+    getVisiblePortfolio(),
     buildHomeJsonLd(locale),
   ]);
 
-  const sortedPortfolio = [...portfolioItems]
-    .filter((item) => item.visible)
-    .sort((a, b) => a.order - b.order);
+  const hasPortfolio = sortedPortfolio.length > 0;
 
   return (
     <MoonReadyProvider>
@@ -38,12 +37,12 @@ export default async function HomePage({ params }: Props) {
       {/* No overflow-x here: html/body already suppress horizontal page scroll; an extra
           overflow-x-hidden on this wrapper was clipping descendants (e.g. portfolio rail edges). */}
       <div className="relative z-[2] flex min-h-full min-w-0 max-w-full flex-col">
-        <Navbar />
+        <SiteNavbar />
         <main className="min-w-0 flex-1">
-          <Hero />
+          <Hero hasPortfolio={hasPortfolio} />
           <ValueStrip />
           <Services />
-          {sortedPortfolio.length > 0 && <Portfolio items={sortedPortfolio} />}
+          {hasPortfolio && <Portfolio items={sortedPortfolio} />}
           {/* Anchor wraps the strip + narrative so #about scrolls to land
               on the strip (visual lead-in to the about section). */}
           <div id="about" className="scroll-mt-44 md:scroll-mt-40">
@@ -53,6 +52,7 @@ export default async function HomePage({ params }: Props) {
           <Contact topics={contactTopics} />
         </main>
         <Footer />
+        <WhatsAppButton />
         <ScrollToTopButton />
       </div>
       <script

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { skipWithoutPortfolio } from "./helpers/portfolio";
 
 /**
  * Avtomatik smoke: üfüqi overflow və əsas landmarklar (mobil / iPad viewport).
@@ -67,6 +68,7 @@ test.describe("Responsive smoke", () => {
 
   test("portfolio section visible", async ({ page }) => {
     await page.goto("/az#portfolio", { waitUntil: "load" });
+    await skipWithoutPortfolio(page);
     await expect(page.locator("#portfolio")).toBeVisible();
   });
 

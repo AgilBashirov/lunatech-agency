@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { skipWithoutPortfolio } from "./helpers/portfolio";
 
 /**
  * Verifies the `data-active` animation gating fix: only the card matching
@@ -54,6 +55,7 @@ test.describe("Portfolio slider — data-active animation gating", () => {
     page,
   }) => {
     await page.goto("/en", { waitUntil: "load" });
+    await skipWithoutPortfolio(page);
     const portfolio = page.locator("#portfolio");
     await expect(portfolio).toBeVisible({ timeout: 30_000 });
     await portfolio.scrollIntoViewIfNeeded();

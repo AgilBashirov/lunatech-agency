@@ -69,6 +69,23 @@ function readScrollProgress(): number {
 
 const MOON_GLB = "/models/moon.glb";
 
+/**
+ * Loader flags for `useGLTF(path, useDraco, useMeshopt)`.
+ *
+ * The asset is decimated (520k → 42k triangles) and compressed with
+ * `EXT_meshopt_compression` — 15.4 MB → 687 KB. Meshopt was chosen over Draco
+ * deliberately: its decoder is bundled inside `three-stdlib`, so there is no
+ * extra network request and no CSP change, whereas drei points DRACOLoader at
+ * `https://www.gstatic.com/draco/...` by default. Draco was also measurably
+ * slower to decode, which matters here because decode cost — not transfer —
+ * is what delays paint on a warm cache.
+ *
+ * Draco is switched OFF explicitly so drei never instantiates a DRACOLoader
+ * aimed at that CDN.
+ */
+const MOON_USE_DRACO = false;
+const MOON_USE_MESHOPT = true;
+
 function MoonLoadGate({ onReady }: { onReady: () => void }) {
   const { active, progress } = useProgress();
   const fired = useRef(false);
@@ -158,7 +175,7 @@ function FallbackMoon({ segments = 64 }: { segments?: number }) {
 }
 
 function GLTFMoon() {
-  const { scene } = useGLTF(MOON_GLB);
+  const { scene } = useGLTF(MOON_GLB, MOON_USE_DRACO, MOON_USE_MESHOPT);
   const clone = useMemo(() => {
     const c = scene.clone();
     softenMaterials(c);
@@ -508,12 +525,24 @@ export function MoonScene({
   // Client-side bootstrap: bind cached scroll-max listeners and start the GLTF
   // download. Both are window-bound; running them at module-load would break
   // SSR and would also fire before the page has any scrollable content.
+  //
+  // The preload is deferred to idle rather than fired on mount: fetching and
+  // decoding the model on the same main thread that is still hydrating the page
+  // delays first paint, and the hero copy must win that race. `requestIdleCallback`
+  // is not in Safari <17, hence the timeout fallback.
   useEffect(() => {
     ensureScrollMaxBound();
-    useGLTF.preload(MOON_GLB);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       markMoonReady();
     }
+
+    const preload = () => useGLTF.preload(MOON_GLB, MOON_USE_DRACO, MOON_USE_MESHOPT);
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(preload, { timeout: 1500 });
+      return () => window.cancelIdleCallback?.(id);
+    }
+    const id = window.setTimeout(preload, 200);
+    return () => window.clearTimeout(id);
   }, [markMoonReady]);
 
   return (

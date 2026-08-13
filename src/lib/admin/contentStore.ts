@@ -62,8 +62,15 @@ export async function setBlogPosts(posts: BlogPost[]): Promise<void> {
 export async function getSettings(): Promise<SiteSettings> {
   const result = await readJson<SiteSettings>(PATHS.settings);
   if (!result) return DEFAULT_SETTINGS;
-  // Merge with defaults so new keys added later are always present.
-  return { ...DEFAULT_SETTINGS, ...result, social: { ...DEFAULT_SETTINGS.social, ...result.social } };
+  // Merge with defaults so new keys added later are always present — nested
+  // groups have to be merged individually or a stored blob written before a
+  // group existed would leave it undefined.
+  return {
+    ...DEFAULT_SETTINGS,
+    ...result,
+    social: { ...DEFAULT_SETTINGS.social, ...result.social },
+    contact: { ...DEFAULT_SETTINGS.contact, ...result.contact },
+  };
 }
 
 export async function setSettings(data: SiteSettings): Promise<void> {
